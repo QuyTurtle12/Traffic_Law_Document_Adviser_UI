@@ -1,102 +1,67 @@
-﻿@page
+﻿@page  
 @model TrafficLawDocumentRazor.Pages.LawDocumentPage.IndexModel
 
-@{
-    ViewData["Title"] = "Index";
-}
+@{  
+    ViewData["Title"] = "Index";  
+}  
 
-<h1>Index</h1>
+<h1>Index</h1>  
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
+<p>  
+    <a asp-page="Create">Add Document</a>  
+</p>  
+<table class="table">  
+    <thead>  
+        <tr>  
+            <th>  
+                Title
+            </th> 
             <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].Title)
+				Document Code
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].DocumentCode)
+				Category
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].FilePath)
+                Expert Verification
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].LinkPath)
+                Link Path
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].ExpertVerification)
+                File
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].CreatedBy)
+                Action
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].LastUpdatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].DeletedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].CreatedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].LastUpdatedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].DeletedTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LawDocument[0].Category)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.LawDocument) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
+        </tr>  
+    </thead>  
+    <tbody>  
+@foreach (var item in Model.LawDocument.Items) {  
+        <tr>  
+            <td>  
+                @Html.DisplayFor(modelItem => item.Title)  
+            </td>
+            <td>  
+                @Html.DisplayFor(modelItem => item.DocumentCode)  
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DocumentCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FilePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LinkPath)
+                @Html.DisplayFor(modelItem => item.CategoryName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ExpertVerification)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
+            <td>  
+                @Html.DisplayFor(modelItem => item.LinkPath)  
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+                @Html.DisplayFor(modelItem => item.FilePath)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastUpdatedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Id)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+            <td>  
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |   
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>  
+            </td>  
+        </tr>  
+}  
+    </tbody>  
 </table>

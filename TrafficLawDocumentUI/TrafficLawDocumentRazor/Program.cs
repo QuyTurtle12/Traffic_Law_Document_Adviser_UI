@@ -18,6 +18,14 @@ namespace TrafficLawDocumentRazor
             builder.Services.AddDbContext<TrafficLawDocumentDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            // Register HttpClient for making API calls
+            builder.Services.AddHttpClient("API", client =>
+            {
+                var apiSettings = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
+                client.BaseAddress = new Uri(apiSettings);
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            }); 
+
             var app = builder.Build();
             
             // Configure the HTTP request pipeline.

@@ -1,25 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BussinessObject;
+using Util.Paginated;
+using Util.DTOs.LawDocumentDTOs;
+using Util.DTOs.ApiResponse;
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
     public class IndexModel : PageModel
     {
         private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
 
-        public IndexModel(HttpClient httpClient, IConfiguration configuration)
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClient;
-            _configuration = configuration;
+            _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        public IList<LawDocument> LawDocument { get;set; } = default!;
+        public PaginatedList<GetLawDocumentDTO> LawDocument { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 10)
         {
-            
+            // Get query parameters for pagination
+            if (Request.Query.ContainsKey("pageIndex"))
+            {
+                pageNumber = int.Parse(Request.Query["pageNumber"]!);
+            }
+            if (Request.Query.ContainsKey("pageSize"))
+            {
+                pageSize = int.Parse(Request.Query["pageSize"]!);
+            }
+
+            // Fetch paginated law documents from the API
+            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"/api/law-documents?pageIndex=1&pageSize=10");
+
+            // Check if the response is not null before assigning it to the LawDocument property
+            if (apiResponse != null)
+            {
+                LawDocument = apiResponse.Data;
+            }
         }
     }
 }

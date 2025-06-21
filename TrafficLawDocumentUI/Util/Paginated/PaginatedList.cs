@@ -2,10 +2,10 @@
 {
     public class PaginatedList<T>
     {
-        public IReadOnlyCollection<T> Items { get; }
-        public int PageNumber { get; }
-        public int TotalPages { get; }
-        public int TotalCount { get; }
-        public int PageSize { get; }
+        public IReadOnlyCollection<T> Items { get; set; }
+        public int PageNumber { get; set; }
+        public int TotalPages { get; set; }
+        public int TotalCount { get; set; }
+        public int PageSize { get; set; }
     }
 }
