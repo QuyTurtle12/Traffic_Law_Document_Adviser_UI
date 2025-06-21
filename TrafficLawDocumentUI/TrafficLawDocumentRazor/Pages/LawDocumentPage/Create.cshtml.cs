@@ -1,42 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BussinessObject;
+using Util;
+using Util.DTOs.ApiResponse;
+using Util.DTOs.DocumentCategoryDTOs;
+using Util.DTOs.DocumentTagDTOs;
+using Util.DTOs.DocumentTagMapDTOs;
+using Util.DTOs.LawDocumentDTOs;
+using Util.Paginated;
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
     public class CreateModel : PageModel
     {
-        private readonly BussinessObject.TrafficLawDocumentDbContext _context;
+        private readonly HttpClient _httpClient;
 
-        public CreateModel(BussinessObject.TrafficLawDocumentDbContext context)
+        public CreateModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        public IActionResult OnGet()
+        public async Task OnGetAsync()
         {
-        ViewData["CategoryId"] = new SelectList(_context.DocumentCategories, "Id", "Id");
-            return Page();
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
+            
+            // Fetch categories
+            var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
+                "/api/documentcategory?pageIndex=1&pageSize=100");
+            if (catResponse?.Data?.Items != null)
+                Categories = catResponse.Data.Items
+                    .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                    .ToList();
+
+            // Fetch tags
+            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("/api/document-tags?pageIndex=1&pageSize=100");
+            if (tagResponse?.Data != null)
+                Tags = tagResponse.Data.Items
+                    .Select(t => new SelectListItem
+                    {
+                            Value = t.Id.ToString(),
+                            Text = t.Name
+                    })
+                    .ToList();
         }
 
         [BindProperty]
-        public LawDocument LawDocument { get; set; } = default!;
+        public AddLawDocumentDTO LawDocument { get; set; } = new();
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
+        [BindProperty]
+        public IFormFile? UploadFile { get; set; }
+
+        public List<SelectListItem> Categories { get; set; } = new();
+        public List<SelectListItem> Tags { get; set; } = new();
+
+        [BindProperty]
+        public List<Guid> SelectedTagIds { get; set; } = new();
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
-            _context.LawDocuments.Add(LawDocument);
-            await _context.SaveChangesAsync();
+            // Map selected tags to DTO
+            LawDocument.TagList = SelectedTagIds.Select(id => new AddDocumentTagMapDTO { DocumentTagId = id }).ToList();
+
+            var response = await _httpClient.PostAsJsonAsync("/api/law-documents", LawDocument);
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("", "Failed to create document.");
+                await OnGetAsync();
+                return Page();
+            }
 
             return RedirectToPage("./Index");
         }

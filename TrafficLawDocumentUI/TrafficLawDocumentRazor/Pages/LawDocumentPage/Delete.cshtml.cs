@@ -1,59 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BussinessObject;
+using Util; // For JwtTokenStore if needed
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
     public class DeleteModel : PageModel
     {
-        private readonly BussinessObject.TrafficLawDocumentDbContext _context;
+        private readonly HttpClient _httpClient;
 
-        public DeleteModel(BussinessObject.TrafficLawDocumentDbContext context)
+        public DeleteModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClient = httpClientFactory.CreateClient("API");
         }
 
         [BindProperty]
-        public LawDocument LawDocument { get; set; } = default!;
+        public Guid Id { get; set; }
+
+        [BindProperty]
+        public string? Title { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var lawdocument = await _context.LawDocuments.FirstOrDefaultAsync(m => m.Id == id);
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
-            if (lawdocument == null)
-            {
+            var response = await _httpClient.GetAsync($"/api/law-documents?pageIndex=1&pageSize=1&idSearch={id}");
+            if (!response.IsSuccessStatusCode)
                 return NotFound();
-            }
-            else
-            {
-                LawDocument = lawdocument;
-            }
+
+            var apiResponse = await response.Content.ReadFromJsonAsync<Util.DTOs.ApiResponse.ApiResponse<Util.Paginated.PaginatedList<Util.DTOs.LawDocumentDTOs.GetLawDocumentDTO>>>();
+            var doc = apiResponse?.Data?.Items?.FirstOrDefault();
+            if (doc == null)
+                return NotFound();
+
+            Id = doc.Id;
+            Title = doc.Title;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var lawdocument = await _context.LawDocuments.FindAsync(id);
-            if (lawdocument != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
+
+            var response = await _httpClient.DeleteAsync($"/api/law-documents/soft-delete/{id}");
+            if (!response.IsSuccessStatusCode)
             {
-                LawDocument = lawdocument;
-                _context.LawDocuments.Remove(LawDocument);
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("", "Failed to delete document.");
+                return Page();
             }
 
             return RedirectToPage("./Index");

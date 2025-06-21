@@ -1,39 +1,79 @@
 ﻿@page  
-@model TrafficLawDocumentRazor.Pages.LawDocumentPage.IndexModel
+@model TrafficLawDocumentRazor.Pages.LawDocumentPage.IndexModel  
 
 @{  
     ViewData["Title"] = "Index";  
 }  
 
-<h1>Index</h1>  
+<h1>Law Document Management</h1>
+<p>Manage all traffic law documents</p>
 
-<p>  
-    <a asp-page="Create">Add Document</a>  
-</p>  
+<!-- Search Form & Add Document Area -->
+<div class="row g-2 align-items-center mb-3">
+    <div class="col">
+        <!-- Search Form -->
+        <form method="get">
+            <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <input type="text" name="title" value="@Request.Query["title"]" class="form-control" placeholder="Title Search" />
+                </div>
+                <div class="col-auto">
+                    <input type="text" name="documentCode" value="@Request.Query["documentCode"]" class="form-control" placeholder="Document Code Search" />
+                </div>
+                <div class="col-auto">
+                    <select name="categoryName" class="form-select">
+                        <option value="">All Categories</option>
+                        @foreach (var cat in Model.Categories)
+                        {
+                            <option value="@cat.Name">@cat.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <select name="expertVerification" class="form-select">
+                        <option value="">All Verifications</option>
+                        <option value="true">Verified</option>
+                        <option value="false">Not Verified</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Add Document Area -->
+    <div class="col-auto">
+        <a asp-page="Create" class="btn btn-success">Add Document</a>
+    </div>
+</div>
+
+
+<!-- Table View -->
 <table class="table">  
     <thead>  
         <tr>  
             <th>  
-                Title
-            </th> 
-            <th>
-				Document Code
+                Title  
+            </th>  
+            <th>  
+                Code  
             </th>
-            <th>
-				Category
-            </th>
-            <th>
-                Expert Verification
-            </th>
-            <th>
-                Link Path
-            </th>
-            <th>
-                File
-            </th>
-            <th>
-                Action
-            </th>
+            <th>  
+                Category  
+            </th>  
+            <th>  
+                Expert Verification  
+            </th>  
+            <th>  
+                Link Path  
+            </th>  
+            <th>  
+                File  
+            </th>  
+            <th>  
+                Action  
+            </th>  
         </tr>  
     </thead>  
     <tbody>  
@@ -41,73 +81,74 @@
         <tr>  
             <td>  
                 @Html.DisplayFor(modelItem => item.Title)  
-            </td>
+            </td>  
             <td>  
                 @Html.DisplayFor(modelItem => item.DocumentCode)  
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpertVerification)
-            </td>
+            </td>  
+            <td>  
+                @Html.DisplayFor(modelItem => item.CategoryName)  
+            </td>  
+            <td>  
+                @Html.DisplayFor(modelItem => item.ExpertVerification)  
+            </td>  
             <td>  
                 @Html.DisplayFor(modelItem => item.LinkPath)  
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FilePath)
-            </td>
+            </td>  
             <td>  
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |   
+                @Html.DisplayFor(modelItem => item.FilePath)  
+            </td>  
+            <td>  
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |  
                 <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>  
             </td>  
         </tr>  
 }  
     </tbody>  
-</table>
+</table>  
 
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        @if (Model.LawDocument.HasPreviousPage)
-        {
-            <li class="page-item">
-                <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.LawDocument.PageNumber - 1)" asp-route-pageSize="@Model.LawDocument.PageSize">Previous</a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item disabled">
-                <span class="page-link">Previous</span>
-            </li>
-        }
+<!-- Pagination -->  
+<nav aria-label="Page navigation">  
+    <ul class="pagination">  
+        @if (Model.LawDocument.HasPreviousPage)  
+        {  
+            <li class="page-item">  
+                <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.LawDocument.PageNumber - 1)" asp-route-pageSize="@Model.LawDocument.PageSize">Previous</a>  
+            </li>  
+        }  
+        else  
+        {  
+            <li class="page-item disabled">  
+                <span class="page-link">Previous</span>  
+            </li>  
+        }  
 
-        @for (int i = 1; i <= Model.LawDocument.TotalPages; i++)
-        {
-            if (i == Model.LawDocument.PageNumber)
-            {
-                <li class="page-item active">
-                    <span class="page-link">@i</span>
-                </li>
-            }
-            else
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.LawDocument.PageSize">@i</a>
-                </li>
-            }
-        }
+        @for (int i = 1; i <= Model.LawDocument.TotalPages; i++)  
+        {  
+            if (i == Model.LawDocument.PageNumber)  
+            {  
+                <li class="page-item active">  
+                    <span class="page-link">@i</span>  
+                </li>  
+            }  
+            else  
+            {  
+                <li class="page-item">  
+                    <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.LawDocument.PageSize">@i</a>  
+                </li>  
+            }  
+        }  
 
-        @if (Model.LawDocument.HasNextPage)
-        {
-            <li class="page-item">
-                <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.LawDocument.PageNumber + 1)" asp-route-pageSize="@Model.LawDocument.PageSize">Next</a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item disabled">
-                <span class="page-link">Next</span>
-            </li>
-        }
-    </ul>
+        @if (Model.LawDocument.HasNextPage)  
+        {  
+            <li class="page-item">  
+                <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.LawDocument.PageNumber + 1)" asp-route-pageSize="@Model.LawDocument.PageSize">Next</a>  
+            </li>  
+        }  
+        else  
+        {  
+            <li class="page-item disabled">  
+                <span class="page-link">Next</span>  
+            </li>  
+        }  
+    </ul>  
 </nav>
