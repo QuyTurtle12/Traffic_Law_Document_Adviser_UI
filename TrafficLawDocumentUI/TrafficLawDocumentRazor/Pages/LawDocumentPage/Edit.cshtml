@@ -1,0 +1,90 @@
+﻿@page
+@model TrafficLawDocumentRazor.Pages.LawDocumentPage.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>LawDocument</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LawDocument.Id" />
+            <div class="form-group">
+                <label asp-for="LawDocument.Title" class="control-label"></label>
+                <input asp-for="LawDocument.Title" class="form-control" />
+                <span asp-validation-for="LawDocument.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.DocumentCode" class="control-label"></label>
+                <input asp-for="LawDocument.DocumentCode" class="form-control" />
+                <span asp-validation-for="LawDocument.DocumentCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.CategoryId" class="control-label"></label>
+                <select asp-for="LawDocument.CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                <span asp-validation-for="LawDocument.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.FilePath" class="control-label"></label>
+                <input asp-for="LawDocument.FilePath" class="form-control" />
+                <span asp-validation-for="LawDocument.FilePath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.LinkPath" class="control-label"></label>
+                <input asp-for="LawDocument.LinkPath" class="form-control" />
+                <span asp-validation-for="LawDocument.LinkPath" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="LawDocument.ExpertVerification" /> @Html.DisplayNameFor(model => model.LawDocument.ExpertVerification)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.CreatedBy" class="control-label"></label>
+                <input asp-for="LawDocument.CreatedBy" class="form-control" />
+                <span asp-validation-for="LawDocument.CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.LastUpdatedBy" class="control-label"></label>
+                <input asp-for="LawDocument.LastUpdatedBy" class="form-control" />
+                <span asp-validation-for="LawDocument.LastUpdatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.DeletedBy" class="control-label"></label>
+                <input asp-for="LawDocument.DeletedBy" class="form-control" />
+                <span asp-validation-for="LawDocument.DeletedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.CreatedTime" class="control-label"></label>
+                <input asp-for="LawDocument.CreatedTime" class="form-control" />
+                <span asp-validation-for="LawDocument.CreatedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.LastUpdatedTime" class="control-label"></label>
+                <input asp-for="LawDocument.LastUpdatedTime" class="form-control" />
+                <span asp-validation-for="LawDocument.LastUpdatedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LawDocument.DeletedTime" class="control-label"></label>
+                <input asp-for="LawDocument.DeletedTime" class="form-control" />
+                <span asp-validation-for="LawDocument.DeletedTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

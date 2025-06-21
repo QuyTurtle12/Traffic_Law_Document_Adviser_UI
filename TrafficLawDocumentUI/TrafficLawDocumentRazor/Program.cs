@@ -1,3 +1,6 @@
+using BussinessObject;
+using Microsoft.EntityFrameworkCore;
+
 namespace TrafficLawDocumentRazor
 {
     public class Program
@@ -9,8 +12,14 @@ namespace TrafficLawDocumentRazor
             // Add services to the container.
             builder.Services.AddRazorPages();
 
-            var app = builder.Build();
+            var connectionString = builder.Configuration.GetConnectionString("MyCnn");
 
+            // Register DbContext with DI
+            builder.Services.AddDbContext<TrafficLawDocumentDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            var app = builder.Build();
+            
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
