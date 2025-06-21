@@ -6,11 +6,13 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
     public class IndexModel : PageModel
     {
-        private readonly BussinessObject.TrafficLawDocumentDbContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public IndexModel(BussinessObject.TrafficLawDocumentDbContext context)
+        public IndexModel(HttpClient httpClient, IConfiguration configuration)
         {
-            _context = context;
+            _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         public IList<LawDocument> LawDocument { get;set; } = default!;
