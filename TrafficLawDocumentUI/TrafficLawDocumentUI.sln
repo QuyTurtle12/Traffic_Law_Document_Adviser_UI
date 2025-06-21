@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrafficLawDocumentRazor", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BussinessObject", "BussinessObject\BussinessObject.csproj", "{59E5A275-245D-40AA-ABEE-55D8450AAFB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", "{50704645-AEC1-4B93-BFCB-9A250D109EC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{59E5A275-245D-40AA-ABEE-55D8450AAFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59E5A275-245D-40AA-ABEE-55D8450AAFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59E5A275-245D-40AA-ABEE-55D8450AAFB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50704645-AEC1-4B93-BFCB-9A250D109EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50704645-AEC1-4B93-BFCB-9A250D109EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50704645-AEC1-4B93-BFCB-9A250D109EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50704645-AEC1-4B93-BFCB-9A250D109EC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

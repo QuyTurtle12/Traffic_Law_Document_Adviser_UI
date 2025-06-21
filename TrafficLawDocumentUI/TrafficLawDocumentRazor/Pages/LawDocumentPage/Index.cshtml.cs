@@ -19,8 +19,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
         public async Task OnGetAsync()
         {
-            LawDocument = await _context.LawDocuments
-                .Include(l => l.Category).ToListAsync();
+            
         }
     }
 }
