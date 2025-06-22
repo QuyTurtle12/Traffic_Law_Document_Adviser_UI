@@ -5,11 +5,39 @@
     ViewData["Title"] = "Index";  
 }  
 
+<style>  
+    .pagination {  
+        justify-content: center;  
+    }
+
+    .page-item.active .page-link {
+        background-color: #111 !important;
+        border-color: #111 !important;
+        color: #fff !important;
+    }
+
+    .search-area {
+        background-color: #f0f0f0;
+        padding: 0.5rem;
+        border-radius: 8px;
+    }
+
+    .table thead {
+        background-color: #111;
+        color: white;
+    }
+
+    .table thead th {
+            border-bottom: none;
+    }
+</style>
+
+
 <h1>Law Document Management</h1>
 <p>Manage all traffic law documents</p>
 
 <!-- Search Form & Add Document Area -->
-<div class="row g-2 align-items-center mb-3">
+<div class="row g-2 align-items-center mb-3 search-area">
     <div class="col">
         <!-- Search Form -->
         <form method="get">
@@ -37,20 +65,20 @@
                     </select>
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-dark px-4">Search</button>
                 </div>
             </div>
         </form>
     </div>
     <!-- Add Document Area -->
     <div class="col-auto">
-        <a asp-page="Create" class="btn btn-success">Add Document</a>
+        <a asp-page="Create" class="btn btn-dark px-4">Add Document</a>
     </div>
 </div>
 
 
 <!-- Table View -->
-<table class="table">  
+<table class="table table-striped">  
     <thead>  
         <tr>  
             <th>  
@@ -98,8 +126,8 @@
                 @Html.DisplayFor(modelItem => item.FilePath)  
             </td>  
             <td>  
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |  
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>  
+                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger" >Delete</a>  
             </td>  
         </tr>  
 }  

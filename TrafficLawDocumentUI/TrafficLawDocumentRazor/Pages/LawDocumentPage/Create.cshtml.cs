@@ -27,7 +27,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
-                "/api/documentcategory?pageIndex=1&pageSize=100");
+                "/api/document-categories?pageIndex=1&pageSize=100");
             if (catResponse?.Data?.Items != null)
                 Categories = catResponse.Data.Items
                     .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })

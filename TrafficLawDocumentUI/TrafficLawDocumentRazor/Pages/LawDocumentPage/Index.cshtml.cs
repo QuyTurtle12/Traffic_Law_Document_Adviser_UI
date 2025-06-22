@@ -32,7 +32,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
-                "/api/documentcategory?pageIndex=1&pageSize=100");
+                "/api/document-categories?pageIndex=1&pageSize=100");
             if (catResponse?.Data?.Items != null)
                 Categories = catResponse.Data.Items.ToList();
 
@@ -42,17 +42,17 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             // Append additional query parameters if they are provided
             if (!string.IsNullOrEmpty(title))
             {
-                apiUrl += $"&title={Uri.EscapeDataString(title)}";
+                apiUrl += $"&titleSearch={Uri.EscapeDataString(title)}";
             }
 
             if (!string.IsNullOrEmpty(documentCode))
             {
-                apiUrl += $"&documentCode={Uri.EscapeDataString(documentCode)}";
+                apiUrl += $"&documentCodeSearch={Uri.EscapeDataString(documentCode)}";
             }
 
             if (!string.IsNullOrEmpty(categoryName))
             {
-                apiUrl += $"&categoryName={Uri.EscapeDataString(categoryName)}";
+                apiUrl += $"&categoryNameSearch={Uri.EscapeDataString(categoryName)}";
             }
 
             if (expertVerification.HasValue)
