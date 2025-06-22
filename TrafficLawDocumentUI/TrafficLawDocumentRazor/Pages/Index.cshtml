@@ -1,10 +1,128 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold text-primary mb-3">Traffic Law Document Adviser</h1>
+            <p class="lead mb-4">Your comprehensive resource for traffic law information, regulations, and legal guidance. Stay informed and compliant with the latest traffic laws and regulations.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a asp-page="/News/Index" class="btn btn-primary btn-lg">
+                    <i class="bi bi-newspaper"></i> Latest News
+                </a>
+                <a href="#features" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-info-circle"></i> Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-5">What We Offer</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-file-earmark-text text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="card-title">Legal Documents</h4>
+                    <p class="card-text">Access comprehensive traffic law documents, regulations, and legal resources to understand your rights and obligations.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-newspaper text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="card-title">Latest Updates</h4>
+                    <p class="card-text">Stay informed with the latest traffic law changes, news, and regulatory updates that affect drivers and road users.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="bi bi-chat-dots text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="card-title">Expert Guidance</h4>
+                    <p class="card-text">Get expert advice and guidance on traffic law matters through our comprehensive knowledge base and support system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest News Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Latest News</h2>
+                <a asp-page="/News/Index" class="btn btn-outline-primary">View All News</a>
+            </div>
+            
+            @if (Model.LatestNews != null && Model.LatestNews.Any())
+            {
+                <div class="row">
+                    @foreach (var news in Model.LatestNews.Take(3))
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                @if (!string.IsNullOrEmpty(news.ImageUrl))
+                                {
+                                    <img src="@news.ImageUrl" class="card-img-top" alt="@news.Title" style="height: 200px; object-fit: cover;">
+                                }
+                                <div class="card-body">
+                                    <h5 class="card-title">@news.Title</h5>
+                                    <p class="card-text text-muted">
+                                        <small>
+                                            <i class="bi bi-calendar"></i> @news.PublishedDate.ToString("MMM dd, yyyy")
+                                            @if (!string.IsNullOrEmpty(news.Author))
+                                            {
+                                                <span> | <i class="bi bi-person"></i> @news.Author</span>
+                                            }
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        @(news.Content?.Length > 100 ? news.Content.Substring(0, 100) + "..." : news.Content)
+                                    </p>
+                                    <a asp-page="/News/Details" asp-route-id="@news.Id" class="btn btn-primary btn-sm">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center">
+                    <p class="text-muted">No recent news available. Check back soon for updates!</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card bg-primary text-white text-center">
+                <div class="card-body py-5">
+                    <h3 class="card-title mb-3">Need Legal Assistance?</h3>
+                    <p class="card-text mb-4">Our comprehensive traffic law resources are here to help you navigate complex legal matters and stay compliant with current regulations.</p>
+                    <a href="#" class="btn btn-light btn-lg">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -29,7 +29,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             }
 
             // Fetch paginated law documents from the API
-            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"/api/law-documents?pageIndex={pageNumber}&pageSize={pageSize}");
+            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"/api/lawdocument?pageIndex={pageNumber}&pageSize={pageSize}");
 
             // Check if the response is not null before assigning it to the LawDocument property
             if (apiResponse != null)

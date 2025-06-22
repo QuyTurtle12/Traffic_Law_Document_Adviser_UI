@@ -1,5 +1,6 @@
 using BussinessObject;
 using Microsoft.EntityFrameworkCore;
+using TrafficLawDocumentRazor.Services;
 
 namespace TrafficLawDocumentRazor
 {
@@ -24,7 +25,15 @@ namespace TrafficLawDocumentRazor
                 var apiSettings = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
                 client.BaseAddress = new Uri(apiSettings);
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            }); 
+            });
+
+            // Register NewsApiService
+            builder.Services.AddScoped<INewsApiService, NewsApiService>(provider =>
+            {
+                var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("API");
+                var logger = provider.GetRequiredService<ILogger<NewsApiService>>();
+                return new NewsApiService(httpClient, logger);
+            });
 
             var app = builder.Build();
             
