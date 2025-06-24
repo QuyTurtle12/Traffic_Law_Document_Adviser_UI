@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BussinessObject;
 
-namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
+namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 {
     public class EditModel : PageModel
     {

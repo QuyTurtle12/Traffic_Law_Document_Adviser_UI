@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BussinessObject;
 
-namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
+namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 {
     public class CreateModel : PageModel
     {

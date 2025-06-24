@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BussinessObject;
 
-namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
+namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 {
     public class DeleteModel : PageModel
     {

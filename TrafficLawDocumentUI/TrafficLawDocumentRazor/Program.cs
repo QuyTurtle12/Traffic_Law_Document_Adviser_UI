@@ -38,7 +38,7 @@ namespace TrafficLawDocumentRazor
                 return new NewsApiService(httpClient, logger);
             });
             builder.Services.AddHttpClient<IUserApiService, UserApiService>();
-
+            builder.Services.AddHttpClient<ILawDocumentsApiService, LawDocumentsApiService>();
 
             var app = builder.Build();
             

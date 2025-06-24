@@ -33,6 +33,11 @@
                                 <i class="bi bi-newspaper"></i> News
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/LawDocumentPage/Index">
+                                <i class="bi bi-newspaper"></i> Official Law Document
+                            </a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-gear"></i> Management
@@ -49,7 +54,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" asp-area="" asp-page="/LawDocumentPage/Index">
+                                    <a class="dropdown-item" asp-area="" asp-page="/LawDocumentPage/Management/Index">
                                         <i class="bi bi-file-earmark-text"></i> Law Documents
                                     </a>
                                 </li>
@@ -85,7 +90,7 @@
             </div>
         }
 
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3" style="width:100%">
             @RenderBody()
         </main>
     </div>

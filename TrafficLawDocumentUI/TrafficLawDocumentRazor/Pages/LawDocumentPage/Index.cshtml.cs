@@ -1,40 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Util.Paginated;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using TrafficLawDocumentRazor.Services;
 using Util.DTOs.LawDocumentDTOs;
-using Util.DTOs.ApiResponse;
+using Util.Paginated;
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
     public class IndexModel : PageModel
     {
-        private readonly HttpClient _httpClient;
+        private readonly ILogger<IndexModel> _logger;
+        private readonly ILawDocumentsApiService _lawDocumentsApiService;
 
-        public IndexModel(IHttpClientFactory httpClientFactory)
+        public IndexModel(ILogger<IndexModel> logger, ILawDocumentsApiService lawDocumentsApiService)
         {
-            _httpClient = httpClientFactory.CreateClient("API");
+            _logger = logger;
+            _lawDocumentsApiService = lawDocumentsApiService;
         }
 
-        public PaginatedList<GetLawDocumentDTO> LawDocument { get;set; } = default!;
+        public PaginatedList<GetLawDocumentDTO> LawDocumentList { get; set; } = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
 
-        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 1)
+        [BindProperty(SupportsGet = true)]
+        public int PageIndex { get; set; } = 1;
+
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        public async Task OnGetAsync()
         {
-            // Get query parameters for pagination
-            if (Request.Query.ContainsKey("pageIndex"))
+            try
             {
-                pageNumber = int.Parse(Request.Query["pageNumber"]!);
+                LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize);
             }
-            if (Request.Query.ContainsKey("pageSize"))
+            catch (Exception ex)
             {
-                pageSize = int.Parse(Request.Query["pageSize"]!);
-            }
-
-            // Fetch paginated law documents from the API
-            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"/api/law-documents?pageIndex={pageNumber}&pageSize={pageSize}");
-
-            // Check if the response is not null before assigning it to the LawDocument property
-            if (apiResponse != null)
-            {
-                LawDocument = apiResponse.Data;
+                _logger.LogError(ex, "Error loading law documents data");
+                LawDocumentList = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
             }
         }
     }

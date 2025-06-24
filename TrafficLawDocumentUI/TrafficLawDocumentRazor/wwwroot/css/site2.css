@@ -1,0 +1,291 @@
+
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+.breadcrumb {
+    padding: 10px 30px;
+    font-size: 14px;
+    color: #666;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.container {
+    display: flex;
+    padding: 20px 30px;
+}
+
+.main {
+    flex: 3;
+    padding-right: 20px;
+}
+
+.sidebar {
+    flex: 1;
+}
+
+.tagline {
+    font-size: 14px;
+    color: #666;
+}
+
+.tabs {
+    display: flex;
+    gap: 20px;
+    margin: 15px 0;
+    border-bottom: 2px solid #ccc;
+    font-family: "Segoe UI", sans-serif;
+}
+
+    .tabs button {
+        border: none;
+        background: none;
+        padding: 10px 0;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16px;
+        color: #555;
+        border-bottom: 3px solid transparent;
+        transition: color 0.3s ease, border-bottom 0.3s ease;
+        position: relative;
+    }
+
+        .tabs button:hover {
+            color: #e65100;
+        }
+
+    .tabs .active {
+        color: #d32f2f;
+        border-bottom: 3px solid #d32f2f;
+    }
+
+    .tabs button::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 100%;
+        height: 3px;
+        background: #d32f2f;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .tabs button:hover::after {
+        transform: scaleX(1);
+    }
+
+    .tabs .active::after {
+        transform: scaleX(1);
+    }
+
+.toolbar {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.note {
+    background: #fff3cd;
+    padding: 10px;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.legal-text {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.legal-wrapper {
+    max-width: none;
+    width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    font-family: "Georgia", serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.legal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.left-col,
+.right-col {
+    width: 50%;
+    vertical-align: top;
+    text-align: center;
+    font-weight: bold;
+}
+
+.legal-table td {
+    padding: 5px;
+}
+
+.legal-date {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.legal-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.legal-text p {
+    margin-bottom: 12px;
+}
+
+.legal-text h2 {
+    margin: 20px 0;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.sidebar h4 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+.most-viewed ul {
+    padding-left: 20px;
+    font-size: 14px;
+}
+
+.most-viewed li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.page-wrapper {
+    max-width: none;
+    width: 100%;
+    padding: 0 15px;
+}
+
+.most-viewed li {
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.summary-section {
+    max-width: 800px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+    .summary-section h2 {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .summary-section p {
+        margin-bottom: 20px;
+    }
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    margin-top: 15px;
+}
+
+    .summary-table td,
+    .summary-table th {
+        border: 1px solid #ccc; /* Adds lines between cells */
+        padding: 8px 12px;
+        vertical-align: top;
+        font-size: 14px;
+    }
+
+        .summary-table td:first-child,
+        .summary-table td:nth-child(3) {
+            background-color: #f9f9f9;
+            font-weight: bold;
+            width: 160px;
+        }
+
+.status-known {
+    color: red;
+    font-weight: bold;
+}
+
+.status-updating {
+    color: #888;
+    font-style: italic;
+}
+
+.field-link {
+    color: #a5662b;
+    text-decoration: none;
+}
+
+.download-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.btn-download {
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    transition: 0.3s ease;
+}
+
+    .btn-download.word {
+        background-color: #2b579a;
+        color: #fff;
+    }
+
+        .btn-download.word:hover {
+            background-color: #1b3b6f;
+        }
+
+    .btn-download.pdf {
+        background-color: #d32f2f;
+        color: #fff;
+    }
+
+        .btn-download.pdf:hover {
+            background-color: #a91c1c;
+        }
+
+.custom-main {
+    width: 100%;
+}

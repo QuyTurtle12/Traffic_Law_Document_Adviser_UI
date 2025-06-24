@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Details";
 }
-
+@**
 <h1>Details</h1>
 
 <div>
@@ -89,3 +89,115 @@
     <a asp-page="./Edit" asp-route-id="@Model.LawDocument.Id">Edit</a> |
     <a asp-page="./Index">Back to List</a>
 </div>
+ *@
+
+@{
+    ViewData["Title"] = "Details";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/site2.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+}
+    <div class="page-wrapper">
+        <div class="main custom-main">
+            <div class="main-content">
+                <div class="breadcrumb">
+                    Home / Law Documents / Details
+                </div>
+                <div>
+                    <h1>@Model.LawDocument.Title</h1>
+                </div>
+                <div class="container">
+                    <div class="main">
+                        <div class="tabs">
+                            <button class="active" data-tab="summary">Summary</button>
+                            <button data-tab="content">Content</button>
+                            <button data-tab="status">Status</button>
+                            <button data-tab="download">Download</button>
+                        </div>
+
+                        <div class="tab-content" id="summary" style="display: block">
+                            <div class="legal-wrapper">
+                                <div class="summary-section">
+                                    <h2>ATTRIBUTE</h2>
+                                    <p><strong>@Model.LawDocument.Title</strong></p>
+                                    <table class="summary-table">
+                                        <tr>
+                                            <td><strong>Document Code:</strong></td>
+                                            <td>@Model.LawDocument.DocumentCode</td>
+                                            <td><strong>Expert Verified:</strong></td>
+                                            <td class="status-known">@(Model.LawDocument.ExpertVerification ? "Yes" : "No")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Category:</strong></td>
+                                            <td>@Model.LawDocument.Category?.Name</td>
+                                            <td><strong>Created:</strong></td>
+                                            <td>@Model.LawDocument.CreatedTime?.ToString("dd/MM/yyyy")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Created By:</strong></td>
+                                            <td>@Model.LawDocument.CreatedBy</td>
+                                            <td><strong>Last Updated:</strong></td>
+                                            <td>@Model.LawDocument.LastUpdatedTime?.ToString("dd/MM/yyyy")</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="content" style="display: none">
+                            <div class="legal-wrapper">
+                                <p>Document Link: <a href="@Model.LawDocument.LinkPath" target="_blank">@Model.LawDocument.LinkPath</a></p>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="status" style="display: none">
+                            <p>Status: @(Model.LawDocument.DeletedTime.HasValue ? "Deleted" : "Active")</p>
+                        </div>
+
+                        <div class="tab-content" id="download" style="display: none">
+                            <div class="legal-wrapper">
+                                <h2><strong>Download Document</strong></h2>
+                                <div class="download-buttons">
+                                    <a href="@Model.LawDocument.FilePath" class="btn-download pdf" download>
+                                        <i class="fas fa-file-pdf"></i> Download as PDF
+                                    </a>
+                                    <a href="@Model.LawDocument.FilePath" class="btn-download word" download>
+                                        <i class="fas fa-file-word"></i> Download as Word
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside class="sidebar">
+                        <h4>MOST VIEWED</h4>
+                        <div class="box most-viewed">
+                            <ul class="most-viewed-list">
+                                <li>Placeholder document 1</li>
+                                <li>Placeholder document 2</li>
+                            </ul>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+       
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabs = document.querySelectorAll(".tabs button");
+            const contents = document.querySelectorAll(".tab-content");
+
+            tabs.forEach((tab) => {
+                tab.addEventListener("click", function () {
+                    tabs.forEach((t) => t.classList.remove("active"));
+                    this.classList.add("active");
+                    contents.forEach((c) => (c.style.display = "none"));
+                    const selectedTab = this.getAttribute("data-tab");
+                    document.getElementById(selectedTab).style.display = "block";
+                });
+            });
+        });
+    </script>
