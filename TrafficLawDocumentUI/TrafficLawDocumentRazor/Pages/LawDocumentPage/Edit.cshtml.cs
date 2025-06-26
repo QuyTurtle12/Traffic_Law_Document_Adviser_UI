@@ -1,8 +1,6 @@
-﻿using BussinessObject;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentCategoryDTOs;
@@ -99,6 +97,28 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to update document.");
+                await OnGetAsync(id);
+                return Page();
+            }
+
+            return RedirectToPage("./Index");
+        }
+
+        public async Task<IActionResult> OnPostVerifyAsync(Guid id)
+        {
+            if (!User.IsInRole("Expert"))
+            {
+                return Forbid();
+            }
+
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
+
+            var response = await _httpClient.PostAsync($"api/law-documents/verification/{id}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("", "Failed to verify document.");
                 await OnGetAsync(id);
                 return Page();
             }
