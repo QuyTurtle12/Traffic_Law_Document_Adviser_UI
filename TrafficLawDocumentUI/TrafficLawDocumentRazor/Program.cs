@@ -1,5 +1,6 @@
 using BussinessObject;
 using Microsoft.EntityFrameworkCore;
+using TrafficLawDocumentRazor.Hubs;
 
 namespace TrafficLawDocumentRazor
 {
@@ -11,6 +12,9 @@ namespace TrafficLawDocumentRazor
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            // Add SignalR
+            builder.Services.AddSignalR();
 
             var connectionString = builder.Configuration.GetConnectionString("MyCnn");
 
@@ -44,6 +48,9 @@ namespace TrafficLawDocumentRazor
             app.UseAuthorization();
 
             app.MapRazorPages();
+
+            // Map SignalR Hub
+            app.MapHub<ChatHub>("/chathub");
 
             app.Run();
         }

@@ -1,0 +1,146 @@
+﻿@page
+@model TrafficLawDocumentRazor.Pages.ChatboxModel
+@{
+}
+
+<!-- Chat open button -->
+<button id="openChat" class="chat-toggle">💬</button>
+
+<!-- Chat popup -->
+<div id="chatPopup" class="chat-popup hidden">
+    <div class="chatbox">
+        <div class="chat-header">
+            <h2>Support chat</h2>
+            <span id="closeChat" class="close-btn">×</span>
+        </div>
+        <div id="chatBody" class="chat-body">
+            @foreach (var msg in Model.ChatHistory)
+            {
+                <div class="message @(msg.IsUser ? "user" : "bot")">
+                    @msg.Text
+
+                    @if (!msg.IsUser)
+                    {
+                        <a href="" target="_blank" class="bot-icon">🏳️</a>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            <div class="typing-animation">Bot is typing...</div>
+        </div>
+
+        <form id="chatForm">
+            <div class="chat-input">
+                <input type="text" placeholder="Type a message..." id="messageInput" />
+                <button type="submit" class="send-btn" id="sendButton">➤</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script>
+        const openBtn = document.getElementById("openChat");
+        const closeBtn = document.getElementById("closeChat");
+        const popup = document.getElementById("chatPopup");
+        const chatBody = document.getElementById("chatBody");
+        const messageInput = document.getElementById("messageInput");
+        const chatForm = document.getElementById("chatForm");
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        const sendButton = document.getElementById("sendButton");
+        
+        // SignalR Connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
+
+        const userId = "@Model.UserId";
+
+        // Start SignalR connection
+        connection.start().then(function () {
+            console.log("SignalR connected");
+            // Join user group
+            connection.invoke("JoinUserGroup", userId);
+        }).catch(function (err) {
+            console.error("SignalR connection error: " + err.toString());
+        });
+
+        // Receive messages from SignalR
+        connection.on("ReceiveMessage", function (message, isUser) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = isUser ? "message user" : "message bot";
+            
+            if (isUser) {
+                messageDiv.textContent = message;
+            } else {
+                messageDiv.innerHTML = message + '<a href="" target="_blank" class="bot-icon">🏳️</a>';
+            }
+            
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+
+        // Handle loading state changes
+        connection.on("SetLoadingState", function (isLoading) {
+            if (isLoading) {
+                loadingIndicator.style.display = 'block';
+                sendButton.disabled = true;
+                sendButton.style.opacity = '0.5';
+            } else {
+                loadingIndicator.style.display = 'none';
+                sendButton.disabled = false;
+                sendButton.style.opacity = '1';
+            }
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+
+        // Handle error messages
+        connection.on("ShowError", function (errorMessage) {
+            const errorDiv = document.createElement("div");
+            errorDiv.className = "message error";
+            errorDiv.textContent = "Error: " + errorMessage;
+            errorDiv.style.color = 'red';
+            errorDiv.style.fontStyle = 'italic';
+            
+            chatBody.appendChild(errorDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+
+        // Handle form submission
+        chatForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Clear input immediately
+            messageInput.value = "";
+            
+            // Send message via SignalR - This will handle everything securely
+            connection.invoke("SendMessage", userId, message).catch(function (err) {
+                console.error("Error sending message: " + err.toString());
+                // Show error in chat
+                const errorDiv = document.createElement("div");
+                errorDiv.className = "message error";
+                errorDiv.textContent = "Failed to send message. Please try again.";
+                errorDiv.style.color = 'red';
+                chatBody.appendChild(errorDiv);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            });
+        });
+
+        // Handle Enter key in input
+        messageInput.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        openBtn?.addEventListener("click", () => popup?.classList.remove("hidden"));
+        closeBtn?.addEventListener("click", () => popup?.classList.add("hidden"));
+    </script>
+}
