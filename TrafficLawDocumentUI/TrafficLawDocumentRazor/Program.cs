@@ -1,4 +1,5 @@
 using BussinessObject;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace TrafficLawDocumentRazor
@@ -24,7 +25,27 @@ namespace TrafficLawDocumentRazor
                 var apiSettings = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
                 client.BaseAddress = new Uri(apiSettings);
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            }); 
+            });
+
+            builder.Services
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Login";
+                options.LogoutPath = "/Logout";
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+            });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdmin", policy => policy.RequireClaim("role", "Admin"));
+                options.AddPolicy("RequireExpertOrAdmin", policy =>
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.HasClaim("role", "Admin") ||
+                        ctx.User.HasClaim("role", "Expert")));
+            });
+
+
 
             var app = builder.Build();
             
@@ -41,6 +62,7 @@ namespace TrafficLawDocumentRazor
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();

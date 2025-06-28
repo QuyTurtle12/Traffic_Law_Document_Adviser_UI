@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Authentication
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,14 +9,25 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TrafficLawDocumentRazor.styles.css" asp-append-version="true" />
+
+    <!-- Toast custom styles -->
+    <style>
+      .toast-notify {
+        min-width: 300px;
+        font-size: 1.1rem;
+        box-shadow: 0 0 1rem rgba(0,0,0,0.5);
+      }
+    </style>
+
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">TrafficLawDocumentRazor</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -32,10 +45,46 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/DocumentCategoryPage/Index">Category Management</a>
                         </li>
                     </ul>
+
+                    <!-- Authentication Links -->
+                    <ul class="navbar-nav">
+                        @if (User?.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Profile">My Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline" asp-page="/Logout" method="get">
+                                    <button type="submit" class="nav-link btn btn-link">Logout</button>
+                                </form>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Register">Register</a>
+                            </li>
+                        }
+
+                    </ul>
+
                 </div>
             </div>
         </nav>
     </header>
+
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div
+          id="toastContainer"
+          class="toast-container position-fixed top-0 start-50 translate-middle-x p-3"
+          style="z-index:1080;">
+        </div>
+    </div>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -51,7 +100,40 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
+    
+    <!-- Toast trigger script -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // JSON-encoded TempData values
+        const rawMsg = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastMessage"]));
+        if (!rawMsg) return;
+
+        const toastType = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastType"]));
+        const type = toastType === 'error' ? 'danger' : 'success';
+        const title = type === 'danger' ? 'Error' : 'Success';
+
+        // Build toast HTML
+        const html = `
+          <div class="toast toast-notify fade" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-white bg-${type} border-0">
+              <strong class="me-auto">${title}</strong>
+              <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+              ${rawMsg}
+            </div>
+          </div>`;
+
+        const container = document.getElementById('toastContainer');
+        container.insertAdjacentHTML('beforeend', html);
+
+        // Show the latest toast
+        const toasts = container.querySelectorAll('.toast');
+        const toastEl = toasts[toasts.length - 1];
+        new bootstrap.Toast(toastEl, { delay: 5000, autohide: true }).show();
+      });
+    </script>
+
 </body>
 </html>

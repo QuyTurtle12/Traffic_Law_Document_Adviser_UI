@@ -1,0 +1,33 @@
+﻿@page
+@model TrafficLawDocumentRazor.ProfileModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>Your user‐ID is @Model.CurrentUserId</p>
+
+<p>
+    <strong>Roles:</strong>
+    @if (Model.Roles.Any())
+    {
+        @foreach (var r in Model.Roles)
+        {
+            <span class="badge bg-primary me-1">@r</span>
+        }
+    }
+    else
+    {
+        <em>(no roles)</em>
+    }
+</p>
+<table class="table">
+    <thead><tr><th>Type</th><th>Value</th></tr></thead>
+    <tbody>
+        @foreach (var c in Model.Claims)
+        {
+            <tr><td>@c.Type</td><td>@c.Value</td></tr>
+        }
+    </tbody>
+</table>
+
