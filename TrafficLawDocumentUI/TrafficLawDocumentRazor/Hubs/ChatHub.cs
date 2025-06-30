@@ -1,8 +1,6 @@
-using BussinessObject;
 using Microsoft.AspNetCore.SignalR;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.ChatHistoryDTOs;
-using static TrafficLawDocumentRazor.Pages.ChatboxModel;
 
 namespace TrafficLawDocumentRazor.Hubs
 {
@@ -52,7 +50,7 @@ namespace TrafficLawDocumentRazor.Hubs
                     // Send the API response
                     if (result?.Data != null)
                     {
-                        await Clients.Group($"User_{userId}").SendAsync("ReceiveMessage", result.Data.Answer, false);
+                        await Clients.Group($"User_{userId}").SendAsync("ReceiveMessage", result.Data, false);
                     }
                 }
                 else

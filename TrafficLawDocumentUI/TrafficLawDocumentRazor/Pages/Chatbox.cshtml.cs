@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
+using NuGet.Protocol.Plugins;
 using TrafficLawDocumentRazor.Hubs;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.ChatHistoryDTOs;
@@ -50,7 +51,7 @@ namespace TrafficLawDocumentRazor.Pages
                     ChatHistory = result.Data
                         .SelectMany(item => new[]
                         {
-                            new ChatMessage { IsUser = false, Text = item.Answer },
+                            new ChatMessage { UserId = item.UserId, ChatHistoryId = item.Id, IsUser = false, Text = item.Answer},
                             new ChatMessage { IsUser = true, Text = item.Question }
                             
                         })
@@ -66,6 +67,8 @@ namespace TrafficLawDocumentRazor.Pages
 
         public class ChatMessage
         {
+            public Guid? UserId { get; set; }
+            public Guid? ChatHistoryId { get; set; }
             public bool IsUser { get; set; }
             public string Text { get; set; }
         }

@@ -21,7 +21,10 @@
 
                     @if (!msg.IsUser)
                     {
-                        <a href="" target="_blank" class="bot-icon">🏳️</a>
+                        <a asp-page="/FeedbackPage/Create"
+                           asp-route-chatHistoryId="@msg.ChatHistoryId"
+                           asp-route-userId="@msg.UserId"
+                        class="bot-icon">🏳️</a>
                     }
                 </div>
             }
@@ -70,14 +73,15 @@
         });
 
         // Receive messages from SignalR
-        connection.on("ReceiveMessage", function (message, isUser) {
+        connection.on("ReceiveMessage", function (data, isUser) {
             const messageDiv = document.createElement("div");
             messageDiv.className = isUser ? "message user" : "message bot";
             
             if (isUser) {
-                messageDiv.textContent = message;
+                messageDiv.textContent = data;
             } else {
-                messageDiv.innerHTML = message + '<a href="" target="_blank" class="bot-icon">🏳️</a>';
+                messageDiv.innerHTML = `${data.answer}
+                <a href="/FeedbackPage/Create?chatHistoryId=${data.id}&userId=${data.userId}" class="bot-icon">🏳️</a>`;
             }
             
             chatBody.appendChild(messageDiv);
