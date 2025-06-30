@@ -98,7 +98,8 @@
                 <a class="page-link" asp-page="./Index"
                    asp-route-pageNumber="@(Model.DocumentTag.PageNumber - 1)"
                    asp-route-pageSize="@Model.DocumentTag.PageSize"
-                   asp-route-nameSearch="@Request.Query["nameSearch"]">Previous</a>
+                   asp-route-name="@Request.Query["name"]"
+                   asp-route-parentName="@Request.Query["parentName"]">Previous</a>
             </li>
         }
         else
@@ -122,7 +123,8 @@
                     <a class="page-link" asp-page="./Index"
                        asp-route-pageNumber="@i"
                        asp-route-pageSize="@Model.DocumentTag.PageSize"
-                       asp-route-nameSearch="@Request.Query["nameSearch"]">@i</a>
+                       asp-route-name="@Request.Query["name"]"
+                       asp-route-parentName="@Request.Query["parentName"]">@i</a>
                 </li>
             }
         }
@@ -133,7 +135,8 @@
                 <a class="page-link" asp-page="./Index"
                    asp-route-pageNumber="@(Model.DocumentTag.PageNumber + 1)"
                    asp-route-pageSize="@Model.DocumentTag.PageSize"
-                   asp-route-nameSearch="@Request.Query["nameSearch"]">Next</a>
+                   asp-route-name="@Request.Query["name"]"
+                   asp-route-parentName="@Request.Query["parentName"]">Next</a>
             </li>
         }
         else
