@@ -40,12 +40,24 @@
                                 <label asp-for="User.PasswordHash" class="control-label"></label>
                                 <input asp-for="User.PasswordHash" class="form-control" />
                                 <span asp-validation-for="User.PasswordHash" class="text-danger"></span>
-                            </div> *@
+                            </div> 
                             <div class="mb-3">
                                 <label asp-for="User.Role" class="control-label"></label>
                                 <input asp-for="User.Role" class="form-control" />
                                 <span asp-validation-for="User.Role" class="text-danger"></span>
+                            </div>*@
+                            <div class="mb-3">
+                                <label asp-for="User.Role" class="control-label"></label>
+                                <select asp-for="User.Role" class="form-control">
+                                    <option value="1">User</option>
+                                    <option value="2">Expert</option>
+                                    <option value="3">Admin</option>
+                                    <option value="4">Staff</option>
+                                </select>
+                                <span asp-validation-for="User.Role" class="text-danger"></span>
                             </div>
+
+
                             @* <div class="form-group form-check">
                                 <label class="form-check-label">
                                     <input class="form-check-input" asp-for="User.IsActive" /> @Html.DisplayNameFor(model => model.User.IsActive)
@@ -81,8 +93,13 @@
                                 <input asp-for="User.DeletedTime" class="form-control" />
                                 <span asp-validation-for="User.DeletedTime" class="text-danger"></span>
                             </div> *@
-                            <div class="mb-3">
-                                <input type="submit" value="Save" class="btn btn-primary" />
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Back to List
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Save
+                                </button>
                             </div>
                         </form>
                         }
