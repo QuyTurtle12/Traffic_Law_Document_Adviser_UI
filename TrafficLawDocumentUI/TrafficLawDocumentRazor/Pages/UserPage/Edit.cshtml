@@ -1,0 +1,97 @@
+﻿@page
+@model TrafficLawDocumentRazor.Pages.UserPage.EditModel
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Edit User</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.User == null)
+                    {
+                        <div class="alert alert-danger">
+                            <h4>User not found</h4>
+                            <p>The requested user could not be found.</p>
+                            <a asp-page="Index" class="btn btn-primary">Back to List</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <form method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="User.Id" />
+                            <div class="mb-3">
+                                <label asp-for="User.FullName" class="control-label"></label>
+                                <input asp-for="User.FullName" class="form-control" />
+                                <span asp-validation-for="User.FullName" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="User.Email" class="control-label"></label>
+                                <input asp-for="User.Email" class="form-control" />
+                                <span asp-validation-for="User.Email" class="text-danger"></span>
+                            </div>
+                            @* <div class="mb-3">
+                                <label asp-for="User.PasswordHash" class="control-label"></label>
+                                <input asp-for="User.PasswordHash" class="form-control" />
+                                <span asp-validation-for="User.PasswordHash" class="text-danger"></span>
+                            </div> *@
+                            <div class="mb-3">
+                                <label asp-for="User.Role" class="control-label"></label>
+                                <input asp-for="User.Role" class="form-control" />
+                                <span asp-validation-for="User.Role" class="text-danger"></span>
+                            </div>
+                            @* <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" asp-for="User.IsActive" /> @Html.DisplayNameFor(model => model.User.IsActive)
+                                </label>
+                            </div> *@
+                            @* <div class="mb-3">
+                                <label asp-for="User.CreatedBy" class="control-label"></label>
+                                <input asp-for="User.CreatedBy" class="form-control" />
+                                <span asp-validation-for="User.CreatedBy" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="User.LastUpdatedBy" class="control-label"></label>
+                                <input asp-for="User.LastUpdatedBy" class="form-control" />
+                                <span asp-validation-for="User.LastUpdatedBy" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="User.DeletedBy" class="control-label"></label>
+                                <input asp-for="User.DeletedBy" class="form-control" />
+                                <span asp-validation-for="User.DeletedBy" class="text-danger"></span>
+                            </div> *@
+                            @* <div class="mb-3">
+                                <label asp-for="User.CreatedTime" class="control-label"></label>
+                                <input asp-for="User.CreatedTime" class="form-control" />
+                                <span asp-validation-for="User.CreatedTime" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="User.LastUpdatedTime" class="control-label"></label>
+                                <input asp-for="User.LastUpdatedTime" class="form-control" />
+                                <span asp-validation-for="User.LastUpdatedTime" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="User.DeletedTime" class="control-label"></label>
+                                <input asp-for="User.DeletedTime" class="form-control" />
+                                <span asp-validation-for="User.DeletedTime" class="text-danger"></span>
+                            </div> *@
+                            <div class="mb-3">
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                            </div>
+                        </form>
+                        }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

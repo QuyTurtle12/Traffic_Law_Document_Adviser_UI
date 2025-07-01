@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Util;
-using Util.DTOs.ApiResponse;
-using Util.DTOs.DocumentCategoryDTOs;
-using Util.DTOs.DocumentTagDTOs;
-using Util.DTOs.LawDocumentDTOs;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Util.Paginated;
+using Util.DTOs.LawDocumentDTOs;
+using Util.DTOs.ApiResponse;
+using Microsoft.AspNetCore.Mvc;
 using TrafficLawDocumentRazor.Services;
 
-namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
+namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 {
     public class IndexModel : PageModel
     {
@@ -22,24 +18,22 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             _lawDocumentsApiService = lawDocumentsApiService;
         }
 
-        public PaginatedList<GetLawDocumentDTO> LawDocumentList { get; set; } = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
-
+        public PaginatedList<GetLawDocumentDTO> LawDocument { get;set; } = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
         [BindProperty(SupportsGet = true)]
         public int PageIndex { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 10;
-
         public async Task OnGetAsync()
         {
             try
             {
-                LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize);
+                LawDocument = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error loading law documents data");
-                LawDocumentList = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
+                LawDocument = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
             }
         }
     }

@@ -6,6 +6,7 @@ namespace Util.DTOs.LawDocumentDTOs
     {
         public Guid Id { get; set; }
         public string? CategoryName { get; set; }
+
         public IEnumerable<GetDocumentTagMapDTO>? TagList { get; set; }
     }
 }

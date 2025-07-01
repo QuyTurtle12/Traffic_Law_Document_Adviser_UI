@@ -1,249 +1,95 @@
 ﻿@page
 @model TrafficLawDocumentRazor.Pages.LawDocumentPage.IndexModel
+@{
+}
 
 @{
 	ViewData["Title"] = "Index";
 }
 
-<style>
-	.pagination {
-		justify-content: center;
-	}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4 mb-4">Law Document List</h1>
+            <p class="lead">Stay updated with the latest traffic law documents and updates.</p>
+        </div>
+    </div>
 
-	.page-item.active .page-link {
-		background-color: #111 !important;
-		border-color: #111 !important;
-		color: #fff !important;
-	}
+    @if (Model.LawDocumentList.Items != null && Model.LawDocumentList.Items.Any())
+    {
+        <div class="row">
+            @foreach (var lawDocument in Model.LawDocumentList.Items)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@lawDocument.Title</h5>
+                            <a href="/LawDocumentPage/Details?id=@lawDocument.Id" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
 
-	.search-area {
-		background-color: #f0f0f0;
-		padding: 0.5rem;
-		border-radius: 8px;
-	}
+        <!-- Pagination -->
+        @if (Model.LawDocumentList.TotalPages >= 1)
+        {
+            <nav aria-label="News pagination">
+                <ul class="pagination justify-content-center">
+                    @if (Model.LawDocumentList.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.LawDocumentList.PageNumber - 1)" asp-route-pageSize="@Model.LawDocumentList.PageSize">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                    }
 
-	.table thead {
-		background-color: #111;
-		color: white;
-	}
+                    @for (int i = Math.Max(1, Model.LawDocumentList.PageNumber - 2); i <= Math.Min(Model.LawDocumentList.TotalPages, Model.LawDocumentList.PageNumber + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.LawDocumentList.PageNumber ? "active" : "")">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-pageSize="@Model.LawDocumentList.PageSize">@i</a>
+                        </li>
+                    }
 
-	.table thead th {
-		border-bottom: none;
-	}
+                    @if (Model.LawDocumentList.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.LawDocumentList.PageNumber + 1)" asp-route-pageSize="@Model.LawDocumentList.PageSize">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
 
-	.btn-check:checked + .btn-outline-dark {
-		background-color: #111;
-		border-color: #111;
-		color: white;
-	}
-
-	.btn-outline-dark {
-		--bs-btn-color: #111;
-		--bs-btn-border-color: #111;
-		--bs-btn-hover-color: #fff;
-		--bs-btn-hover-bg: #111;
-		--bs-btn-hover-border-color: #111;
-		--bs-btn-active-color: #fff;
-		--bs-btn-active-bg: #111;
-		--bs-btn-active-border-color: #111;
-	}
-</style>
-
-
-<h1>Law Document Management</h1>
-<p>Manage all traffic law documents</p>
-
-<!-- Search Form & Add Document Area -->
-<div class="row g-2 align-items-center mb-3 search-area">
-	<div class="col">
-		<!-- Search Form -->
-		<form method="get">
-			<div class="row g-2 align-items-center">
-				<div class="col-auto">
-					<input type="text" name="Title" value="@Model.Title" class="form-control" placeholder="Title Search" />
-				</div>
-				<div class="col-auto">
-					<input type="text" name="DocumentCode" value="@Model.DocumentCode" class="form-control" placeholder="Document Code Search" />
-				</div>
-				<div class="col-auto">
-					<select name="CategoryName" class="form-select">
-						<option value="">All Categories</option>
-						@foreach (var cat in Model.Categories)
-						{
-							<option value="@cat.Name" selected="@(Model.CategoryName == cat.Name)">@cat.Name</option>
-						}
-					</select>
-				</div>
-				<div class="col-auto">
-					<select name="ExpertVerification" class="form-select">
-						<option value="">All Verifications</option>
-						<option value="true" selected="@(Model.ExpertVerification == true)">Verified</option>
-						<option value="false" selected="@(Model.ExpertVerification == false)">Not Verified</option>
-					</select>
-				</div>
-				<div class="col-auto">
-					<label class="form-label">Tags</label>
-					<div class="d-flex flex-wrap gap-2" style="min-width: 200px;">
-						@foreach (var tag in Model.Tags)
-						{
-							var isChecked = Model.TagIds?.Contains(tag.Value) ?? false;
-							<div class="form-check form-check-inline">
-								<input class="btn-check" type="checkbox" name="TagIds" value="@tag.Value"
-									   id="tag-@tag.Value" @(isChecked ? "checked" : "") />
-								<label class="btn btn-outline-dark" for="tag-@tag.Value">@tag.Text</label>
-							</div>
-						}
-					</div>
-				</div>
-				<div class="col-auto">
-					<button type="submit" class="btn btn-dark px-4">Search</button>
-				</div>
-			</div>
-		</form>
-	</div>
-</div>
-
-<!-- Add Document Area -->
-<div class="col-auto">
-	<a asp-page="Create" class="btn btn-dark px-4">Add Document</a>
-</div>
-
-<!-- Table View -->
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>
-				Title
-			</th>
-			<th>
-				Code
-			</th>
-			<th>
-				Category
-			</th>
-			<th>
-				Expert Verification
-			</th>
-			<th>
-				Link Path
-			</th>
-			<th>
-				File
-			</th>
-			<th>
-				Tags
-			</th>
-			<th>
-				Action
-			</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model.LawDocument.Items)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Title)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.DocumentCode)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.CategoryName)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.ExpertVerification)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.LinkPath)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.FilePath)
-				</td>
-				<td>
-					@if (item.TagList != null && item.TagList.Any())
-					{
-						<div class="d-flex flex-wrap gap-1">
-							@foreach (var tag in item.TagList)
-							{
-								<span class="badge bg-dark">@tag.TagName</span>
-							}
-						</div>
-					}
-				</td>
-				<td>
-					<a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-					<a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
-
-<!-- Pagination -->
-<nav aria-label="Page navigation">
-	<ul class="pagination">
-		@if (Model.LawDocument.HasPreviousPage)
-		{
-			<li class="page-item">
-				<a class="page-link" asp-page="./Index"
-				   asp-route-pageNumber="@(Model.LawDocument.PageNumber - 1)"
-				   asp-route-pageSize="@Model.LawDocument.PageSize"
-				   asp-route-Title="@Model.Title"
-				   asp-route-DocumentCode="@Model.DocumentCode"
-				   asp-route-CategoryName="@Model.CategoryName"
-				   asp-route-ExpertVerification="@Model.ExpertVerification"
-				   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">Previous</a>
-			</li>
-		}
-		else
-		{
-			<li class="page-item disabled">
-				<span class="page-link">Previous</span>
-			</li>
-		}
-
-		@for (int i = 1; i <= Model.LawDocument.TotalPages; i++)
-		{
-			if (i == Model.LawDocument.PageNumber)
-			{
-				<li class="page-item active">
-					<span class="page-link">@i</span>
-				</li>
-			}
-			else
-			{
-				<li class="page-item">
-					<a class="page-link" asp-page="./Index"
-					   asp-route-pageNumber="@i"
-					   asp-route-pageSize="@Model.LawDocument.PageSize"
-					   asp-route-Title="@Model.Title"
-					   asp-route-DocumentCode="@Model.DocumentCode"
-					   asp-route-CategoryName="@Model.CategoryName"
-					   asp-route-ExpertVerification="@Model.ExpertVerification"
-					   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">@i</a>
-				</li>
-			}
-		}
-
-		@if (Model.LawDocument.HasNextPage)
-		{
-			<li class="page-item">
-				<a class="page-link" asp-page="./Index"
-				   asp-route-pageNumber="@(Model.LawDocument.PageNumber + 1)"
-				   asp-route-pageSize="@Model.LawDocument.PageSize"
-				   asp-route-Title="@Model.Title"
-				   asp-route-DocumentCode="@Model.DocumentCode"
-				   asp-route-CategoryName="@Model.CategoryName"
-				   asp-route-ExpertVerification="@Model.ExpertVerification"
-				   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">Next</a>
-			</li>
-		}
-		else
-		{
-			<li class="page-item disabled">
-				<span class="page-link">Next</span>
-			</li>
-		}
-	</ul>
-</nav>
+        <!-- Page Size Selector -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Showing @((Model.LawDocumentList.PageNumber - 1) * Model.LawDocumentList.PageSize + 1) to
+                @Math.Min(Model.LawDocumentList.PageNumber * Model.LawDocumentList.PageSize, Model.LawDocumentList.TotalCount)
+                of @Model.LawDocumentList.TotalCount results
+            </small>
+            <div class="mt-2">
+                <span class="text-muted">Items per page:</span>
+                <div class="btn-group btn-group-sm" role="group">
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="5" class="btn btn-outline-secondary @(Model.LawDocumentList.PageSize == 5 ? "active" : "")">5</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="10" class="btn btn-outline-secondary @(Model.LawDocumentList.PageSize == 10 ? "active" : "")">10</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="20" class="btn btn-outline-secondary @(Model.LawDocumentList.PageSize == 20 ? "active" : "")">20</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h4>No law documents available</h4>
+                    <p>Check back later for the latest updates.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div> 

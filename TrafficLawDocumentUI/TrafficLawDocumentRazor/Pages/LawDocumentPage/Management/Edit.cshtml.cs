@@ -9,7 +9,7 @@ using Util.DTOs.DocumentTagMapDTOs;
 using Util.DTOs.LawDocumentDTOs;
 using Util.Paginated;
 
-namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
+namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 {
     public class EditModel : PageModel
     {

@@ -17,6 +17,8 @@ namespace TrafficLawDocumentRazor
 
             // Add SignalR
             builder.Services.AddSignalR();
+            // Register HttpContextAccessor
+            builder.Services.AddHttpContextAccessor();
 
             var connectionString = builder.Configuration.GetConnectionString("MyCnn");
 
@@ -58,6 +60,8 @@ namespace TrafficLawDocumentRazor
                 var logger = provider.GetRequiredService<ILogger<NewsApiService>>();
                 return new NewsApiService(httpClient, logger);
             });
+            builder.Services.AddHttpClient<IUserApiService, UserApiService>();
+            builder.Services.AddHttpClient<ILawDocumentsApiService, LawDocumentsApiService>();
 
             var app = builder.Build();
             
