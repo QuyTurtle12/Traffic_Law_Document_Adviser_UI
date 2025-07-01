@@ -149,7 +149,7 @@
                         <div class="tab-content" id="content" style="display: none">
                             <div class="legal-wrapper">
                                 <p>Document Link: <a href="@Model.LawDocument.LinkPath" target="_blank">@Model.LawDocument.LinkPath</a></p>
-                                // <embed src="~/files/135-2025-ND-CP.pdf" type="application/pdf" width="100%" height="800px" />
+                                @* <embed src="~/files/135-2025-ND-CP.pdf" type="application/pdf" width="100%" height="800px" /> *@
                                 <embed src="@Model.LawDocument.FilePath" type="application/pdf" width="100%" height="800px" />
                             </div>
                         </div>
@@ -196,9 +196,9 @@
                                     <button class="btn-download pdf" onclick="downloadFile('@Model.LawDocument.FilePath', '@safeFileName')">
                                         <i class="fas fa-file-pdf"></i> Download as PDF
                                     </button>
-                                    <button class="btn-download word" onclick="downloadFile('@Model.LawDocument.FilePath.Replace(".pdf", ".docx")', 'document.docx')">
+                                    @* <button class="btn-download word" onclick="downloadFile('@Model.LawDocument.FilePath.Replace(".pdf", ".docx")', 'document.docx')">
                                         <i class="fas fa-file-word"></i> Download as Word
-                                    </button>
+                                    </button> *@
                                 </div>
                             </div>
                         </div>
