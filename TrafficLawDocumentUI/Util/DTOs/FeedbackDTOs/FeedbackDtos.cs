@@ -7,6 +7,8 @@
         public Guid ChatHistory { get; set; }
         public string? AIAnswer { get; set; }
         public string? Content { get; set; }
+        public DateTime? CreatedTime { get; set; }
+        public string? CreatedAtFormatted => CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss");
     }
     public class PostFeedbackDto
     {
@@ -14,8 +16,7 @@
         public Guid ChatHistory { get; set; }
         public string? AIAnswer { get; set; }
         public string? Content { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime LastUpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedTime { get; set; } = DateTime.Now;
     }
     public class PutFeedbackDto
     {
