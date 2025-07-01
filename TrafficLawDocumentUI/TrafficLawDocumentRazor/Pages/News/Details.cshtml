@@ -70,17 +70,24 @@
                         <i class="bi bi-arrow-left"></i> Back to News
                     </a>
                     
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <div class="btn-group" role="group">
+                    <div class="btn-group" role="group">
+                        @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
+                        {
+                            <a href="@Model.News.EmbeddedUrl" class="btn btn-primary" target="_blank">
+                                <i class="bi bi-box-arrow-up-right"></i> View Embedded
+                            </a>
+                        }
+                        
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
                             <a asp-page="/News/Manage/Edit" asp-route-id="@Model.News.Id" class="btn btn-warning">
                                 <i class="bi bi-pencil"></i> Edit
                             </a>
                             <a asp-page="/News/Manage/Delete" asp-route-id="@Model.News.Id" class="btn btn-danger">
                                 <i class="bi bi-trash"></i> Delete
                             </a>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
         </div>
