@@ -32,7 +32,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
 
             // Fetch the category to delete
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>
-                ($"api/document-categories?pageIndex=1&pageSize=1&idSearch={id}");
+                ($"document-categories?pageIndex=1&pageSize=1&idSearch={id}");
 
             if (response?.Data?.Items == null || !response.Data.Items.Any())
                 return NotFound();
@@ -52,7 +52,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
-            var response = await _httpClient.DeleteAsync($"api/document-categories/soft-delete/{id}");
+            var response = await _httpClient.DeleteAsync($"document-categories/soft-delete/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to delete category.");

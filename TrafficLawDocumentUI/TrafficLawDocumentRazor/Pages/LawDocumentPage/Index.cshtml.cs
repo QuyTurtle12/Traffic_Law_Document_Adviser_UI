@@ -45,13 +45,13 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
-                "/api/document-categories?pageIndex=1&pageSize=100");
+                "document-categories?pageIndex=1&pageSize=100");
             if (catResponse?.Data?.Items != null)
                 Categories = catResponse.Data.Items.ToList();
 
             // Fetch tags
             var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>(
-                "api/document-tags?pageIndex=1&pageSize=100");
+                "document-tags?pageIndex=1&pageSize=100");
             if (tagResponse?.Data?.Items != null)
                 Tags = tagResponse.Data.Items
                     .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name })
@@ -91,7 +91,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
                 }
             }
 
-            string apiUrl = $"/api/law-documents?{string.Join("&", queryParams)}";
+            string apiUrl = $"law-documents?{string.Join("&", queryParams)}";
 
             var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>(apiUrl);
 

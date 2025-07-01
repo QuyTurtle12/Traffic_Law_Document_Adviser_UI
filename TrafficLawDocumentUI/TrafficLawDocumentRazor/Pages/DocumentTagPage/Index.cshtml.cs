@@ -30,7 +30,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             }
 
             // Construct the API URL with query parameters for pagination
-            string apiUrl = $"/api/document-tags?pageIndex={pageNumber}&pageSize={pageSize}";
+            string apiUrl = $"document-tags?pageIndex={pageNumber}&pageSize={pageSize}";
 
             // Append additional query parameters if they are provided
             if (!string.IsNullOrWhiteSpace(name))

@@ -28,7 +28,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var payload = new { name = Name };
-            var response = await _httpClient.PostAsJsonAsync("/api/document-categories", payload);
+            var response = await _httpClient.PostAsJsonAsync("document-categories", payload);
 
             if (!response.IsSuccessStatusCode)
             {

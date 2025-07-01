@@ -31,7 +31,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             // Fetch parent tags for dropdown
-            var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("/api/document-tags?pageIndex=1&pageSize=100");
+            var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("document-tags?pageIndex=1&pageSize=100");
             if (response?.Data?.Items != null)
             {
                 ParentTags = response.Data.Items
@@ -56,7 +56,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
                 parentTagId = ParentTagId
             };
 
-            var response = await _httpClient.PostAsJsonAsync("/api/document-tags", newTag);
+            var response = await _httpClient.PostAsJsonAsync("document-tags", newTag);
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to create tag.");

@@ -27,14 +27,14 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
-                "/api/document-categories?pageIndex=1&pageSize=100");
+                "document-categories?pageIndex=1&pageSize=100");
             if (catResponse?.Data?.Items != null)
                 Categories = catResponse.Data.Items
                     .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
                     .ToList();
 
             // Fetch tags
-            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("/api/document-tags?pageIndex=1&pageSize=100");
+            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("document-tags?pageIndex=1&pageSize=100");
             if (tagResponse?.Data != null)
                 Tags = tagResponse.Data.Items
                     .Select(t => new SelectListItem
@@ -68,7 +68,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             // Map selected tags to DTO
             LawDocument.TagList = SelectedTagIds.Select(id => new AddDocumentTagMapDTO { DocumentTagId = id }).ToList();
 
-            var response = await _httpClient.PostAsJsonAsync("/api/law-documents", LawDocument);
+            var response = await _httpClient.PostAsJsonAsync("law-documents", LawDocument);
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to create document.");

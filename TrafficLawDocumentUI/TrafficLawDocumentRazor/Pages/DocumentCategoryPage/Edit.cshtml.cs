@@ -34,7 +34,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>
-                ($"api/document-categories?pageIndex=1&pageSize=1&idSearch={id}");
+                ($"document-categories?pageIndex=1&pageSize=1&idSearch={id}");
 
             var category = response?.Data?.Items?.First();
 
@@ -60,7 +60,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var payload = new { id = Id, name = Name };
-            var response = await _httpClient.PutAsJsonAsync($"/api/document-categories/{Id}", payload);
+            var response = await _httpClient.PutAsJsonAsync($"document-categories/{Id}", payload);
 
             if (!response.IsSuccessStatusCode)
             {

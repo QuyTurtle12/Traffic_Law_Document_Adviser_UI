@@ -26,7 +26,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
-            var response = await _httpClient.GetAsync($"/api/law-documents?pageIndex=1&pageSize=1&idSearch={id}");
+            var response = await _httpClient.GetAsync($"law-documents?pageIndex=1&pageSize=1&idSearch={id}");
             if (!response.IsSuccessStatusCode)
                 return NotFound();
 
@@ -47,7 +47,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
-            var response = await _httpClient.DeleteAsync($"/api/law-documents/soft-delete/{id}");
+            var response = await _httpClient.DeleteAsync($"law-documents/soft-delete/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to delete document.");

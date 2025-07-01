@@ -32,7 +32,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
 
             // Fetch the tag to delete
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>
-                ($"/api/document-tags?pageIndex=1&pageSize=1&idSearch={id}");
+                ($"document-tags?pageIndex=1&pageSize=1&idSearch={id}");
 
             if (response?.Data?.Items == null || !response.Data.Items.Any())
                 return NotFound();
@@ -52,7 +52,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
-            var response = await _httpClient.DeleteAsync($"/api/document-tags/{id}");
+            var response = await _httpClient.DeleteAsync($"document-tags/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to delete tag.");

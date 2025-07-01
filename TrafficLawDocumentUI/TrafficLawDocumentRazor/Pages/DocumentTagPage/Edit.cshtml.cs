@@ -43,7 +43,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             // Fetch all tags for parent tag dropdown
-            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("/api/document-tags?pageIndex=1&pageSize=100");
+            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("document-tags?pageIndex=1&pageSize=100");
             if (tagResponse?.Data?.Items != null)
             {
                 ParentTags = tagResponse.Data.Items
@@ -56,7 +56,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             }
 
             // Fetch the current tag to edit
-            var currentTag = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>($"/api/document-tags?pageIndex=1&pageSize=1&idSearch={id}");
+            var currentTag = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>($"document-tags?pageIndex=1&pageSize=1&idSearch={id}");
             if (currentTag?.Data?.Items == null || !currentTag.Data.Items.Any())
                 return NotFound();
 
@@ -84,7 +84,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
                 parentTagId = ParentTagId
             };
 
-            var response = await _httpClient.PutAsJsonAsync($"api/document-tags/{id}", updateTag);
+            var response = await _httpClient.PutAsJsonAsync($"document-tags/{id}", updateTag);
 
             if (!response.IsSuccessStatusCode)
             {

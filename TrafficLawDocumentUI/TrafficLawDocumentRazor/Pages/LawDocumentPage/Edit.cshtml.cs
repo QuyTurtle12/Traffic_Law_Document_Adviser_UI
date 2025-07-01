@@ -38,14 +38,14 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
-                "/api/document-categories?pageIndex=1&pageSize=100");
+                "document-categories?pageIndex=1&pageSize=100");
             if (catResponse?.Data?.Items != null)
                 Categories = catResponse.Data.Items
                     .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
                     .ToList();
 
             // Fetch tags
-            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("/api/document-tags?pageIndex=1&pageSize=100");
+            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("document-tags?pageIndex=1&pageSize=100");
             if (tagResponse?.Data != null)
                 Tags = tagResponse.Data.Items
                     .Select(t => new SelectListItem
@@ -56,7 +56,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
                     .ToList();
 
             // Fetch the document to edit
-            var docResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"/api/law-documents?pageIndex=1&pageSize=1&idSearch={id}");
+            var docResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"law-documents?pageIndex=1&pageSize=1&idSearch={id}");
             if (docResponse?.Data == null)
             {
                 return NotFound();
@@ -93,7 +93,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             LawDocument.TagList = SelectedTagIds.Select(id => new AddDocumentTagMapDTO { DocumentTagId = id }).ToList();
 
             // Update the document
-            var response = await _httpClient.PutAsJsonAsync($"/api/law-documents/{id}", LawDocument);
+            var response = await _httpClient.PutAsJsonAsync($"law-documents/{id}", LawDocument);
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to update document.");
@@ -114,7 +114,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             _httpClient.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
-            var response = await _httpClient.PostAsync($"api/law-documents/verification/{id}", null);
+            var response = await _httpClient.PostAsync($"law-documents/verification/{id}", null);
 
             if (!response.IsSuccessStatusCode)
             {
