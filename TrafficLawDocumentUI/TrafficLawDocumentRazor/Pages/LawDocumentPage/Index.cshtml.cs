@@ -1,8 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TrafficLawDocumentRazor.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Util;
+using Util.DTOs.ApiResponse;
+using Util.DTOs.DocumentCategoryDTOs;
+using Util.DTOs.DocumentTagDTOs;
 using Util.DTOs.LawDocumentDTOs;
 using Util.Paginated;
+using TrafficLawDocumentRazor.Services;
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {

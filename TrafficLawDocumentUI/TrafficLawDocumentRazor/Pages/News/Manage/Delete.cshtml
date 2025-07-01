@@ -1,0 +1,67 @@
+@page "{id:guid}"
+@model TrafficLawDocumentRazor.Pages.News.Manage.DeleteModel
+@{
+    ViewData["Title"] = "Delete News Article";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Delete Article
+                    </h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.News == null)
+                    {
+                        <div class="alert alert-danger">
+                            <h4>Article not found</h4>
+                            <p>The requested news article could not be found.</p>
+                            <a asp-page="Index" class="btn btn-primary">Back to List</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <h4 class="alert-heading">Are you sure you want to delete this article?</h4>
+                            <p>This action cannot be undone. The article will be permanently removed from the system.</p>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.News.Title</h5>
+                                <p class="card-text text-muted">
+                                    <small>
+                                        <i class="bi bi-calendar"></i> Published: @Model.News.PublishedDate.ToString("MMM dd, yyyy")
+                                        @if (!string.IsNullOrEmpty(Model.News.Author))
+                                        {
+                                            <span> | <i class="bi bi-person"></i> @Model.News.Author</span>
+                                        }
+                                    </small>
+                                </p>
+                                <p class="card-text">
+                                    @(Model.News.Content?.Length > 200 ? Model.News.Content.Substring(0, 200) + "..." : Model.News.Content)
+                                </p>
+                            </div>
+                        </div>
+
+                        <form method="post">
+                            <input type="hidden" asp-for="News.Id" />
+                            
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i> Delete Article
+                                </button>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,186 @@
+@page
+@model TrafficLawDocumentRazor.Pages.News.Manage.IndexModel
+@{
+    ViewData["Title"] = "News Management";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1 class="display-4">News Management</h1>
+            <p class="lead">Manage all news articles and content.</p>
+        </div>
+        <div class="col-md-6 text-end">
+            <div class="btn-group" role="group">
+                <a asp-page="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Article
+                </a>
+                <button type="button" class="btn btn-outline-secondary" onclick="syncNews()">
+                    <i class="bi bi-arrow-clockwise"></i> Sync News
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.NewsList.Items != null && Model.NewsList.Items.Any())
+    {
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">All News Articles</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Published Date</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var news in Model.NewsList.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@news.Title</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            @(news.Content?.Length > 100 ? news.Content.Substring(0, 100) + "..." : news.Content)
+                                        </small>
+                                    </td>
+                                    <td>@news.Author</td>
+                                    <td>@news.PublishedDate.ToString("MMM dd, yyyy")</td>
+                                    <td>@(news.LastUpdatedTime?.ToString("MMM dd, yyyy") ?? "N/A")</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-page="View" asp-route-id="@news.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a asp-page="Edit" asp-route-id="@news.Id" class="btn btn-sm btn-outline-warning">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <a asp-page="Delete" asp-route-id="@news.Id" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.NewsList.TotalPages > 1)
+        {
+            <nav aria-label="News management pagination" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    @if (Model.NewsList.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber - 1)" asp-route-pageSize="@Model.NewsList.PageSize">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = Math.Max(1, Model.NewsList.PageNumber - 2); i <= Math.Min(Model.NewsList.TotalPages, Model.NewsList.PageNumber + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.NewsList.PageNumber ? "active" : "")">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-pageSize="@Model.NewsList.PageSize">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.NewsList.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber + 1)" asp-route-pageSize="@Model.NewsList.PageSize">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+
+        <!-- Page Size Selector -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Showing @((Model.NewsList.PageNumber - 1) * Model.NewsList.PageSize + 1) to 
+                @Math.Min(Model.NewsList.PageNumber * Model.NewsList.PageSize, Model.NewsList.TotalCount) 
+                of @Model.NewsList.TotalCount results
+            </small>
+            <div class="mt-2">
+                <span class="text-muted">Items per page:</span>
+                <div class="btn-group btn-group-sm" role="group">
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="10" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 10 ? "active" : "")">10</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="20" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 20 ? "active" : "")">20</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="50" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 50 ? "active" : "")">50</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            <h4>No news articles found</h4>
+            <p>Create your first news article to get started.</p>
+            <a asp-page="Create" class="btn btn-primary">Create First Article</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function syncNews() {
+            if (confirm('Are you sure you want to sync news from external API? This may take a few moments.')) {
+                // Show loading state
+                const syncBtn = event.target.closest('button');
+                const originalText = syncBtn.innerHTML;
+                syncBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Syncing...';
+                syncBtn.disabled = true;
+
+                // Make API call to sync news
+                fetch('/api/News/sync', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Reload the page to show updated data
+                        window.location.reload();
+                    } else {
+                        alert('Failed to sync news. Please try again.');
+                        syncBtn.innerHTML = originalText;
+                        syncBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error syncing news:', error);
+                    alert('An error occurred while syncing news. Please try again.');
+                    syncBtn.innerHTML = originalText;
+                    syncBtn.disabled = false;
+                });
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        @@keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+}

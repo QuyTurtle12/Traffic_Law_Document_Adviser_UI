@@ -1,0 +1,37 @@
+﻿@page
+@model TrafficLawDocumentRazor.Pages.DocumentCategoryPage.EditModel
+
+@{
+    ViewData["Title"] = "Document Category Management (Update)";
+}
+
+<div class="mb-4">
+    <h1 class="h2">Edit Document Category</h1>
+    <p>Edit document category</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form method="post" style="border:2px dashed #c3b6fc; border-radius:12px; padding:2rem;">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-4">
+                <label asp-for="Name" class="form-label">
+                    Name <span class="text-danger">*</span>
+                </label>
+                <input asp-for="Name" class="form-control" placeholder="Enter category name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <a asp-page="Index" class="btn btn-link px-0">Back to List</a>
+                <button type="submit" class="btn btn-dark px-4">Save Category</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

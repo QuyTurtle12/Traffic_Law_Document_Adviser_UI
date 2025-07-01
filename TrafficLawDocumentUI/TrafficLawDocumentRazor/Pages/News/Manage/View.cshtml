@@ -1,0 +1,145 @@
+@page "{id:guid}"
+@model TrafficLawDocumentRazor.Pages.News.Manage.ViewModel
+@{
+    ViewData["Title"] = Model.News?.Title ?? "View News";
+}
+
+<div class="container mt-4">
+    @if (Model.News == null)
+    {
+        <div class="alert alert-danger">
+            <h4>Article not found</h4>
+            <p>The requested news article could not be found.</p>
+            <a asp-page="Index" class="btn btn-primary">Back to Management</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <!-- Header with navigation -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+                                <li class="breadcrumb-item"><a asp-page="Index">News Management</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">View Article</li>
+                            </ol>
+                        </nav>
+                        <h1 class="h2">View News Article</h1>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <a asp-page="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Management
+                        </a>
+                        <a asp-page="Edit" asp-route-id="@Model.News.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a asp-page="Delete" asp-route-id="@Model.News.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Article Content -->
+                <div class="card">
+                    @if (!string.IsNullOrEmpty(Model.News.ImageUrl))
+                    {
+                        <img src="@Model.News.ImageUrl" class="card-img-top" alt="@Model.News.Title" style="max-height: 300px; object-fit: cover;">
+                    }
+                    
+                    <div class="card-body">
+                        <header class="mb-4">
+                            <h2 class="card-title">@Model.News.Title</h2>
+                            <div class="text-muted mb-3">
+                                <small>
+                                    <i class="bi bi-calendar"></i> Published: @Model.News.PublishedDate.ToString("MMMM dd, yyyy 'at' HH:mm")
+                                    @if (!string.IsNullOrEmpty(Model.News.Author))
+                                    {
+                                        <span> | <i class="bi bi-person"></i> Author: @Model.News.Author</span>
+                                    }
+                                </small>
+                            </div>
+                        </header>
+
+                        <!-- Article Content -->
+                        <div class="card-text mb-4">
+                            @Html.Raw(Model.News.Content?.Replace("\n", "<br>"))
+                        </div>
+
+                        <!-- Embedded Content Preview -->
+                        @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
+                        {
+                            <div class="mb-4">
+                                <h5>Embedded Content</h5>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-link-45deg"></i> 
+                                    <strong>Embedded URL:</strong> 
+                                    <a href="@Model.News.EmbeddedUrl" target="_blank" class="text-break">@Model.News.EmbeddedUrl</a>
+                                </div>
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="@Model.News.EmbeddedUrl" title="Embedded content preview" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Administrative Information -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Administrative Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">Article ID:</dt>
+                                    <dd class="col-sm-8"><code>@Model.News.Id</code></dd>
+                                    
+                                    <dt class="col-sm-4">Created By:</dt>
+                                    <dd class="col-sm-8">@(Model.News.Author ?? "N/A")</dd>
+                                    
+                                    <dt class="col-sm-4">Created Time:</dt>
+                                    <dd class="col-sm-8">@(Model.News.CreatedTime?.ToString("MMMM dd, yyyy 'at' HH:mm") ?? "N/A")</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4">Last Updated:</dt>
+                                    <dd class="col-sm-8">@(Model.News.LastUpdatedTime?.ToString("MMMM dd, yyyy 'at' HH:mm") ?? "N/A")</dd>
+                                    
+                                    <dt class="col-sm-4">User ID:</dt>
+                                    <dd class="col-sm-8">@(Model.News.UserId?.ToString() ?? "N/A")</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Management
+                    </a>
+                    
+                    <div class="btn-group" role="group">
+                        <a asp-page="Edit" asp-route-id="@Model.News.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Edit Article
+                        </a>
+                        <a asp-page="Delete" asp-route-id="@Model.News.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete Article
+                        </a>
+                        @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
+                        {
+                            <a href="@Model.News.EmbeddedUrl" class="btn btn-primary" target="_blank">
+                                <i class="bi bi-box-arrow-up-right"></i> View Embedded
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div> 

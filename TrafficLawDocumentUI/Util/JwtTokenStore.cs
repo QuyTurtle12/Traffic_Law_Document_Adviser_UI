@@ -1,0 +1,7 @@
+﻿namespace Util
+{
+    public static class JwtTokenStore
+    {
+        public const string Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzZjlhYzA2Yy0wYzQxLTQ1ZjAtYTdiOC00MTA0OTQ1Njk4MmQiLCJlbWFpbCI6IlF1eVN0YWZmQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlN0YWZmIiwianRpIjoiOTVlZWMzYzktMDFiZC00NzIyLWE1MWItODdlMzYxY2ExY2UxIiwiZXhwIjoxNzUxMzQ1MzE5LCJpc3MiOiJQUk4yMzEiLCJhdWQiOiJQUk4yMzEifQ.-QScz3uDt8VgE0jiIPgVe5gN7ARxZluK9k8P_8sX2K8";
+    }
+}

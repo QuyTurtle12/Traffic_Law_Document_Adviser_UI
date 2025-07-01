@@ -32,7 +32,7 @@ namespace TrafficLawDocumentRazor.Services
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            var url = $"{baseUrl}api/users?pageIndex={pageIndex}&pageSize={pageSize}";
+            var url = $"{baseUrl}users?pageIndex={pageIndex}&pageSize={pageSize}";
 
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<List<UserDTO>>>(url);
 

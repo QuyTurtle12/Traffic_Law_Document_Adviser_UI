@@ -1,6 +1,8 @@
 using BussinessObject;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TrafficLawDocumentRazor.Services;
+using TrafficLawDocumentRazor.Hubs;
 
 namespace TrafficLawDocumentRazor
 {
@@ -13,6 +15,8 @@ namespace TrafficLawDocumentRazor
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+            // Add SignalR
+            builder.Services.AddSignalR();
             // Register HttpContextAccessor
             builder.Services.AddHttpContextAccessor();
 
@@ -29,6 +33,25 @@ namespace TrafficLawDocumentRazor
                 client.BaseAddress = new Uri(apiSettings);
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             });
+
+            builder.Services
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Login";
+                options.LogoutPath = "/Logout";
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+            });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdmin", policy => policy.RequireClaim("role", "Admin"));
+                options.AddPolicy("RequireExpertOrAdmin", policy =>
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.HasClaim("role", "Admin") ||
+                        ctx.User.HasClaim("role", "Expert")));
+            });
+
 
             // Register NewsApiService
             builder.Services.AddScoped<INewsApiService, NewsApiService>(provider =>
@@ -55,9 +78,13 @@ namespace TrafficLawDocumentRazor
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();
+
+            // Map SignalR Hub
+            app.MapHub<ChatHub>("/chathub");
 
             app.Run();
         }
