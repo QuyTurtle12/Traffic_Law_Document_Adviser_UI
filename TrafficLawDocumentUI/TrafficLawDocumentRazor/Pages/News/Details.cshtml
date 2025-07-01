@@ -1,0 +1,88 @@
+@page "{id:guid}"
+@model TrafficLawDocumentRazor.Pages.News.DetailsModel
+@{
+    ViewData["Title"] = Model.News?.Title ?? "News Details";
+}
+
+<div class="container mt-4">
+    @if (Model.News == null)
+    {
+        <div class="alert alert-danger">
+            <h4>Article not found</h4>
+            <p>The requested news article could not be found.</p>
+            <a asp-page="Index" class="btn btn-primary">Back to News</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-page="Index">News</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">@Model.News.Title</li>
+                    </ol>
+                </nav>
+
+                <article class="card">
+                    @if (!string.IsNullOrEmpty(Model.News.ImageUrl))
+                    {
+                        <img src="@Model.News.ImageUrl" class="card-img-top" alt="@Model.News.Title" style="max-height: 400px; object-fit: cover;">
+                    }
+                    
+                    <div class="card-body">
+                        <header class="mb-4">
+                            <h1 class="card-title display-5">@Model.News.Title</h1>
+                            <div class="text-muted mb-3">
+                                <small>
+                                    <i class="bi bi-calendar"></i> Published: @Model.News.PublishedDate.ToString("MMMM dd, yyyy")
+                                    @if (!string.IsNullOrEmpty(Model.News.Author))
+                                    {
+                                        <span> | <i class="bi bi-person"></i> @Model.News.Author</span>
+                                    }
+                                    @if (Model.News.LastUpdatedTime.HasValue)
+                                    {
+                                        <span> | <i class="bi bi-clock"></i> Updated: @Model.News.LastUpdatedTime.Value.ToString("MMMM dd, yyyy")</span>
+                                    }
+                                </small>
+                            </div>
+                        </header>
+
+                        <div class="card-text">
+                            @Html.Raw(Model.News.Content?.Replace("\n", "<br>"))
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
+                        {
+                            <div class="mt-4">
+                                <h5>Related Content</h5>
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="@Model.News.EmbeddedUrl" title="Embedded content" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </article>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to News
+                    </a>
+                    
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="btn-group" role="group">
+                            <a asp-page="/News/Manage/Edit" asp-route-id="@Model.News.Id" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a asp-page="/News/Manage/Delete" asp-route-id="@Model.News.Id" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div> 

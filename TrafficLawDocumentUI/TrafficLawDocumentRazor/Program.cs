@@ -1,6 +1,7 @@
 using BussinessObject;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using TrafficLawDocumentRazor.Services;
 
 namespace TrafficLawDocumentRazor
 {
@@ -46,6 +47,13 @@ namespace TrafficLawDocumentRazor
             });
 
 
+            // Register NewsApiService
+            builder.Services.AddScoped<INewsApiService, NewsApiService>(provider =>
+            {
+                var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("API");
+                var logger = provider.GetRequiredService<ILogger<NewsApiService>>();
+                return new NewsApiService(httpClient, logger);
+            });
 
             var app = builder.Build();
             

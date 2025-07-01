@@ -1,0 +1,76 @@
+@page
+@model TrafficLawDocumentRazor.Pages.News.Manage.CreateModel
+@{
+    ViewData["Title"] = "Create News Article";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Create New Article</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label asp-for="News.Title" class="form-label">Title *</label>
+                            <input asp-for="News.Title" class="form-control" placeholder="Enter article title" />
+                            <span asp-validation-for="News.Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="News.Content" class="form-label">Content *</label>
+                            <textarea asp-for="News.Content" class="form-control" rows="8" placeholder="Enter article content"></textarea>
+                            <span asp-validation-for="News.Content" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="News.Author" class="form-label">Author</label>
+                                    <input asp-for="News.Author" class="form-control" placeholder="Enter author name" />
+                                    <span asp-validation-for="News.Author" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="News.PublishedDate" class="form-label">Published Date</label>
+                                    <input asp-for="News.PublishedDate" class="form-control" type="date" />
+                                    <span asp-validation-for="News.PublishedDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="News.ImageUrl" class="form-label">Image URL</label>
+                            <input asp-for="News.ImageUrl" class="form-control" placeholder="Enter image URL" />
+                            <span asp-validation-for="News.ImageUrl" class="text-danger"></span>
+                            <div class="form-text">Provide a URL to an image for the article</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="News.EmbeddedUrl" class="form-label">Embedded URL</label>
+                            <input asp-for="News.EmbeddedUrl" class="form-control" placeholder="Enter embedded content URL" />
+                            <span asp-validation-for="News.EmbeddedUrl" class="text-danger"></span>
+                            <div class="form-text">Optional: URL for embedded content (video, document, etc.)</div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create Article
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
