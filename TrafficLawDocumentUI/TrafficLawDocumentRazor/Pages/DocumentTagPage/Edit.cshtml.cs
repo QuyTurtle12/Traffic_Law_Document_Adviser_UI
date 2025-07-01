@@ -25,6 +25,15 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
 
         public List<SelectListItem> ParentTags { get; set; } = new();
 
+        [TempData]
+        public string? ErrorMessage { get; set; }
+
+        private class ErrorResponse
+        {
+            public string ErrorCode { get; set; } = string.Empty;
+            public string ErrorMessage { get; set; } = string.Empty;
+        }
+
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
             if (id == null)
@@ -75,14 +84,23 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
                 parentTagId = ParentTagId
             };
 
-            var response = await _httpClient.PutAsJsonAsync($"/api/document-tags/{id}", updateTag);
+            var response = await _httpClient.PutAsJsonAsync($"api/document-tags/{id}", updateTag);
+
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", "Failed to update tag.");
+                try
+                {
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                    ErrorMessage = errorResponse?.ErrorMessage ?? "An unexpected error occurred.";
+                }
+                catch (Exception)
+                {
+                    ErrorMessage = "An unexpected error occurred while processing the response.";
+                }
+
                 await OnGetAsync(id);
                 return Page();
             }
-
             return RedirectToPage("./Index");
         }
     }
