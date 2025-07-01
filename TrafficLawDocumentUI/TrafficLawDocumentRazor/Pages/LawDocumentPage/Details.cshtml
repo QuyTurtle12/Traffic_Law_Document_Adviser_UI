@@ -149,6 +149,8 @@
                         <div class="tab-content" id="content" style="display: none">
                             <div class="legal-wrapper">
                                 <p>Document Link: <a href="@Model.LawDocument.LinkPath" target="_blank">@Model.LawDocument.LinkPath</a></p>
+                                // <embed src="~/files/135-2025-ND-CP.pdf" type="application/pdf" width="100%" height="800px" />
+                                <embed src="@Model.LawDocument.FilePath" type="application/pdf" width="100%" height="800px" />
                             </div>
                         </div>
 
@@ -158,17 +160,52 @@
 
                         <div class="tab-content" id="download" style="display: none">
                             <div class="legal-wrapper">
-                                <h2><strong>Download Document</strong></h2>
                                 <div class="download-buttons">
-                                    <a href="@Model.LawDocument.FilePath" class="btn-download pdf" download>
+                                    @functions {
+                                        public static string GenerateSafeFileName(string rawTitle)
+                                        {
+                                            // Normalize and strip diacritics (accents)
+                                            string normalized = rawTitle.Normalize(System.Text.NormalizationForm.FormD);
+                                            var sb = new System.Text.StringBuilder();
+                                            foreach (var ch in normalized)
+                                            {
+                                                var uc = System.Globalization.CharUnicodeInfo.GetUnicodeCategory(ch);
+                                                if (uc != System.Globalization.UnicodeCategory.NonSpacingMark)
+                                                {
+                                                    sb.Append(ch);
+                                                }
+                                            }
+
+                                            string noAccents = sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
+
+                                            // Replace Vietnamese-specific characters
+                                            noAccents = noAccents.Replace("đ", "d").Replace("Đ", "D");
+
+                                            // Replace everything not allowed in filenames with underscore
+                                            string cleaned = System.Text.RegularExpressions.Regex.Replace(noAccents, @"[^a-zA-Z0-9\-_.]+", "_");
+
+                                            // Remove leading/trailing underscores
+                                            return cleaned.Trim('_');
+                                        }
+                                    }
+
+                                    @{
+                                        var safeFileName = GenerateSafeFileName(Model.LawDocument.Title) + ".pdf";
+                                    }
+
+                                    <button class="btn-download pdf" onclick="downloadFile('@Model.LawDocument.FilePath', '@safeFileName')">
                                         <i class="fas fa-file-pdf"></i> Download as PDF
-                                    </a>
-                                    <a href="@Model.LawDocument.FilePath" class="btn-download word" download>
+                                    </button>
+                                    <button class="btn-download word" onclick="downloadFile('@Model.LawDocument.FilePath.Replace(".pdf", ".docx")', 'document.docx')">
                                         <i class="fas fa-file-word"></i> Download as Word
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
+
+                        
+
+
                     </div>
 
                     <aside class="sidebar">
@@ -200,4 +237,30 @@
                 });
             });
         });
+    </script>
+
+    <script>
+        function downloadFile(fileUrl, fileName) {
+            fetch(fileUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok.");
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.style.display = "none";
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    alert("Failed to download file: " + error);
+                    console.error("Download error:", error);
+                });
+        }
     </script>

@@ -27,7 +27,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
                 return NotFound();
             }
 
-            var lawdocument = await _context.LawDocuments.FirstOrDefaultAsync(m => m.Id == id);
+            var lawdocument = await _context.LawDocuments.Include(ld => ld.Category).FirstOrDefaultAsync(m => m.Id == id);
             if (lawdocument == null)
             {
                 return NotFound();
@@ -35,6 +35,11 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             else
             {
                 LawDocument = lawdocument;
+                // Now it's safe to access LawDocument.Category
+                if (LawDocument.Category != null)
+                {
+                    LawDocument.Category.Name = lawdocument.Category.Name;
+                }
             }
             return Page();
         }

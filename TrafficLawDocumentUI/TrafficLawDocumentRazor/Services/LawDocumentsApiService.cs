@@ -38,5 +38,7 @@ namespace TrafficLawDocumentRazor.Services
 
             return response?.Data ?? new PaginatedList<GetLawDocumentDTO>();
         }
+
+
     }
 }
