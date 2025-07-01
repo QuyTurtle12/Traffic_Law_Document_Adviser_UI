@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace TrafficLawDocumentRazor
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class ProfileModel : PageModel
     {
         public string CurrentUserId { get; private set; }
