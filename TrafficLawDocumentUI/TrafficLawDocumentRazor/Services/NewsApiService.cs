@@ -9,7 +9,7 @@ namespace TrafficLawDocumentRazor.Services
 {
     public interface INewsApiService
     {
-        Task<PaginatedList<GetNewsDTO>> GetNewsAsync(int pageIndex = 1, int pageSize = 10);
+        Task<PaginatedList<GetNewsDTO>> GetNewsAsync(int pageIndex = 1, int pageSize = 10, string? titleFilter = null, string? authorFilter = null, string? contentFilter = null, DateTime? startDate = null, DateTime? endDate = null);
         Task<GetNewsDTO?> GetNewsByIdAsync(Guid id);
         Task<GetNewsDTO?> CreateNewsAsync(AddNewsDTO news);
         Task<GetNewsDTO?> UpdateNewsAsync(Guid id, AddNewsDTO news);
@@ -33,11 +33,32 @@ namespace TrafficLawDocumentRazor.Services
             };
         }
 
-        public async Task<PaginatedList<GetNewsDTO>> GetNewsAsync(int pageIndex = 1, int pageSize = 10)
+        public async Task<PaginatedList<GetNewsDTO>> GetNewsAsync(int pageIndex = 1, int pageSize = 10, string? titleFilter = null, string? authorFilter = null, string? contentFilter = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             try
             {
-                var url = $"/api/News?pageIndex={pageIndex}&pageSize={pageSize}";
+                var queryParams = new List<string>
+                {
+                    $"pageIndex={pageIndex}",
+                    $"pageSize={pageSize}"
+                };
+
+                if (!string.IsNullOrEmpty(titleFilter))
+                    queryParams.Add($"titleFilter={Uri.EscapeDataString(titleFilter)}");
+                
+                if (!string.IsNullOrEmpty(authorFilter))
+                    queryParams.Add($"authorFilter={Uri.EscapeDataString(authorFilter)}");
+                
+                if (!string.IsNullOrEmpty(contentFilter))
+                    queryParams.Add($"contentFilter={Uri.EscapeDataString(contentFilter)}");
+                
+                if (startDate.HasValue)
+                    queryParams.Add($"startDate={startDate.Value:yyyy-MM-dd}");
+                
+                if (endDate.HasValue)
+                    queryParams.Add($"endDate={endDate.Value:yyyy-MM-dd}");
+
+                var url = $"/api/News?{string.Join("&", queryParams)}";
                 _logger.LogInformation("Calling API: {Url}", url);
                 
                 var response = await _httpClient.GetAsync(url);

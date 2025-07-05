@@ -22,6 +22,104 @@
         </div>
     </div>
 
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel"></i> Filters
+                <button class="btn btn-sm btn-outline-secondary float-end" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                    <i class="bi bi-chevron-down"></i> Toggle
+                </button>
+            </h5>
+        </div>
+        <div class="collapse" id="filterCollapse">
+            <div class="card-body">
+                <form method="get" id="filterForm">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="TitleFilter" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="TitleFilter" name="TitleFilter" value="@Model.TitleFilter" placeholder="Search by title...">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="AuthorFilter" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="AuthorFilter" name="AuthorFilter" value="@Model.AuthorFilter" placeholder="Search by author...">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="ContentFilter" class="form-label">Content</label>
+                            <input type="text" class="form-control" id="ContentFilter" name="ContentFilter" value="@Model.ContentFilter" placeholder="Search in content...">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="PageSize" class="form-label">Items per page</label>
+                            <select class="form-select" id="PageSize" name="PageSize">
+                                <option value="10" selected="@(Model.PageSize == 10)">10</option>
+                                <option value="20" selected="@(Model.PageSize == 20)">20</option>
+                                <option value="50" selected="@(Model.PageSize == 50)">50</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="StartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="StartDate" name="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="EndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="EndDate" name="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))">
+                        </div>
+                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                            <div class="btn-group w-100" role="group">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i> Apply Filters
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle"></i> Clear Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Filters Display -->
+    @if (!string.IsNullOrEmpty(Model.TitleFilter) || !string.IsNullOrEmpty(Model.AuthorFilter) || 
+         !string.IsNullOrEmpty(Model.ContentFilter) || Model.StartDate.HasValue || Model.EndDate.HasValue)
+    {
+        <div class="alert alert-info mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong><i class="bi bi-funnel-fill"></i> Active Filters:</strong>
+                    <span class="ms-2">
+                        @if (!string.IsNullOrEmpty(Model.TitleFilter))
+                        {
+                            <span class="badge bg-primary me-1">Title: @Model.TitleFilter</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.AuthorFilter))
+                        {
+                            <span class="badge bg-primary me-1">Author: @Model.AuthorFilter</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ContentFilter))
+                        {
+                            <span class="badge bg-primary me-1">Content: @Model.ContentFilter</span>
+                        }
+                        @if (Model.StartDate.HasValue)
+                        {
+                            <span class="badge bg-primary me-1">From: @Model.StartDate.Value.ToString("MMM dd, yyyy")</span>
+                        }
+                        @if (Model.EndDate.HasValue)
+                        {
+                            <span class="badge bg-primary me-1">To: @Model.EndDate.Value.ToString("MMM dd, yyyy")</span>
+                        }
+                    </span>
+                </div>
+                <a href="@Url.Page("./Index")" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Clear All
+                </a>
+            </div>
+        </div>
+    }
+
     @if (Model.NewsList.Items != null && Model.NewsList.Items.Any())
     {
         <div class="card">
@@ -83,7 +181,7 @@
                     @if (Model.NewsList.HasPreviousPage)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber - 1)" asp-route-pageSize="@Model.NewsList.PageSize">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber - 1)" asp-route-pageSize="@Model.NewsList.PageSize" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))">
                                 <i class="bi bi-chevron-left"></i> Previous
                             </a>
                         </li>
@@ -92,14 +190,14 @@
                     @for (int i = Math.Max(1, Model.NewsList.PageNumber - 2); i <= Math.Min(Model.NewsList.TotalPages, Model.NewsList.PageNumber + 2); i++)
                     {
                         <li class="page-item @(i == Model.NewsList.PageNumber ? "active" : "")">
-                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-pageSize="@Model.NewsList.PageSize">@i</a>
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-pageSize="@Model.NewsList.PageSize" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))">@i</a>
                         </li>
                     }
 
                     @if (Model.NewsList.HasNextPage)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber + 1)" asp-route-pageSize="@Model.NewsList.PageSize">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber + 1)" asp-route-pageSize="@Model.NewsList.PageSize" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))">
                                 Next <i class="bi bi-chevron-right"></i>
                             </a>
                         </li>
@@ -118,9 +216,14 @@
             <div class="mt-2">
                 <span class="text-muted">Items per page:</span>
                 <div class="btn-group btn-group-sm" role="group">
-                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="10" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 10 ? "active" : "")">10</a>
-                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="20" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 20 ? "active" : "")">20</a>
-                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="50" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 50 ? "active" : "")">50</a>
+                    @{
+                        var active10 = Model.NewsList.PageSize == 10 ? "active" : "";
+                        var active20 = Model.NewsList.PageSize == 20 ? "active" : "";
+                        var active50 = Model.NewsList.PageSize == 50 ? "active" : "";
+                    }
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="10" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="btn btn-outline-secondary @active10">10</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="20" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="btn btn-outline-secondary @active20">20</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="50" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="btn btn-outline-secondary @active50">50</a>
                 </div>
             </div>
         </div>
@@ -170,6 +273,66 @@
                 });
             }
         }
+
+        function clearFilters() {
+            // Clear all filter inputs
+            document.getElementById('TitleFilter').value = '';
+            document.getElementById('AuthorFilter').value = '';
+            document.getElementById('ContentFilter').value = '';
+            document.getElementById('StartDate').value = '';
+            document.getElementById('EndDate').value = '';
+            document.getElementById('PageSize').value = '20';
+            
+            // Submit the form to reload with cleared filters
+            document.getElementById('filterForm').submit();
+        }
+
+        // Auto-submit form when page size changes
+        document.getElementById('PageSize').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+
+        // Add visual feedback for active filters
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleFilter = document.getElementById('TitleFilter');
+            const authorFilter = document.getElementById('AuthorFilter');
+            const contentFilter = document.getElementById('ContentFilter');
+            const startDate = document.getElementById('StartDate');
+            const endDate = document.getElementById('EndDate');
+
+            // Add active class to inputs with values
+            [titleFilter, authorFilter, contentFilter, startDate, endDate].forEach(input => {
+                if (input && input.value.trim() !== '') {
+                    input.classList.add('filter-active');
+                }
+            });
+
+            // Add active class when user types
+            [titleFilter, authorFilter, contentFilter].forEach(input => {
+                if (input) {
+                    input.addEventListener('input', function() {
+                        if (this.value.trim() !== '') {
+                            this.classList.add('filter-active');
+                        } else {
+                            this.classList.remove('filter-active');
+                        }
+                    });
+                }
+            });
+
+            // Add active class when date is selected
+            [startDate, endDate].forEach(input => {
+                if (input) {
+                    input.addEventListener('change', function() {
+                        if (this.value !== '') {
+                            this.classList.add('filter-active');
+                        } else {
+                            this.classList.remove('filter-active');
+                        }
+                    });
+                }
+            });
+        });
     </script>
 }
 
@@ -181,6 +344,44 @@
         @@keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        /* Filter section styling */
+        #filterCollapse {
+            transition: all 0.3s ease;
+        }
+
+        .card-header button[data-bs-toggle="collapse"] {
+            border: none;
+            background: none;
+            color: #6c757d;
+        }
+
+        .card-header button[data-bs-toggle="collapse"]:hover {
+            color: #495057;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        /* Active filter indicator */
+        .filter-active {
+            background-color: #e3f2fd !important;
+            border-color: #2196f3 !important;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn-group .btn {
+                border-radius: 0.375rem !important;
+                margin-bottom: 0.25rem;
+            }
         }
     </style>
 }
