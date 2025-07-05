@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentTagDTOs;
@@ -15,10 +17,18 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        public string currentUserRole { get; set; } = default!;
         public PaginatedList<GetDocumentTagDTO> DocumentTag { get;set; } = default!;
 
-        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 10, string? name = null, string? parentName = null)
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 10, string? name = null, string? parentName = null)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             // Get query parameters for pagination
             if (Request.Query.ContainsKey("pageIndex"))
             {
@@ -43,9 +53,6 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
                 apiUrl += $"&parentNameSearch={Uri.EscapeDataString(parentName)}";
             }
 
-            // Set the authorization header with the JWT token
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
-
             // Fetch tags
             var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>(apiUrl);
 
@@ -65,6 +72,8 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
                     PageSize = pageSize
                 };
             }
+
+            return Page();
         }
     }
 }

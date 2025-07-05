@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,6 +19,8 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        public string currentUserRole { get; set; } = default!;
+
         [BindProperty]
         public string Name { get; set; } = string.Empty;
 
@@ -26,9 +29,14 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
 
         public List<SelectListItem> ParentTags { get; set; } = new();
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
 
             // Fetch parent tags for dropdown
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("document-tags?pageIndex=1&pageSize=100");
@@ -38,17 +46,24 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
                     .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name })
                     .ToList();
             }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (!ModelState.IsValid)
             {
                 await OnGetAsync();
                 return Page();
             }
-
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var newTag = new
             {

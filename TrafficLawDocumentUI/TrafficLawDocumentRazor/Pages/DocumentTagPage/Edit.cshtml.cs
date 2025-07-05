@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Util;
@@ -16,6 +17,8 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
         {
             _httpClient = httpClientFactory.CreateClient("API");
         }
+
+        public string currentUserRole { get; set; } = default!;
 
         [BindProperty]
         public string Name { get; set; } = string.Empty;
@@ -36,11 +39,15 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (id == null)
                 return NotFound();
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             // Fetch all tags for parent tag dropdown
             var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("document-tags?pageIndex=1&pageSize=100");
@@ -69,14 +76,18 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
 
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (!ModelState.IsValid)
             {
                 await OnGetAsync(id);
                 return Page();
             }
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var updateTag = new
             {
