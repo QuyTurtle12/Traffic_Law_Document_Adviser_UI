@@ -4,38 +4,298 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>@ViewData["Title"]</h2>
+<!-- Include Bootstrap Icons directly -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
-<form method="post" novalidate>
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out;
+        max-width: 500px;
+        width: 100%;
+    }
+    
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 30px 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .card-header h3 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.8rem;
+    }
+    
+    .law-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: #ffd700;
+    }
+    
+    .card-body {
+        padding: 40px 30px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 12px 15px 12px 45px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+    
+    .form-control:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 0.2rem rgba(30, 60, 114, 0.25);
+        background: white;
+    }
+    
+    .input-group {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        z-index: 10;
+        font-size: 1.1rem;
+    }
+    
+    .input-group .form-control {
+        padding-left: 45px;
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #e9ecef;
+        border-radius: 0 12px 12px 0;
+        color: #6c757d;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: #1e3c72;
+        border-color: #1e3c72;
+        color: white;
+    }
+    
+    .card-footer {
+        background: #f8f9fa;
+        border: none;
+        padding: 20px 30px;
+        text-align: center;
+    }
+    
+    .card-footer a {
+        color: #1e3c72;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .card-footer a:hover {
+        color: #2a5298;
+        text-decoration: underline;
+    }
+    
+    .alert-danger {
+        border: none;
+        border-radius: 12px;
+        background: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+    
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+    
+    .brand-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .brand-text strong {
+        color: #1e3c72;
+    }
+    
+    .password-strength {
+        margin-top: 8px;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    
+    .strength-weak { color: #dc3545; }
+    .strength-medium { color: #ffc107; }
+    .strength-strong { color: #28a745; }
+</style>
 
-    <div class="mb-3">
-        <label asp-for="Input.FullName" class="form-label"></label>
-        <input asp-for="Input.FullName" class="form-control" />
-        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+<div class="register-container">
+    <div class="register-card">
+        <div class="card-header">
+            <div class="law-icon">
+                <i class="bi bi-person-badge"></i>
+            </div>
+            <h3>@ViewData["Title"]</h3>
+            <p class="mb-0" style="font-size: 0.9rem; opacity: 0.9;">Create your account for legal document management</p>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <div class="mb-4">
+                    <label asp-for="Input.FullName" class="form-label">
+                        <i class="bi bi-person me-2"></i>Full Name
+                    </label>
+                    <div class="input-group">
+                        <i class="bi bi-person input-icon"></i>
+                        <input asp-for="Input.FullName" class="form-control" placeholder="Enter your full name" />
+                    </div>
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                </div>
+                <div class="mb-4">
+                    <label asp-for="Input.Email" class="form-label">
+                        <i class="bi bi-envelope me-2"></i>Email Address
+                    </label>
+                    <div class="input-group">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input asp-for="Input.Email" class="form-control" placeholder="Enter your email address" />
+                    </div>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="mb-4 position-relative">
+                    <label asp-for="Input.Password" class="form-label">
+                        <i class="bi bi-lock me-2"></i>Password
+                    </label>
+                    <div class="input-group">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input asp-for="Input.Password" type="password" class="form-control" placeholder="Create a strong password" />
+                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordReg">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <div class="password-strength">
+                        <i class="bi bi-shield-check me-1"></i>Password should be at least 8 characters with letters and numbers
+                    </div>
+                </div>
+                <div class="mb-4 position-relative">
+                    <label asp-for="Input.ConfirmPassword" class="form-label">
+                        <i class="bi bi-lock-fill me-2"></i>Confirm Password
+                    </label>
+                    <div class="input-group">
+                        <i class="bi bi-lock-fill input-icon"></i>
+                        <input asp-for="Input.ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
+                        <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPasswordReg">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-person-plus me-2"></i>Create Account
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            <a asp-page="/Login">
+                <i class="bi bi-box-arrow-in-left me-1"></i>Already have an account? Sign in here
+            </a>
+            <div class="brand-text">
+                <strong>Traffic Law Document Management System</strong>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Input.Email" class="form-label"></label>
-        <input asp-for="Input.Email" class="form-control" />
-        <span asp-validation-for="Input.Email" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Input.Password" class="form-label"></label>
-        <input asp-for="Input.Password" type="password" class="form-control" />
-        <span asp-validation-for="Input.Password" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Input.ConfirmPassword" class="form-label"></label>
-        <input asp-for="Input.ConfirmPassword" type="password" class="form-control" />
-        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('togglePasswordReg').addEventListener('click', function () {
+            const pwd = document.getElementById('Input_Password');
+            const type = pwd.getAttribute('type') === 'password' ? 'text' : 'password';
+            pwd.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        });
+        document.getElementById('toggleConfirmPasswordReg').addEventListener('click', function () {
+            const pwd = document.getElementById('Input_ConfirmPassword');
+            const type = pwd.getAttribute('type') === 'password' ? 'text' : 'password';
+            pwd.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        });
+    </script>
 }
