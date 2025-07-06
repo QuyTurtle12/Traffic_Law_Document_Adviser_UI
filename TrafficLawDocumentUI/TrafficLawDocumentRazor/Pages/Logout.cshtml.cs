@@ -7,11 +7,24 @@ namespace TrafficLawDocumentRazor.Pages
 {
     public class LogoutModel : PageModel
     {
-        public async Task OnGet()
+        [BindProperty(SupportsGet = true)]
+        public bool Confirm { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
+            if (!Confirm)
+            {
+                // Show the confirmation page
+                return Page();
+            }
+
+            // User confirmed logout
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            TempData["ToastMessage"] = "You have been logged out.";
+            
+            TempData["ToastMessage"] = "You have been successfully logged out. Thank you for using the Traffic Law Document Management System.";
             TempData["ToastType"] = "success";
+            
+            return RedirectToPage("/Login");
         }
     }
 }

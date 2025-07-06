@@ -27,7 +27,7 @@ namespace TrafficLawDocumentRazor.Pages
 
             if (!resp.IsSuccessStatusCode)
             {
-                TempData["ToastMessage"] = raw;
+                TempData["ToastMessage"] = $"Registration failed: {raw}. Please check your information and try again.";
                 TempData["ToastType"] = "error";
                 return Page();
             }
@@ -35,12 +35,12 @@ namespace TrafficLawDocumentRazor.Pages
             var apiResult = await resp.Content.ReadFromJsonAsync<ApiResponse<object>>();
             if (apiResult?.Code != "SUCCESS")
             {
-                TempData["ToastMessage"] = apiResult?.Message ?? "Registration failed";
+                TempData["ToastMessage"] = apiResult?.Message ?? "Registration failed. Please verify your information and try again.";
                 TempData["ToastType"] = "error";
                 return Page();
             }
 
-            TempData["ToastMessage"] = "Registration successful!";
+            TempData["ToastMessage"] = "Account created successfully! You can now log in with your new credentials.";
             TempData["ToastType"] = "success";
             return RedirectToPage("/Login");
         }

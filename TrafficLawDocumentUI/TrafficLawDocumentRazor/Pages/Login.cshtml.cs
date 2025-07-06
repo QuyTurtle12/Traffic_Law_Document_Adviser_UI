@@ -34,7 +34,7 @@ namespace TrafficLawDocumentRazor.Pages
             {
                 // parse { errorCode, errorMessage }
                 var err = await resp.Content.ReadFromJsonAsync<ErrorResponseDTO>();
-                TempData["ToastMessage"] = err?.ErrorMessage ?? "Login failed";
+                TempData["ToastMessage"] = err?.ErrorMessage ?? "Login failed. Please check your credentials and try again.";
                 TempData["ToastType"] = "error";
                 return Page();
             }
@@ -43,7 +43,7 @@ namespace TrafficLawDocumentRazor.Pages
             var apiResult = await resp.Content.ReadFromJsonAsync<ApiResponse<AuthResponseDTO>>();
             if (apiResult?.Code != "SUCCESS")
             {
-                TempData["ToastMessage"] = apiResult?.Message ?? "Login failed";
+                TempData["ToastMessage"] = apiResult?.Message ?? "Login failed. Please verify your credentials and try again.";
                 TempData["ToastType"] = "error";
                 return Page();
             }
@@ -64,7 +64,7 @@ namespace TrafficLawDocumentRazor.Pages
                 principal
             );
 
-            TempData["ToastMessage"] = "Login successful!";
+            TempData["ToastMessage"] = "Welcome back! You have successfully logged into the Traffic Law Document Management System.";
             TempData["ToastType"] = "success";
             return LocalRedirect(returnUrl);
         }

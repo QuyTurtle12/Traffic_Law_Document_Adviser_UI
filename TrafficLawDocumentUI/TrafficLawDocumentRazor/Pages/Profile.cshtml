@@ -4,30 +4,310 @@
     ViewData["Title"] = "My Profile";
 }
 
-<h2>@ViewData["Title"]</h2>
-<p>Your user‐ID is @Model.CurrentUserId</p>
+<!-- Include Bootstrap Icons directly -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
-<p>
-    <strong>Roles:</strong>
-    @if (Model.Roles.Any())
-    {
-        @foreach (var r in Model.Roles)
-        {
-            <span class="badge bg-primary me-1">@r</span>
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .profile-container {
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+    
+    .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
-    else
-    {
-        <em>(no roles)</em>
+    
+    .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 30px 20px;
+        text-align: center;
+        position: relative;
     }
-</p>
-<table class="table">
-    <thead><tr><th>Type</th><th>Value</th></tr></thead>
-    <tbody>
-        @foreach (var c in Model.Claims)
-        {
-            <tr><td>@c.Type</td><td>@c.Value</td></tr>
-        }
-    </tbody>
-</table>
+    
+    .card-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .card-header h2 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 2rem;
+    }
+    
+    .law-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #ffd700;
+    }
+    
+    .card-body {
+        padding: 40px 30px;
+    }
+    
+    .profile-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border-left: 4px solid #1e3c72;
+    }
+    
+    .profile-section h3 {
+        color: #1e3c72;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .profile-section h3 i {
+        margin-right: 10px;
+        color: #2a5298;
+    }
+    
+    .user-id {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+    
+    .roles-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .role-badge {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .role-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    }
+    
+    .no-roles {
+        color: #6c757d;
+        font-style: italic;
+        padding: 10px;
+        background: #e9ecef;
+        border-radius: 8px;
+        border-left: 3px solid #6c757d;
+    }
+    
+    .claims-table {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .claims-table .table {
+        margin: 0;
+    }
+    
+    .claims-table thead th {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    
+    .claims-table tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+    
+    .claims-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+    
+    .claim-type {
+        font-weight: 600;
+        color: #1e3c72;
+        font-size: 0.9rem;
+    }
+    
+    .claim-value {
+        color: #2c3e50;
+        font-family: 'Courier New', monospace;
+        background: #f8f9fa;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+    
+    .back-button {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 25px;
+        font-weight: 600;
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        margin-top: 20px;
+    }
+    
+    .back-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .brand-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 30px;
+        text-align: center;
+    }
+    
+    .brand-text strong {
+        color: #1e3c72;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="card-header">
+            <div class="law-icon">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <h2>@ViewData["Title"]</h2>
+            <p class="mb-0" style="font-size: 0.9rem; opacity: 0.9;">Your account information and permissions</p>
+        </div>
+        <div class="card-body">
+            <!-- User ID Section -->
+            <div class="profile-section">
+                <h3>
+                    <i class="bi bi-person-badge"></i>
+                    User Information
+                </h3>
+                <div class="user-id">
+                    <i class="bi bi-shield-check me-2"></i>
+                    User ID: @Model.CurrentUserId
+                </div>
+            </div>
+
+            <!-- Roles Section -->
+            <div class="profile-section">
+                <h3>
+                    <i class="bi bi-award"></i>
+                    User Roles & Permissions
+                </h3>
+                <div class="roles-container">
+                    @if (Model.Roles.Any())
+                    {
+                        @foreach (var r in Model.Roles)
+                        {
+                            <span class="role-badge">
+                                <i class="bi bi-star-fill me-1"></i>@r
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-roles">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            No roles assigned
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Claims Section -->
+            <div class="profile-section">
+                <h3>
+                    <i class="bi bi-list-check"></i>
+                    Account Claims & Details
+                </h3>
+                <div class="claims-table">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-tag me-2"></i>Claim Type</th>
+                                <th><i class="bi bi-info-circle me-2"></i>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.Claims)
+                            {
+                                <tr>
+                                    <td class="claim-type">@c.Type</td>
+                                    <td class="claim-value">@c.Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="text-center">
+                <a href="/" class="back-button">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <div class="brand-text">
+                <strong>Traffic Law Document Management System</strong>
+            </div>
+        </div>
+    </div>
+</div>
 
