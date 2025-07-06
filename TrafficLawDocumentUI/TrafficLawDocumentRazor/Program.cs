@@ -26,13 +26,16 @@ namespace TrafficLawDocumentRazor
             builder.Services.AddDbContext<TrafficLawDocumentDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Register HttpClient for making API calls
+            // Register AuthTokenHandler
+            builder.Services.AddTransient<AuthTokenHandler>();
+
+            // Apply to HTTP clients
             builder.Services.AddHttpClient("API", client =>
             {
                 var apiSettings = builder.Configuration.GetSection("ApiSettings:BaseUrl").Value;
                 client.BaseAddress = new Uri(apiSettings);
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            });
+            }).AddHttpMessageHandler<AuthTokenHandler>();
 
             builder.Services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -46,6 +49,11 @@ namespace TrafficLawDocumentRazor
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdmin", policy => policy.RequireClaim("role", "Admin"));
+                options.AddPolicy("RequireStaff", policy => policy.RequireClaim("role", "Staff"));
+                options.AddPolicy("RequireExpertOrStaff", policy =>
+                policy.RequireAssertion(ctx =>
+                    ctx.User.HasClaim("role", "Staff") ||
+                    ctx.User.HasClaim("role", "Expert")));
                 options.AddPolicy("RequireExpertOrAdmin", policy =>
                     policy.RequireAssertion(ctx =>
                         ctx.User.HasClaim("role", "Admin") ||

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Util;
 using Util.DTOs.ApiResponse;
@@ -16,6 +17,8 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        public string currentUserRole { get; set; } = default!;
+
         [BindProperty]
         public Guid Id { get; set; }
 
@@ -24,11 +27,15 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (id == null)
                 return NotFound();
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             // Fetch the category to delete
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>
@@ -46,11 +53,15 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
 
         public async Task<IActionResult> OnPostAsync(Guid? id)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (id == null)
                 return NotFound();
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var response = await _httpClient.DeleteAsync($"document-categories/soft-delete/{id}");
             if (!response.IsSuccessStatusCode)

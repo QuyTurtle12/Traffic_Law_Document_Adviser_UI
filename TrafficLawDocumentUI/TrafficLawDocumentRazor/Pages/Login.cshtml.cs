@@ -52,8 +52,12 @@ namespace TrafficLawDocumentRazor.Pages
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(apiResult.Data.Token);
 
+            // Create list of claims from JWT and add the token itself
+            var claims = jwtToken.Claims.ToList();
+            claims.Add(new Claim("access_token", apiResult.Data.Token));
+
             var identity = new ClaimsIdentity(
-                jwtToken.Claims,
+                claims,
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 "email",              // NameClaimType
                 ClaimTypes.Role       // RoleClaimType

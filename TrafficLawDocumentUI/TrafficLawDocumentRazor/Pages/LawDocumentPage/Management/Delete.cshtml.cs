@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Util; // For JwtTokenStore if needed
+using Util;
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 {
@@ -13,6 +14,8 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        public string currentUserRole { get; set; } = default!;
+
         [BindProperty]
         public Guid Id { get; set; }
 
@@ -21,10 +24,15 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (id == null)
                 return NotFound();
-
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var response = await _httpClient.GetAsync($"law-documents?pageIndex=1&pageSize=1&idSearch={id}");
             if (!response.IsSuccessStatusCode)
@@ -42,10 +50,15 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
         public async Task<IActionResult> OnPostAsync(Guid? id)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (id == null)
                 return NotFound();
-
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var response = await _httpClient.DeleteAsync($"law-documents/soft-delete/{id}");
             if (!response.IsSuccessStatusCode)

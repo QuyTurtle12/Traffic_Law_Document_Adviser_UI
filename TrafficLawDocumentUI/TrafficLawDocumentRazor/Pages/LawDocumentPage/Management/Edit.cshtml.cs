@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Util;
@@ -20,6 +21,8 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        public string currentUserRole { get; set; } = default!;
+
         [BindProperty]
         public UpdateLawDocumentDTO LawDocument { get; set; } = new();
 
@@ -34,7 +37,12 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff" && currentUserRole != "Expert")
+            {
+                return RedirectToPage("/Index");
+            }
 
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
@@ -82,13 +90,18 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (!ModelState.IsValid)
             {
                 await OnGetAsync(id);
                 return Page();
             }
-
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             LawDocument.TagList = SelectedTagIds.Select(id => new AddDocumentTagMapDTO { DocumentTagId = id }).ToList();
 
@@ -106,15 +119,21 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
         public async Task<IActionResult> OnPostVerifyAsync(Guid id)
         {
-            if (!User.IsInRole("Expert"))
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Expert")
             {
-                return Forbid();
+                return RedirectToPage("/Index");
             }
 
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
+            if (id == Guid.Empty)
+            {
+                TempData["ToastMessage"] = "Missing document ID";
+                TempData["ToastType"] = "error";
+                return RedirectToPage("./Index");
+            }
 
-            var response = await _httpClient.PostAsync($"law-documents/verification/{id}", null);
+            var response = await _httpClient.PostAsync($"law-documents/verification/{id}", new StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json"));
 
             if (!response.IsSuccessStatusCode)
             {
@@ -123,6 +142,8 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
                 return Page();
             }
 
+            TempData["ToastMessage"] = "Document verified successfully";
+            TempData["ToastType"] = "success";
             return RedirectToPage("./Index");
         }
     }

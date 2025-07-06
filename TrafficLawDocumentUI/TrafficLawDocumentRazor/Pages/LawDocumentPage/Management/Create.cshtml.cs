@@ -1,8 +1,7 @@
-﻿using BussinessObject;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentCategoryDTOs;
 using Util.DTOs.DocumentTagDTOs;
@@ -21,10 +20,17 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
-        public async Task OnGetAsync()
+        public string currentUserRole { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
-            
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
                 "document-categories?pageIndex=1&pageSize=100");
@@ -43,6 +49,8 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
                             Text = t.Name
                     })
                     .ToList();
+
+            return Page();
         }
 
         [BindProperty]
@@ -59,11 +67,17 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
         public async Task<IActionResult> OnPostAsync()
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             // Map selected tags to DTO
             LawDocument.TagList = SelectedTagIds.Select(id => new AddDocumentTagMapDTO { DocumentTagId = id }).ToList();

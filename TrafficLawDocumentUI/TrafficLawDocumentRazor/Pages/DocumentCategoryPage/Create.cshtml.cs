@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Util;
 
@@ -13,19 +14,25 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        public string currentUserRole { get; set; } = default!;
+
         [BindProperty]
         public string Name { get; set; } = string.Empty;
 
         public async Task<IActionResult> OnPostAsync()
         {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
             if (!ModelState.IsValid || string.IsNullOrWhiteSpace(Name))
             {
                 ModelState.AddModelError("Name", "Name is required.");
                 return Page();
             }
-
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
 
             var payload = new { name = Name };
             var response = await _httpClient.PostAsJsonAsync("document-categories", payload);

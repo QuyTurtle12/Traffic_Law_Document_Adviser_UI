@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Util;
@@ -19,6 +20,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        public string currentUserRole { get; set; } = default!;
         public PaginatedList<GetLawDocumentDTO> LawDocument { get; set; } = default!;
         public List<GetDocumentCategoryDTO> Categories { get; set; } = new();
         public List<SelectListItem> Tags { get; set; } = new();
@@ -38,10 +40,14 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
         [BindProperty(SupportsGet = true)]
         public string[]? TagIds { get; set; }
 
-        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 10)
         {
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", JwtTokenStore.Token);
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff" && currentUserRole != "Expert")
+            {
+                return RedirectToPage("/Index");
+            }
 
             // Fetch categories
             var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(
@@ -99,6 +105,8 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
             {
                 LawDocument = apiResponse.Data;
             }
+
+            return Page();
         }
     }
 }
