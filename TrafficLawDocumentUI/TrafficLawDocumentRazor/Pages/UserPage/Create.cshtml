@@ -31,15 +31,27 @@
                             <span asp-validation-for="User.Email" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="User.PasswordHash" class="control-label"></label>
-                            <input asp-for="User.PasswordHash" class="form-control" />
+                            <label class="control-label">Password</label>
+                            <input asp-for="User.PasswordHash" class="form-control" type="password" />
                             <span asp-validation-for="User.PasswordHash" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
+
+                        @* <div class="mb-3">
                             <label asp-for="User.Role" class="control-label"></label>
                             <input asp-for="User.Role" class="form-control" />
                             <span asp-validation-for="User.Role" class="text-danger"></span>
+                        </div> *@
+                        <div class="mb-3">
+                            <label asp-for="User.Role" class="control-label"></label>
+                            <select asp-for="User.Role" class="form-control">
+                                <option value="1">User</option>
+                                <option value="2">Expert</option>
+                                <option value="3">Admin</option>
+                                <option value="4">Staff</option>
+                            </select>
+                            <span asp-validation-for="User.Role" class="text-danger"></span>
                         </div>
+
                         <div class="form-group form-check" style="display:none">
                             <label class="form-check-label">
                                 <input class="form-check-input" asp-for="User.IsActive" /> @Html.DisplayNameFor(model => model.User.IsActive)

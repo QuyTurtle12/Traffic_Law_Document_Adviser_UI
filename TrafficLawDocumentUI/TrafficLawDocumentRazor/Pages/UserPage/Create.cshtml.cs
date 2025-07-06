@@ -33,6 +33,8 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
             {
                 return Page();
             }
+            User.Id = Guid.NewGuid();
+            User.IsActive = true;
 
             _context.Users.Add(User);
             await _context.SaveChangesAsync();
