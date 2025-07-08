@@ -1,67 +1,52 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TrafficLawDocumentRazor.Services;
+using System.Net.Http.Json;
+using System.Security.Claims;
 using Util.DTOs.NewsDTOs;
+using Util.DTOs.ApiResponse;
 
 namespace TrafficLawDocumentRazor.Pages.News.Manage
 {
     public class DeleteModel : PageModel
     {
-        private readonly ILogger<DeleteModel> _logger;
-        private readonly INewsApiService _newsApiService;
-
-        public DeleteModel(ILogger<DeleteModel> logger, INewsApiService newsApiService)
+        private readonly HttpClient _httpClient;
+        public DeleteModel(IHttpClientFactory httpClientFactory)
         {
-            _logger = logger;
-            _newsApiService = newsApiService;
+            _httpClient = httpClientFactory.CreateClient("API");
         }
-
+        public string CurrentUserRole { get; set; } = default!;
         [BindProperty]
-        public GetNewsDTO? News { get; set; }
-
+        public Util.DTOs.NewsDTOs.GetNewsDTO? News { get; set; }
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            try
+            CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            if (CurrentUserRole != "Expert")
             {
-                News = await _newsApiService.GetNewsByIdAsync(id);
-                
-                if (News == null)
-                {
-                    return NotFound();
-                }
-
-                return Page();
+                return RedirectToPage("/Index");
             }
-            catch (Exception ex)
+            var response = await _httpClient.GetFromJsonAsync<Util.DTOs.ApiResponse.ApiResponse<Util.DTOs.NewsDTOs.GetNewsDTO>>($"news/{id}");
+            News = response?.Data;
+            if (News == null)
             {
-                _logger.LogError(ex, "Error loading news for deletion");
                 return NotFound();
             }
+            return Page();
         }
-
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
-            try
+            CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            if (CurrentUserRole != "Expert")
             {
-                var success = await _newsApiService.DeleteNewsAsync(id);
-
-                if (success)
-                {
-                    TempData["SuccessMessage"] = "News article deleted successfully!";
-                    return RedirectToPage("Index");
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to delete the news article. Please try again.";
-                    return RedirectToPage("Index");
-                }
+                return RedirectToPage("/Index");
             }
-            catch (Exception ex)
+            var response = await _httpClient.DeleteAsync($"news/{id}");
+            if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError(ex, "Error deleting news article");
-                TempData["ErrorMessage"] = "An error occurred while deleting the news article. Please try again.";
+                TempData["ErrorMessage"] = "Failed to delete the news article. Please try again.";
                 return RedirectToPage("Index");
             }
+            TempData["SuccessMessage"] = "News article deleted successfully!";
+            return RedirectToPage("Index");
         }
     }
 } 

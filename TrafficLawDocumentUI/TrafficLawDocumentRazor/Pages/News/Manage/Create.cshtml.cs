@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Net.Http.Json;
 using TrafficLawDocumentRazor.Services;
 using Util.DTOs.NewsDTOs;
 
@@ -8,35 +11,43 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
 {
     public class CreateModel : PageModel
     {
-        private readonly ILogger<CreateModel> _logger;
-        private readonly INewsApiService _newsApiService;
-
-        public CreateModel(ILogger<CreateModel> logger, INewsApiService newsApiService)
+        private readonly HttpClient _httpClient;
+        public CreateModel(IHttpClientFactory httpClientFactory)
         {
-            _logger = logger;
-            _newsApiService = newsApiService;
+            _httpClient = httpClientFactory.CreateClient("API");
         }
-
+        public string CurrentUserRole { get; set; } = default!;
+        public string CurrentUserId { get; private set; }
         [BindProperty]
         public CreateNewsInput News { get; set; } = new CreateNewsInput();
-
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            // Initialize with default values
+            CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            if (CurrentUserRole != "Expert")
+            {
+                return RedirectToPage("/Index");
+            }
             News.PublishedDate = DateTime.Now;
+            return Page();
         }
-
         public async Task<IActionResult> OnPostAsync()
         {
+            CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                 ?? User.FindFirstValue("sub");
+            if (CurrentUserRole != "Expert")
+            {
+                return RedirectToPage("/Index");
+            }
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
             try
             {
-                var addNewsDto = new AddNewsDTO
+                var addNewsDto = new Util.DTOs.NewsDTOs.AddNewsDTO
                 {
+                    UserId = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub"), out var userId) ? userId : (Guid?)null,
                     Title = News.Title,
                     Content = News.Content,
                     Author = News.Author,
@@ -44,26 +55,21 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
                     ImageUrl = News.ImageUrl,
                     EmbeddedUrl = News.EmbeddedUrl
                 };
-
-                var createdNews = await _newsApiService.CreateNewsAsync(addNewsDto);
-
-                if (createdNews != null)
-                {
-                    TempData["SuccessMessage"] = "News article created successfully!";
-                    return RedirectToPage("Index");
-                }
-                else
+                var response = await _httpClient.PostAsJsonAsync("news", addNewsDto);
+                if (!response.IsSuccessStatusCode)
                 {
                     ModelState.AddModelError("", "Failed to create the news article. Please try again.");
                     return Page();
                 }
+                TempData["SuccessMessage"] = "News article created successfully!";
+                return RedirectToPage("Index");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating news article");
-                ModelState.AddModelError("", "An error occurred while creating the news article. Please try again.");
-                return Page();
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
             }
+            ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+            return RedirectToPage("Index");
         }
     }
 
@@ -89,4 +95,4 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
         [Url(ErrorMessage = "Please enter a valid URL")]
         public string? EmbeddedUrl { get; set; }
     }
-} 
+}

@@ -2,12 +2,14 @@
 using Util.DTOs.ApiResponse;
 using Util.DTOs.UserDTOs;
 using Util.Paginated;
+using System.Net.Http.Json;
 
 namespace TrafficLawDocumentRazor.Services
 {
     public interface IUserApiService
     {
         Task<PaginatedList<UserDTO>> GetUsersAsync(int pageIndex, int pageSize);
+        Task<ApiResponse<UserDTO>> CreateUserAsync(CreateUserDTO dto);
     }
     public class UserApiService: IUserApiService
     {
@@ -43,6 +45,21 @@ namespace TrafficLawDocumentRazor.Services
                 PageSize = pageSize,
                 TotalCount = response?.Data?.Count ?? 0
             };
+        }
+
+        public async Task<ApiResponse<UserDTO>> CreateUserAsync(CreateUserDTO dto)
+        {
+            var baseUrl = _configuration["ApiSettings:BaseUrl"];
+            var token = _httpContextAccessor.HttpContext?.Request?.Cookies["AccessToken"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            var url = $"{baseUrl}users";
+            var response = await _httpClient.PostAsJsonAsync(url, dto);
+            response.EnsureSuccessStatusCode();
+            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UserDTO>>();
+            return apiResponse!;
         }
     }
 }

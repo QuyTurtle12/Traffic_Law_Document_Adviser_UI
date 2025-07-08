@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using BussinessObject;
 using Microsoft.EntityFrameworkCore;
 using Util.DTOs.NewsDTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TrafficLawDocumentRazor.Pages.News.Manage
 {
+    [AllowAnonymous]
     public class ViewModel : PageModel
     {
         private readonly TrafficLawDocumentDbContext _context;

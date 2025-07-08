@@ -6,40 +6,47 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BussinessObject;
+using BCrypt.Net;
+using Util.DTOs.UserDTOs;
+using TrafficLawDocumentRazor.Services;
 
 namespace TrafficLawDocumentRazor.Pages.UserPage
 {
     public class CreateModel : PageModel
     {
-        private readonly BussinessObject.TrafficLawDocumentDbContext _context;
-
-        public CreateModel(BussinessObject.TrafficLawDocumentDbContext context)
+        private readonly IUserApiService _userApiService;
+        public CreateModel(IUserApiService userApiService)
         {
-            _context = context;
+            _userApiService = userApiService;
         }
-
+        [BindProperty]
+        public CreateUserDTO NewUser { get; set; } = new();
+        public string? ErrorMessage { get; set; }
         public IActionResult OnGet()
         {
             return Page();
         }
-
-        [BindProperty]
-        public User User { get; set; } = default!;
-
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            User.Id = Guid.NewGuid();
-            User.IsActive = true;
-
-            _context.Users.Add(User);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            try
+            {
+                var result = await _userApiService.CreateUserAsync(NewUser);
+                if (result != null && result.StatusCode == 201)
+                {
+                    return RedirectToPage("./Index");
+                }
+                ErrorMessage = result?.Message ?? "Failed to create user.";
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return Page();
+            }
         }
     }
 }
