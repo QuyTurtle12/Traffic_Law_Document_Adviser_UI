@@ -2,44 +2,182 @@
 @model TrafficLawDocumentRazor.Pages.FeedbackPage.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Feedback";
 }
 
-<h1>Your feedbacks</h1>
+<style>
+    .feedback-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feedback-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .data-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table thead {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+    }
+    
+    .table thead th {
+        border-bottom: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        padding: 15px;
+    }
+    
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    
+    .truncate {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-details {
+        background-color: rgba(30, 60, 114, 0.1);
+        color: #1e3c72;
+        border: none;
+    }
+    
+    .btn-details:hover {
+        background-color: rgba(30, 60, 114, 0.2);
+        color: #1e3c72;
+        transform: translateY(-2px);
+    }
+    
+    .btn-delete {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        border: none;
+    }
+    
+    .btn-delete:hover {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+        transform: translateY(-2px);
+    }
+    
+    .empty-state {
+        background-color: rgba(30, 60, 114, 0.05);
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: #1e3c72;
+        margin-bottom: 20px;
+    }
+    
+    .date-column {
+        white-space: nowrap;
+    }
+</style>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                AI Answer
-            </th>
-            <th>
-                Feedback content
-            </th>
-            <th>
-                Created At
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Feedbacks)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AIAnswer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedAtFormatted)
-                </td>
-                <td>
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container mt-4">
+    <div class="feedback-header">
+        <div class="row">
+            <div class="col-12 text-center">
+                <i class="bi bi-chat-quote text-warning" style="font-size: 3rem;"></i>
+                <h1 class="display-4 mb-2">Your Feedback</h1>
+                <p class="lead mb-0">View and manage your feedback submissions</p>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Feedbacks != null && Model.Feedbacks.Any())
+    {
+        <div class="data-card">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>AI Answer</th>
+                            <th>Feedback Content</th>
+                            <th>Created At</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Feedbacks)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="truncate">@Html.DisplayFor(modelItem => item.AIAnswer)</span>
+                                </td>
+                                <td>
+                                    <span class="truncate">@Html.DisplayFor(modelItem => item.Content)</span>
+                                </td>
+                                <td class="date-column">
+                                    @Html.DisplayFor(modelItem => item.CreatedAtFormatted)
+                                </td>
+                                <td class="text-center">
+                                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn-action btn-details">
+                                        <i class="bi bi-info-circle me-1"></i> Details
+                                    </a>
+                                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
+                                        <i class="bi bi-trash me-1"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-chat-quote"></i>
+            <h4>No Feedback Yet</h4>
+            <p>You haven't submitted any feedback yet.</p>
+        </div>
+    }
+</div>
