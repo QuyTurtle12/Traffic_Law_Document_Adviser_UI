@@ -165,3 +165,9 @@ body {
 .send-btn:disabled {
     cursor: not-allowed;
 }
+
+input.form-control::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
