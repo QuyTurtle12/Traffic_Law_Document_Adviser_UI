@@ -21,7 +21,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-            if (CurrentUserRole != "Expert")
+            if (CurrentUserRole != "Staff")
             {
                 return RedirectToPage("/Index");
             }
@@ -46,7 +46,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
         public async Task<IActionResult> OnPostAsync()
         {
             CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-            if (CurrentUserRole != "Expert")
+            if (CurrentUserRole != "Staff")
             {
                 return RedirectToPage("/Index");
             }

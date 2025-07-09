@@ -53,7 +53,7 @@
                 <a asp-page="Create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Create New Article
                 </a>
-                @if (Model.CurrentUserRole == "Expert")
+                @if (Model.CurrentUserRole == "Staff")
                 {
                     <form method="post" asp-page-handler="SyncNews" style="display:inline;">
                         <button type="submit" class="btn btn-outline-secondary">

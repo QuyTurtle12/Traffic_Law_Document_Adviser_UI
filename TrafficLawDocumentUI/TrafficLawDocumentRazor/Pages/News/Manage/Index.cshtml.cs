@@ -118,7 +118,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
         public async Task<IActionResult> OnPostSyncNewsAsync()
         {
             CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-            if (CurrentUserRole != "Expert")
+            if (CurrentUserRole != "Staff")
             {
                 TempData["SyncStatus"] = "error";
                 TempData["SyncMessage"] = "You do not have permission to sync news.";
