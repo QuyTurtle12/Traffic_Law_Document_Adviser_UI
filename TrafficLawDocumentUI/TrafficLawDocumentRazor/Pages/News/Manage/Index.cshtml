@@ -4,20 +4,200 @@
     ViewData["Title"] = "News Management";
 }
 
+<style>
+    .management-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .management-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid rgba(108, 117, 125, 0.2);
+        color: #1e3c72;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        border-color: rgba(30, 60, 114, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .data-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+    
+    .data-card .card-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: none;
+        padding: 20px 25px;
+    }
+    
+    .data-card .card-header h5 {
+        color: #1e3c72;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table thead {
+        background-color: rgba(30, 60, 114, 0.03);
+    }
+    
+    .table th {
+        border-top: none;
+        color: #1e3c72;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    .table strong {
+        color: #1e3c72;
+        font-weight: 600;
+    }
+    
+    .btn-sm {
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 5px 10px;
+    }
+    
+    .btn-outline-primary {
+        border: 1px solid #1e3c72;
+        color: #1e3c72;
+    }
+    
+    .btn-outline-warning {
+        border: 1px solid #ffc107;
+        color: #212529;
+    }
+    
+    .btn-outline-danger {
+        border: 1px solid #dc3545;
+        color: #dc3545;
+    }
+    
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: transparent;
+    }
+    
+    .btn-outline-warning:hover {
+        background: linear-gradient(135deg, #ffc107 0%, #ffed4a 100%);
+        border-color: transparent;
+    }
+    
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #dc3545 0%, #ef5350 100%);
+        border-color: transparent;
+    }
+    
+    .pagination {
+        margin-top: 30px;
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: #1e3c72;
+    }
+    
+    .page-link {
+        color: #1e3c72;
+        border-radius: 8px;
+        margin: 0 3px;
+    }
+    
+    .btn-group-sm .btn {
+        border-radius: 8px;
+    }
+    
+    .empty-state {
+        background-color: rgba(30, 60, 114, 0.05);
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: #1e3c72;
+        margin-bottom: 20px;
+    }
+    
+    @@keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    .spin {
+        animation: spin 1s linear infinite;
+    }
+</style>
+
 <div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h1 class="display-4">News Management</h1>
-            <p class="lead">Manage all news articles and content.</p>
-        </div>
-        <div class="col-md-6 text-end">
-            <div class="btn-group" role="group">
-                <a asp-page="Create" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Create New Article
-                </a>
-                <button type="button" class="btn btn-outline-secondary" onclick="syncNews()">
-                    <i class="bi bi-arrow-clockwise"></i> Sync News
-                </button>
+    <div class="management-header">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <i class="bi bi-newspaper text-warning" style="font-size: 2.5rem;"></i>
+                </div>
+                <h1 class="display-5 mb-2">News Management</h1>
+                <p class="lead mb-0">Manage all news articles and content.</p>
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-md-end justify-content-center mt-4 mt-md-0">
+                <div class="btn-group" role="group">
+                    <a asp-page="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i> Create New Article
+                    </a>
+                    <button type="button" class="btn btn-primary" onclick="syncNews()">
+                        <i class="bi bi-arrow-clockwise me-2"></i> Sync News
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -122,14 +302,14 @@
 
     @if (Model.NewsList.Items != null && Model.NewsList.Items.Any())
     {
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">All News Articles</h5>
+        <div class="data-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-list me-2"></i>All News Articles</h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Author</th>
@@ -230,7 +410,8 @@
     }
     else
     {
-        <div class="alert alert-info text-center">
+        <div class="empty-state">
+            <i class="bi bi-newspaper"></i>
             <h4>No news articles found</h4>
             <p>Create your first news article to get started.</p>
             <a asp-page="Create" class="btn btn-primary">Create First Article</a>
@@ -245,7 +426,7 @@
                 // Show loading state
                 const syncBtn = event.target.closest('button');
                 const originalText = syncBtn.innerHTML;
-                syncBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Syncing...';
+                syncBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin me-2"></i> Syncing...';
                 syncBtn.disabled = true;
 
                 // Make API call to sync news

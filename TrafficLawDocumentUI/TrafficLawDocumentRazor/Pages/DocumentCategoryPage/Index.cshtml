@@ -6,130 +6,276 @@
 }
 
 <style>
-    .pagination {
-        justify-content: center;
+    .category-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
     }
-
-    .page-item.active .page-link {
-        background-color: #111 !important;
-        border-color: #111 !important;
-        color: #fff !important;
+    
+    .category-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
     }
-
+    
     .search-area {
-        background-color: #f0f0f0;
-        padding: 0.5rem;
-        border-radius: 8px;
+        background-color: rgba(30, 60, 114, 0.05);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
-
+    
+    .data-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
     .table thead {
-        background-color: #111;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         color: white;
     }
-
-        .table thead th {
-            border-bottom: none;
-        }
+    
+    .table thead th {
+        border-bottom: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        padding: 15px;
+    }
+    
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #ef5350 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+    
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 10px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 0.2rem rgba(30, 60, 114, 0.25);
+    }
+    
+    .btn-search {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .pagination {
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: #1e3c72;
+    }
+    
+    .page-link {
+        color: #1e3c72;
+        border-radius: 8px;
+        margin: 0 3px;
+        font-weight: 500;
+    }
+    
+    .page-link:hover {
+        color: #1e3c72;
+        background-color: rgba(30, 60, 114, 0.05);
+    }
+    
+    .category-name {
+        font-weight: 600;
+        color: #1e3c72;
+    }
 </style>
 
-<div class="col">
-    <h1>Document Categories</h1>
-    <p>Manage all document categories here.</p>
-</div>
-
-<div class="row g-2 align-items-center mb-3 search-area">
-    <div class="col">
-        <!-- Search Bar -->
-        <form method="get" class="mb-3">
-            <div class="row g-2 align-items-center">
-                <div class="col-auto">
-                    <input type="text" name="name" value="@Request.Query["name"]" class="form-control" placeholder="Category name search" />
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-dark px-4">Search</button>
-                </div>
+<div class="container mt-4">
+    <div class="category-header">
+        <div class="row">
+            <div class="col-12 text-center">
+                <i class="bi bi-folder2-open text-warning" style="font-size: 3rem;"></i>
+                <h1 class="display-4 mb-2">Document Categories</h1>
+                <p class="lead mb-0">Manage all document categories here.</p>
             </div>
-        </form>
+        </div>
     </div>
-    <!-- Add New Category Button -->
-    <div class="col-auto">
-        <a asp-page="Create" class="btn btn-dark px-4">Add Category</a>
+
+    <div class="row search-area">
+        <div class="col-md-8">
+            <!-- Search Bar -->
+            <form method="get" class="mb-0">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <input type="text" name="name" value="@Request.Query["name"]" class="form-control" placeholder="Category name search" />
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-search w-100">
+                            <i class="bi bi-search me-1"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Add New Category Button -->
+        <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
+            <a asp-page="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i> Add New Category
+            </a>
+        </div>
     </div>
-</div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.DocumentCategory.Items)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="data-card">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DocumentCategory.Items)
+                    {
+                        <tr>
+                            <td class="category-name">@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td class="text-center">
+                                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary mx-1">
+                                    <i class="bi bi-pencil me-1"></i> Edit
+                                </a>
+                                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger mx-1">
+                                    <i class="bi bi-trash me-1"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<!-- Pagination -->
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        @if (Model.DocumentCategory.HasPreviousPage)
-        {
-            <li class="page-item">
-                <a class="page-link" asp-page="./Index"
-                   asp-route-pageNumber="@(Model.DocumentCategory.PageNumber - 1)"
-                   asp-route-pageSize="@Model.DocumentCategory.PageSize"
-                   asp-route-name="@Request.Query["name"]">Previous</a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item disabled">
-                <span class="page-link">Previous</span>
-            </li>
-        }
-
-        @for (int i = 1; i <= Model.DocumentCategory.TotalPages; i++)
-        {
-            if (i == Model.DocumentCategory.PageNumber)
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @if (Model.DocumentCategory.HasPreviousPage)
             {
-                <li class="page-item active">
-                    <span class="page-link">@i</span>
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Index"
+                       asp-route-pageNumber="@(Model.DocumentCategory.PageNumber - 1)"
+                       asp-route-pageSize="@Model.DocumentCategory.PageSize"
+                       asp-route-name="@Request.Query["name"]">
+                        <i class="bi bi-chevron-left me-1"></i> Previous
+                    </a>
                 </li>
             }
             else
             {
-                <li class="page-item">
-                    <a class="page-link" asp-page="./Index"
-                       asp-route-pageNumber="@i"
-                       asp-route-pageSize="@Model.DocumentCategory.PageSize"
-                       asp-route-name="@Request.Query["name"]">@i</a>
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        <i class="bi bi-chevron-left me-1"></i> Previous
+                    </span>
                 </li>
             }
-        }
 
-        @if (Model.DocumentCategory.HasNextPage)
-        {
-            <li class="page-item">
-                <a class="page-link" asp-page="./Index"
-                   asp-route-pageNumber="@(Model.DocumentCategory.PageNumber + 1)"
-                   asp-route-pageSize="@Model.DocumentCategory.PageSize"
-                   asp-route-name="@Request.Query["name"]">Next</a>
-            </li>
-        }
-        else
-        {
-            <li class="page-item disabled">
-                <span class="page-link">Next</span>
-            </li>
-        }
-    </ul>
-</nav>
+            @for (int i = 1; i <= Model.DocumentCategory.TotalPages; i++)
+            {
+                if (i == Model.DocumentCategory.PageNumber)
+                {
+                    <li class="page-item active">
+                        <span class="page-link">@i</span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-page="./Index"
+                           asp-route-pageNumber="@i"
+                           asp-route-pageSize="@Model.DocumentCategory.PageSize"
+                           asp-route-name="@Request.Query["name"]">@i</a>
+                    </li>
+                }
+            }
+
+            @if (Model.DocumentCategory.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Index"
+                       asp-route-pageNumber="@(Model.DocumentCategory.PageNumber + 1)"
+                       asp-route-pageSize="@Model.DocumentCategory.PageSize"
+                       asp-route-name="@Request.Query["name"]">
+                        Next <i class="bi bi-chevron-right ms-1"></i>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Next <i class="bi bi-chevron-right ms-1"></i>
+                    </span>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
