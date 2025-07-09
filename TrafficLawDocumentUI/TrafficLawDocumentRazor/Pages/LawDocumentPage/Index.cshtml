@@ -125,6 +125,26 @@
         <p class="lead mb-0">Stay updated with the latest traffic law documents and updates.</p>
     </div>
 
+    @* <form method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" value="@Model.SearchKeyword" class="form-control" placeholder="Search law documents..." />
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </div>
+    </form> *@
+
+    <form method="get" class="mb-4">
+        <div class="input-group shadow-sm" style="max-width: 600px; margin: auto;">
+            <input type="text" name="search" value="@Model.SearchKeyword"
+                   class="form-control rounded-start-pill px-4"
+                   placeholder="🔍 Search law documents..." />
+            <button class="btn btn-primary rounded-end-pill px-4" type="submit">
+                Search
+            </button>
+        </div>
+    </form>
+
+
+
     @if (Model.LawDocumentList.Items != null && Model.LawDocumentList.Items.Any())
     {
         <div class="row">

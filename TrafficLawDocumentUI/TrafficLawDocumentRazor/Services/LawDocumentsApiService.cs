@@ -7,7 +7,8 @@ namespace TrafficLawDocumentRazor.Services
 {
     public interface ILawDocumentsApiService
     {
-        Task<PaginatedList<GetLawDocumentDTO>> GetLawDocumentsAsync(int pageIndex, int pageSize);
+        // Task<PaginatedList<GetLawDocumentDTO>> GetLawDocumentsAsync(int pageIndex, int pageSize);
+        Task<PaginatedList<GetLawDocumentDTO>> GetLawDocumentsAsync(int pageIndex, int pageSize, string? keyword);
     }
     public class LawDocumentsApiService : ILawDocumentsApiService
     {
@@ -22,7 +23,7 @@ namespace TrafficLawDocumentRazor.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<PaginatedList<GetLawDocumentDTO>> GetLawDocumentsAsync(int pageIndex, int pageSize)
+        public async Task<PaginatedList<GetLawDocumentDTO>> GetLawDocumentsAsync(int pageIndex, int pageSize, string? keyword = null)
         {
             var baseUrl = _configuration["ApiSettings:BaseUrl"];
             var token = _httpContextAccessor.HttpContext?.Request?.Cookies["AccessToken"]; // Or session, or user claims
@@ -33,6 +34,11 @@ namespace TrafficLawDocumentRazor.Services
             }
 
             var url = $"{baseUrl}law-documents?pageIndex={pageIndex}&pageSize={pageSize}";
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                url += $"&keyword={Uri.EscapeDataString(keyword)}";
+            }
 
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>(url);
 
