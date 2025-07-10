@@ -1,96 +1,5 @@
 ﻿@page
 @model TrafficLawDocumentRazor.Pages.LawDocumentPage.DetailsModel
-
-@{
-    ViewData["Title"] = "Details";
-}
-@**
-<h1>Details</h1>
-
-<div>
-    <h4>LawDocument</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.DocumentCode)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.DocumentCode)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.FilePath)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.FilePath)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.LinkPath)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.LinkPath)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.ExpertVerification)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.ExpertVerification)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.CreatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.CreatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.LastUpdatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.LastUpdatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.DeletedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.DeletedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.CreatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.CreatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.LastUpdatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.LastUpdatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.DeletedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.DeletedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LawDocument.Category)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LawDocument.Category.Id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.LawDocument.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
- *@
-
 @{
     ViewData["Title"] = "Details";
 }
@@ -158,50 +67,26 @@
                             <p>Status: @(Model.LawDocument.DeletedTime.HasValue ? "Deleted" : "Active")</p>
                         </div> *@
 
-                        <div class="tab-content" id="download" style="display: none">
-                            <div class="legal-wrapper">
-                                <div class="download-buttons">
-                                    @functions {
-                                        public static string GenerateSafeFileName(string rawTitle)
-                                        {
-                                            // Normalize and strip diacritics (accents)
-                                            string normalized = rawTitle.Normalize(System.Text.NormalizationForm.FormD);
-                                            var sb = new System.Text.StringBuilder();
-                                            foreach (var ch in normalized)
-                                            {
-                                                var uc = System.Globalization.CharUnicodeInfo.GetUnicodeCategory(ch);
-                                                if (uc != System.Globalization.UnicodeCategory.NonSpacingMark)
-                                                {
-                                                    sb.Append(ch);
-                                                }
-                                            }
-
-                                            string noAccents = sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
-
-                                            // Replace Vietnamese-specific characters
-                                            noAccents = noAccents.Replace("đ", "d").Replace("Đ", "D");
-
-                                            // Replace everything not allowed in filenames with underscore
-                                            string cleaned = System.Text.RegularExpressions.Regex.Replace(noAccents, @"[^a-zA-Z0-9\-_.]+", "_");
-
-                                            // Remove leading/trailing underscores
-                                            return cleaned.Trim('_');
-                                        }
-                                    }
-
-                                    @{
-                                        var safeFileName = GenerateSafeFileName(Model.LawDocument.Title) + ".pdf";
-                                    }
-
-                                    <button class="btn-download pdf" onclick="downloadFile('@Model.LawDocument.FilePath', '@safeFileName')">
-                                        <i class="fas fa-file-pdf"></i> Download as PDF
-                                    </button>
-                                    @* <button class="btn-download word" onclick="downloadFile('@Model.LawDocument.FilePath.Replace(".pdf", ".docx")', 'document.docx')">
-                                        <i class="fas fa-file-word"></i> Download as Word
-                                    </button> *@
-                                </div>
+                    <div class="tab-content" id="download" style="display: none">
+                        <div class="legal-wrapper">
+                            <div class="download-buttons">
+                                @{
+                                    // Create a safe filename from the Title
+                                    var safeFileName = System.Text.RegularExpressions.Regex
+                                    .Replace(Model.LawDocument.Title ?? "document", @"[^a-zA-Z0-9\-_.]+", "_")
+                                    .Trim('_') + ".pdf";
+                                }
+                                <button class="btn btn-primary"
+                                        onclick="downloadFromApi(
+                      '@Model.LawDocument.LinkPath',
+                      '@safeFileName'
+                    )">
+                                    <i class="fas fa-file-pdf"></i> Download PDF
+                                </button>
                             </div>
                         </div>
+                    </div>
+
 
                         
 
@@ -221,46 +106,50 @@
             </div>
        
     </div>
+@section Scripts {
+        <script>
+            // Point to your API host:port
+            const apiBaseUrl = '@Model.ApiBaseUrl';
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const tabs = document.querySelectorAll(".tabs button");
-            const contents = document.querySelectorAll(".tab-content");
+            function downloadFromApi(cloudUrl, fileName) {
+              const url = `${apiBaseUrl}/photo/download?url=${encodeURIComponent(cloudUrl)}`;
 
-            tabs.forEach((tab) => {
-                tab.addEventListener("click", function () {
-                    tabs.forEach((t) => t.classList.remove("active"));
-                    this.classList.add("active");
-                    contents.forEach((c) => (c.style.display = "none"));
-                    const selectedTab = this.getAttribute("data-tab");
-                    document.getElementById(selectedTab).style.display = "block";
-                });
+              fetch(url, {
+                // include credentials if needed:
+                // credentials: 'include'
+              })
+              .then(resp => {
+                if (!resp.ok) {
+                  throw new Error(`Server returned ${resp.status}`);
+                }
+                return resp.blob();
+              })
+              .then(blob => {
+                const objectUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = objectUrl;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(objectUrl);
+              })
+              .catch(err => {
+                console.error('Download failed:', err);
+                alert('Unable to download file.');
+              });
+            }
+
+            // Tab‐switcher logic (unchanged)
+            document.addEventListener("DOMContentLoaded", function () {
+              const tabs = document.querySelectorAll(".tabs button");
+              const contents = document.querySelectorAll(".tab-content");
+              tabs.forEach(t => t.addEventListener("click", function () {
+                tabs.forEach(x => x.classList.remove("active"));
+                this.classList.add("active");
+                contents.forEach(c => c.style.display = "none");
+                document.getElementById(this.dataset.tab).style.display = "block";
+              }));
             });
-        });
-    </script>
-
-    <script>
-        function downloadFile(fileUrl, fileName) {
-            fetch(fileUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok.");
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.style.display = "none";
-                    a.href = url;
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                })
-                .catch(error => {
-                    alert("Failed to download file: " + error);
-                    console.error("Download error:", error);
-                });
-        }
-    </script>
+        </script>
+}
