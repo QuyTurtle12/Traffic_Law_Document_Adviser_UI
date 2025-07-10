@@ -13,71 +13,53 @@
                     <h3 class="mb-0">Create New User</h3>
                 </div>
                 <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger">@Model.ErrorMessage</div>
+                    }
                     <form method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        @* <div class="mb-3">
-                            <label asp-for="User.Id" class="control-label"></label>
-                            <input asp-for="User.Id" class="form-control" />
-                            <span asp-validation-for="User.Id" class="text-danger"></span>
-                        </div> *@
                         <div class="mb-3">
-                            <label asp-for="User.FullName" class="control-label"></label>
-                            <input asp-for="User.FullName" class="form-control" />
-                            <span asp-validation-for="User.FullName" class="text-danger"></span>
+                            <label asp-for="NewUser.FullName" class="control-label"></label>
+                            <input asp-for="NewUser.FullName" class="form-control" />
+                            <span asp-validation-for="NewUser.FullName" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label asp-for="User.Email" class="control-label"></label>
-                            <input asp-for="User.Email" class="form-control" />
-                            <span asp-validation-for="User.Email" class="text-danger"></span>
+                            <label asp-for="NewUser.Email" class="control-label"></label>
+                            <input asp-for="NewUser.Email" class="form-control" />
+                            <span asp-validation-for="NewUser.Email" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="control-label">Password</label>
-                            <input asp-for="User.PasswordHash" class="form-control" type="password" />
-                            <span asp-validation-for="User.PasswordHash" class="text-danger"></span>
+                            <label asp-for="NewUser.Password" class="control-label">Password</label>
+                            <input asp-for="NewUser.Password" class="form-control" type="password" />
+                            <span asp-validation-for="NewUser.Password" class="text-danger"></span>
                         </div>
-
-                        @* <div class="mb-3">
-                            <label asp-for="User.Role" class="control-label"></label>
-                            <input asp-for="User.Role" class="form-control" />
-                            <span asp-validation-for="User.Role" class="text-danger"></span>
-                        </div> *@
                         <div class="mb-3">
-                            <label asp-for="User.Role" class="control-label"></label>
-                            <select asp-for="User.Role" class="form-control">
-                                <option value="1">User</option>
-                                <option value="2">Expert</option>
-                                <option value="3">Admin</option>
-                                <option value="4">Staff</option>
+                            <label asp-for="NewUser.ConfirmPassword" class="control-label">Confirm Password</label>
+                            <input asp-for="NewUser.ConfirmPassword" class="form-control" type="password" />
+                            <span asp-validation-for="NewUser.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="NewUser.Role" class="control-label"></label>
+                            <select asp-for="NewUser.Role" class="form-control">
+                                <option value="User">User</option>
+                                <option value="Expert">Expert</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Staff">Staff</option>
                             </select>
-                            <span asp-validation-for="User.Role" class="text-danger"></span>
+                            <span asp-validation-for="NewUser.Role" class="text-danger"></span>
                         </div>
-
                         <div class="form-group form-check" style="display:none">
                             <label class="form-check-label">
-                                <input class="form-check-input" asp-for="User.IsActive" /> @Html.DisplayNameFor(model => model.User.IsActive)
+                                <input class="form-check-input" asp-for="NewUser.IsActive" /> @Html.DisplayNameFor(model => model.NewUser.IsActive)
                             </label>
-                        </div>
-                        <div class="mb-3" style="display:none">
-                            <label asp-for="User.CreatedBy" class="control-label"></label>
-                            <input asp-for="User.CreatedBy" class="form-control" />
-                            <span asp-validation-for="User.CreatedBy" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3" style="display:none">
-                            <label asp-for="User.LastUpdatedBy" class="control-label"></label>
-                            <input asp-for="User.LastUpdatedBy" class="form-control" />
-                            <span asp-validation-for="User.LastUpdatedBy" class="text-danger"></span>
-                        </div>
-                        <div class="mb-3" style="display:none">
-                            <label asp-for="User.DeletedTime" class="control-label"></label>
-                            <input asp-for="User.DeletedTime" class="form-control" />
-                            <span asp-validation-for="User.DeletedTime" class="text-danger"></span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <a asp-page="Index" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Back to List
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> Create Article
+                                <i class="bi bi-check-circle"></i> Create User
                             </button>
                         </div>
                     </form>
@@ -86,7 +68,6 @@
         </div>
     </div>
 </div>
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

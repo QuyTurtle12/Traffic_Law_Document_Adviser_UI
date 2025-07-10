@@ -23,7 +23,7 @@ namespace TrafficLawDocumentRazor.Pages.News
         public int PageIndex { get; set; } = 1;
         
         [BindProperty(SupportsGet = true)]
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; } = 9;
 
         public async Task OnGetAsync()
         {

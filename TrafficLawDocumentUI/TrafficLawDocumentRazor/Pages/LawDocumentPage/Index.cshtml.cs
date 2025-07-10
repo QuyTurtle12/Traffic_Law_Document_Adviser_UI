@@ -8,6 +8,7 @@ using Util.DTOs.DocumentTagDTOs;
 using Util.DTOs.LawDocumentDTOs;
 using Util.Paginated;
 using TrafficLawDocumentRazor.Services;
+using System.Drawing.Printing;
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
@@ -22,6 +23,8 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             _lawDocumentsApiService = lawDocumentsApiService;
         }
 
+        [BindProperty(SupportsGet = true)]
+        public string? SearchKeyword { get; set; }
         public PaginatedList<GetLawDocumentDTO> LawDocumentList { get; set; } = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
 
         [BindProperty(SupportsGet = true)]
@@ -30,11 +33,15 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 10;
 
+
+
         public async Task OnGetAsync()
         {
             try
             {
-                LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize);
+                //LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize);
+                var result = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize, SearchKeyword);
+                LawDocumentList = result;
             }
             catch (Exception ex)
             {

@@ -4,6 +4,44 @@
     ViewData["Title"] = "News Management";
 }
 
+@if (!string.IsNullOrEmpty(Model.SyncMessage))
+{
+    <div class="alert alert-@(Model.SyncStatus == "success" ? "success" : "danger") mt-3">
+        <strong>@Model.SyncMessage</strong>
+    </div>
+    if (Model.SyncedArticles != null && Model.SyncedArticles.Count > 0)
+    {
+        <div class="card mt-3 mb-4">
+            <div class="card-header">
+                <strong>New Articles Synced</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Published Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var article in Model.SyncedArticles)
+                        {
+                            <tr>
+                                <td>@article.Title</td>
+                                <td>@article.Author</td>
+                                <td>@article.PublishedDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+}
+
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col-md-6">
@@ -15,9 +53,14 @@
                 <a asp-page="Create" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i> Create New Article
                 </a>
-                <button type="button" class="btn btn-outline-secondary" onclick="syncNews()">
-                    <i class="bi bi-arrow-clockwise"></i> Sync News
-                </button>
+                @if (Model.CurrentUserRole == "Staff")
+                {
+                    <form method="post" asp-page-handler="SyncNews" style="display:inline;">
+                        <button type="submit" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i> Sync News
+                        </button>
+                    </form>
+                }
             </div>
         </div>
     </div>
@@ -122,14 +165,14 @@
 
     @if (Model.NewsList.Items != null && Model.NewsList.Items.Any())
     {
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">All News Articles</h5>
+        <div class="data-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-list me-2"></i>All News Articles</h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Author</th>
@@ -230,7 +273,8 @@
     }
     else
     {
-        <div class="alert alert-info text-center">
+        <div class="empty-state">
+            <i class="bi bi-newspaper"></i>
             <h4>No news articles found</h4>
             <p>Create your first news article to get started.</p>
             <a asp-page="Create" class="btn btn-primary">Create First Article</a>
@@ -240,40 +284,6 @@
 
 @section Scripts {
     <script>
-        function syncNews() {
-            if (confirm('Are you sure you want to sync news from external API? This may take a few moments.')) {
-                // Show loading state
-                const syncBtn = event.target.closest('button');
-                const originalText = syncBtn.innerHTML;
-                syncBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Syncing...';
-                syncBtn.disabled = true;
-
-                // Make API call to sync news
-                fetch('/api/News/sync', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Reload the page to show updated data
-                        window.location.reload();
-                    } else {
-                        alert('Failed to sync news. Please try again.');
-                        syncBtn.innerHTML = originalText;
-                        syncBtn.disabled = false;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error syncing news:', error);
-                    alert('An error occurred while syncing news. Please try again.');
-                    syncBtn.innerHTML = originalText;
-                    syncBtn.disabled = false;
-                });
-            }
-        }
-
         function clearFilters() {
             // Clear all filter inputs
             document.getElementById('TitleFilter').value = '';

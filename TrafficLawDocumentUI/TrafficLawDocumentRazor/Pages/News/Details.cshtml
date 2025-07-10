@@ -4,59 +4,223 @@
     ViewData["Title"] = Model.News?.Title ?? "News Details";
 }
 
+<style>
+    .breadcrumb {
+        border-radius: 12px;
+        padding: 12px 20px;
+        background-color: rgba(30, 60, 114, 0.05);
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: #1e3c72;
+    }
+    
+    .breadcrumb-item a {
+        color: #1e3c72;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item.active {
+        color: #2a5298;
+        font-weight: 600;
+    }
+    
+    .news-article {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .news-article .card-title {
+        color: #1e3c72;
+    }
+    
+    .news-article .card-body {
+        padding: 30px;
+    }
+    
+    .news-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .news-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+    
+    .embedded-content {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+    
+    .btn-secondary {
+        background: rgba(108, 117, 125, 0.1);
+        color: #1e3c72;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(108, 117, 125, 0.2);
+        color: #1e3c72;
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .btn-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #ffed4a 100%);
+        border: none;
+        color: #212529;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+    }
+    
+    .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #ef5350 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+    
+    .article-image {
+        position: relative;
+    }
+    
+    .article-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .error-message {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .error-message::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .error-message i {
+        font-size: 3rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+    }
+</style>
+
 <div class="container mt-4">
     @if (Model.News == null)
     {
-        <div class="alert alert-danger">
+        <div class="error-message">
+            <i class="bi bi-exclamation-triangle"></i>
             <h4>Article not found</h4>
             <p>The requested news article could not be found.</p>
-            <a asp-page="Index" class="btn btn-primary">Back to News</a>
+            <a asp-page="Index" class="btn btn-light mt-2">Back to News</a>
         </div>
     }
     else
     {
         <div class="row">
             <div class="col-lg-8 mx-auto">
-                <nav aria-label="breadcrumb">
+                <nav aria-label="breadcrumb" class="mb-4">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a asp-page="/Index">Home</a></li>
-                        <li class="breadcrumb-item"><a asp-page="Index">News</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">@Model.News.Title</li>
+                        <li class="breadcrumb-item"><a asp-page="/Index"><i class="bi bi-house me-1"></i>Home</a></li>
+                        <li class="breadcrumb-item"><a asp-page="Index"><i class="bi bi-newspaper me-1"></i>News</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">@(Model.News.Title.Length > 30 ? Model.News.Title.Substring(0, 30) + "..." : Model.News.Title)</li>
                     </ol>
                 </nav>
 
-                <article class="card">
+                <article class="news-article">
                     @if (!string.IsNullOrEmpty(Model.News.ImageUrl))
                     {
-                        <img src="@Model.News.ImageUrl" class="card-img-top" alt="@Model.News.Title" style="max-height: 400px; object-fit: cover;">
+                        <div class="article-image">
+                            <img src="@Model.News.ImageUrl" class="card-img-top" alt="@Model.News.Title" style="max-height: 400px; object-fit: cover;">
+                        </div>
                     }
                     
                     <div class="card-body">
-                        <header class="mb-4">
+                        <header class="news-header">
                             <h1 class="card-title display-5">@Model.News.Title</h1>
-                            <div class="text-muted mb-3">
+                            <div class="text-muted">
                                 <small>
-                                    <i class="bi bi-calendar"></i> Published: @Model.News.PublishedDate.ToString("MMMM dd, yyyy")
+                                    <i class="bi bi-calendar me-1"></i> Published: @Model.News.PublishedDate.ToString("MMMM dd, yyyy")
                                     @if (!string.IsNullOrEmpty(Model.News.Author))
                                     {
-                                        <span> | <i class="bi bi-person"></i> @Model.News.Author</span>
+                                        <span> | <i class="bi bi-person me-1"></i> @Model.News.Author</span>
                                     }
                                     @if (Model.News.LastUpdatedTime.HasValue)
                                     {
-                                        <span> | <i class="bi bi-clock"></i> Updated: @Model.News.LastUpdatedTime.Value.ToString("MMMM dd, yyyy")</span>
+                                        <span> | <i class="bi bi-clock me-1"></i> Updated: @Model.News.LastUpdatedTime.Value.ToString("MMMM dd, yyyy")</span>
                                     }
                                 </small>
                             </div>
                         </header>
 
-                        <div class="card-text">
+                        <div class="news-content">
                             @Html.Raw(Model.News.Content?.Replace("\n", "<br>"))
                         </div>
 
                         @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
                         {
-                            <div class="mt-4">
-                                <h5>Related Content</h5>
+                            <div class="embedded-content">
+                                <h5 class="mt-4 mb-3"><i class="bi bi-link-45deg me-1"></i>Related Content</h5>
                                 <div class="ratio ratio-16x9">
                                     <iframe src="@Model.News.EmbeddedUrl" title="Embedded content" allowfullscreen></iframe>
                                 </div>
@@ -67,24 +231,24 @@
 
                 <div class="mt-4 d-flex justify-content-between">
                     <a asp-page="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to News
+                        <i class="bi bi-arrow-left me-1"></i> Back to News
                     </a>
                     
                     <div class="btn-group" role="group">
                         @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
                         {
                             <a href="@Model.News.EmbeddedUrl" class="btn btn-primary" target="_blank">
-                                <i class="bi bi-box-arrow-up-right"></i> View Embedded
+                                <i class="bi bi-box-arrow-up-right me-1"></i> View Embedded
                             </a>
                         }
                         
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <a asp-page="/News/Manage/Edit" asp-route-id="@Model.News.Id" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="bi bi-pencil me-1"></i> Edit
                             </a>
                             <a asp-page="/News/Manage/Delete" asp-route-id="@Model.News.Id" class="btn btn-danger">
-                                <i class="bi bi-trash"></i> Delete
+                                <i class="bi bi-trash me-1"></i> Delete
                             </a>
                         }
                     </div>

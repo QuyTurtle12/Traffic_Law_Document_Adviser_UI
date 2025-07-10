@@ -4,11 +4,111 @@
     ViewData["Title"] = "News";
 }
 
+<style>
+    .news-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .news-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .news-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        height: 100%;
+    }
+    
+    .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .news-card img {
+        transition: all 0.5s ease;
+    }
+    
+    .news-card:hover img {
+        transform: scale(1.05);
+    }
+    
+    .news-card .card-title {
+        color: #1e3c72;
+        font-weight: 600;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .pagination {
+        margin-top: 30px;
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: #1e3c72;
+    }
+    
+    .page-link {
+        color: #1e3c72;
+        border-radius: 8px;
+        margin: 0 3px;
+    }
+    
+    .btn-group-sm .btn {
+        border-radius: 8px;
+    }
+    
+    .empty-state {
+        background-color: rgba(30, 60, 114, 0.05);
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: #1e3c72;
+        margin-bottom: 20px;
+    }
+</style>
+
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="display-4 mb-4">Latest News</h1>
-            <p class="lead">Stay updated with the latest traffic law news and updates.</p>
+    <div class="news-header">
+        <div class="row">
+            <div class="col-12 text-center">
+                <i class="bi bi-newspaper text-warning" style="font-size: 3rem;"></i>
+                <h1 class="display-4 mb-3">Latest News</h1>
+                <p class="lead">Stay updated with the latest traffic law news and updates.</p>
+            </div>
         </div>
     </div>
 
@@ -18,10 +118,12 @@
             @foreach (var news in Model.NewsList.Items)
             {
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm">
+                    <div class="news-card">
                         @if (!string.IsNullOrEmpty(news.ImageUrl))
                         {
-                            <img src="@news.ImageUrl" class="card-img-top" alt="@news.Title" style="height: 200px; object-fit: cover;">
+                            <div style="overflow: hidden; height: 200px;">
+                                <img src="@news.ImageUrl" class="card-img-top" alt="@news.Title" style="height: 100%; object-fit: cover;">
+                            </div>
                         }
                         <div class="card-body">
                             <h5 class="card-title">@news.Title</h5>
@@ -37,7 +139,9 @@
                             <p class="card-text">
                                 @(news.Content?.Length > 150 ? news.Content.Substring(0, 150) + "..." : news.Content)
                             </p>
-                            <a href="/News/Details/@news.Id" class="btn btn-primary">Read More</a>
+                            <a href="/News/Details/@news.Id" class="btn btn-primary">
+                                <i class="bi bi-book me-1"></i> Read More
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -96,13 +200,10 @@
     }
     else
     {
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <h4>No news available</h4>
-                    <p>Check back later for the latest updates.</p>
-                </div>
-            </div>
+        <div class="empty-state">
+            <i class="bi bi-info-circle"></i>
+            <h4>No news available</h4>
+            <p>Check back later for the latest updates.</p>
         </div>
     }
 </div> 
