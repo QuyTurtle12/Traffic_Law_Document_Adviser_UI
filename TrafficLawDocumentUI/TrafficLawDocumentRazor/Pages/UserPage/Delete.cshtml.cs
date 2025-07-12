@@ -2,33 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BussinessObject;
+using Util.DTOs.UserDTOs;
+using TrafficLawDocumentRazor.Services;
 
 namespace TrafficLawDocumentRazor.Pages.UserPage
 {
     public class DeleteModel : PageModel
     {
-        private readonly BussinessObject.TrafficLawDocumentDbContext _context;
+        private readonly IUserApiService _userApiService;
 
-        public DeleteModel(BussinessObject.TrafficLawDocumentDbContext context)
+        public DeleteModel(IUserApiService userApiService)
         {
-            _context = context;
+            _userApiService = userApiService;
         }
 
-        [BindProperty]
-        public User User { get; set; } = default!;
+        public string CurrentUserRole { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        [BindProperty]
+        public UserDTO User { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            if (id == null)
+            CurrentUserRole = base.User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (CurrentUserRole != "Admin")
             {
-                return NotFound();
+                return RedirectToPage("/Index");
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _userApiService.GetUserByIdAsync(id);
 
             if (user == null)
             {
@@ -41,19 +48,26 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid? id)
+        public async Task<IActionResult> OnPostAsync(Guid id)
         {
-            if (id == null)
+            CurrentUserRole = base.User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (CurrentUserRole != "Admin")
             {
-                return NotFound();
+                return RedirectToPage("/Index");
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            var success = await _userApiService.DeleteUserAsync(id);
+            if (!success)
             {
-                User = user;
-                _context.Users.Remove(User);
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("", "Failed to delete user.");
+                // Reload the user data for the page
+                var user = await _userApiService.GetUserByIdAsync(id);
+                if (user != null)
+                {
+                    User = user;
+                }
+                return Page();
             }
 
             return RedirectToPage("./Index");

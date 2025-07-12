@@ -68,7 +68,16 @@ namespace TrafficLawDocumentRazor
                 var logger = provider.GetRequiredService<ILogger<NewsApiService>>();
                 return new NewsApiService(httpClient, logger);
             });
-            builder.Services.AddHttpClient<IUserApiService, UserApiService>();
+            
+            // Register UserApiService
+            builder.Services.AddScoped<IUserApiService, UserApiService>(provider =>
+            {
+                var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("API");
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                return new UserApiService(httpClient, configuration, httpContextAccessor);
+            });
+            
             builder.Services.AddHttpClient<ILawDocumentsApiService, LawDocumentsApiService>();
 
             var app = builder.Build();

@@ -34,8 +34,6 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
             }
             try
             {
-                NewUser.Password = BCrypt.Net.BCrypt.HashPassword(NewUser.Password);
-                
                 var result = await _userApiService.CreateUserAsync(NewUser);
                 if (result != null && result.StatusCode == 201)
                 {

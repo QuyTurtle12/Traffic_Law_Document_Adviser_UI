@@ -11,6 +11,8 @@ namespace TrafficLawDocumentRazor.Services
     {
         Task<PaginatedList<UserDTO>> GetUsersAsync(int pageIndex, int pageSize);
         Task<ApiResponse<UserDTO>> CreateUserAsync(CreateUserDTO dto);
+        Task<UserDTO?> GetUserByIdAsync(Guid id);
+        Task<bool> DeleteUserAsync(Guid id);
     }
     public class UserApiService: IUserApiService
     {
@@ -61,6 +63,76 @@ namespace TrafficLawDocumentRazor.Services
             response.EnsureSuccessStatusCode();
             var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UserDTO>>();
             return apiResponse!;
+        }
+
+        public async Task<UserDTO?> GetUserByIdAsync(Guid id)
+        {
+            try
+            {
+                var baseUrl = _configuration["ApiSettings:BaseUrl"];
+                var token = _httpContextAccessor.HttpContext?.User?.FindFirstValue("access_token");
+                
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var url = $"{baseUrl}users/{id}";
+                var response = await _httpClient.GetAsync(url);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UserDTO>>();
+                    return apiResponse?.Data;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> DeleteUserAsync(Guid id)
+        {
+            try
+            {
+                var baseUrl = _configuration["ApiSettings:BaseUrl"];
+                var token = _httpContextAccessor.HttpContext?.User?.FindFirstValue("access_token");
+                
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var url = $"{baseUrl}users/{id}";
+                Console.WriteLine($"Calling DELETE API: {url}");
+                Console.WriteLine($"Authorization: Bearer {token?.Substring(0, Math.Min(20, token.Length))}...");
+                
+                var response = await _httpClient.DeleteAsync(url);
+                
+                Console.WriteLine($"API Response Status: {response.StatusCode}");
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("User deleted successfully");
+                    return true;
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to delete user {id}. Status: {response.StatusCode}, Error: {errorContent}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception deleting user {id}: {ex.Message}");
+                return false;
+            }
         }
     }
 }
