@@ -395,7 +395,7 @@
         const apiBaseUrl = '@Model.ApiBaseUrl';
 
         function downloadFromApi(cloudUrl, fileName) {
-            const url = `${apiBaseUrl}/photo/download?url=${encodeURIComponent(cloudUrl)}`;
+            const url = `${apiBaseUrl}/pdf/download?url=${encodeURIComponent(cloudUrl)}`;
 
             fetch(url, {
                 // include credentials if needed:
