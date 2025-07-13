@@ -8,21 +8,42 @@
     .breadcrumb {
         border-radius: 12px;
         padding: 12px 20px;
-        background-color: rgba(30, 60, 114, 0.05);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #ffd700;
+        font-weight: 600;
+        margin-bottom: 18px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .breadcrumb::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
     }
     
     .breadcrumb-item + .breadcrumb-item::before {
-        color: #1e3c72;
+        color: #ffd700;
     }
     
     .breadcrumb-item a {
-        color: #1e3c72;
+        color: #ffd700;
         font-weight: 500;
         text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white;
+        text-decoration: underline;
     }
     
     .breadcrumb-item.active {
-        color: #2a5298;
+        color: white;
         font-weight: 600;
     }
     
@@ -31,10 +52,25 @@
         border-radius: 20px;
         overflow: hidden;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        background: white;
+        position: relative;
+    }
+    
+    .news-article::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
     }
     
     .news-article .card-title {
         color: #1e3c72;
+        font-weight: 700;
+        font-size: 2.5rem;
+        line-height: 1.2;
     }
     
     .news-article .card-body {
@@ -42,7 +78,7 @@
     }
     
     .news-header {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 2px solid #ffd70022;
         padding-bottom: 20px;
         margin-bottom: 30px;
     }
@@ -50,6 +86,7 @@
     .news-content {
         font-size: 1.1rem;
         line-height: 1.8;
+        color: #2c3e50;
     }
     
     .embedded-content {
@@ -59,29 +96,53 @@
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         margin-top: 30px;
         margin-bottom: 20px;
+        background: white;
+        position: relative;
+    }
+    
+    .embedded-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .embedded-content h5 {
+        color: #1e3c72;
+        font-weight: 600;
+        padding: 20px 20px 0 20px;
+    }
+    
+    .embedded-content .ratio {
+        padding: 0 20px 20px 20px;
     }
     
     .btn-secondary {
-        background: rgba(108, 117, 125, 0.1);
-        color: #1e3c72;
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
         border: none;
         border-radius: 12px;
-        padding: 10px 20px;
+        padding: 12px 24px;
         font-weight: 600;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
     }
     
     .btn-secondary:hover {
-        background: rgba(108, 117, 125, 0.2);
-        color: #1e3c72;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        color: white;
     }
     
     .btn-primary {
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #ffd700;
         border: none;
         border-radius: 12px;
-        padding: 10px 20px;
+        padding: 12px 24px;
         font-weight: 600;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
@@ -90,29 +151,31 @@
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        color: #ffd700;
     }
     
     .btn-warning {
-        background: linear-gradient(135deg, #ffc107 0%, #ffed4a 100%);
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
         border: none;
-        color: #212529;
+        color: #1e3c72;
         border-radius: 12px;
-        padding: 10px 20px;
+        padding: 12px 24px;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
     }
     
     .btn-warning:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        color: #1e3c72;
     }
     
     .btn-danger {
         background: linear-gradient(135deg, #dc3545 0%, #ef5350 100%);
         border: none;
         border-radius: 12px;
-        padding: 10px 20px;
+        padding: 12px 24px;
         font-weight: 600;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
@@ -163,6 +226,20 @@
         color: #ffd700;
         margin-bottom: 20px;
     }
+    
+    .news-meta {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+    
+    .news-meta i {
+        color: #ffd700;
+        margin-right: 6px;
+    }
+    
+    .btn-group .btn {
+        margin: 0 4px;
+    }
 </style>
 
 <div class="container mt-4">
@@ -198,18 +275,16 @@
                     <div class="card-body">
                         <header class="news-header">
                             <h1 class="card-title display-5">@Model.News.Title</h1>
-                            <div class="text-muted">
-                                <small>
-                                    <i class="bi bi-calendar me-1"></i> Published: @Model.News.PublishedDate.ToString("MMMM dd, yyyy")
-                                    @if (!string.IsNullOrEmpty(Model.News.Author))
-                                    {
-                                        <span> | <i class="bi bi-person me-1"></i> @Model.News.Author</span>
-                                    }
-                                    @if (Model.News.LastUpdatedTime.HasValue)
-                                    {
-                                        <span> | <i class="bi bi-clock me-1"></i> Updated: @Model.News.LastUpdatedTime.Value.ToString("MMMM dd, yyyy")</span>
-                                    }
-                                </small>
+                            <div class="news-meta">
+                                <i class="bi bi-calendar me-1"></i> Published: @Model.News.PublishedDate.ToString("MMMM dd, yyyy")
+                                @if (!string.IsNullOrEmpty(Model.News.Author))
+                                {
+                                    <span> | <i class="bi bi-person me-1"></i> @Model.News.Author</span>
+                                }
+                                @if (Model.News.LastUpdatedTime.HasValue)
+                                {
+                                    <span> | <i class="bi bi-clock me-1"></i> Updated: @Model.News.LastUpdatedTime.Value.ToString("MMMM dd, yyyy")</span>
+                                }
                             </div>
                         </header>
 

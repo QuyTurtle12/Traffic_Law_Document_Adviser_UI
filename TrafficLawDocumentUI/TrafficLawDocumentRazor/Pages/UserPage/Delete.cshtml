@@ -2,12 +2,11 @@
 @model TrafficLawDocumentRazor.Pages.UserPage.DeleteModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete User";
     Layout = null;
 }
 
-<!-- Nội dung chính -->
-<div class="container my-5">
+<div class="container my-4">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card lively-card animate__animated animate__fadeIn">
@@ -53,3 +52,97 @@
         </div>
     </div>
 </div>
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 60px 30px;
+        margin-bottom: 50px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .feature-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #1e3c72;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        color: #1e3c72;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .section-title {
+        color: #1e3c72;
+        font-weight: 600;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 30px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    dl.row dt {
+        padding-bottom: 0.5rem;
+    }
+    
+    dl.row dd {
+        padding-bottom: 0.5rem;
+    }
+</style>

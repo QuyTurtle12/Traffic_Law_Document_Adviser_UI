@@ -2,84 +2,223 @@
 @model TrafficLawDocumentRazor.Pages.UserPage.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "User Details";
 }
 
-<h1>Details</h1>
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="hero-section mb-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="mb-4">
+                    <i class="bi bi-person-circle text-warning" style="font-size: 4rem;"></i>
+                </div>
+                <h1 class="display-4 fw-bold mb-3">User Details</h1>
+                <p class="lead mb-4">View comprehensive user information and account details.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#user-info" class="btn btn-light btn-lg">
+                        <i class="bi bi-person"></i> View Details
+                    </a>
+                    <a asp-page="Index" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.PasswordHash)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.PasswordHash)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Role)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Role)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.IsActive)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.IsActive)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.CreatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.CreatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.LastUpdatedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.LastUpdatedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.DeletedBy)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.DeletedBy)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.CreatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.CreatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.LastUpdatedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.LastUpdatedTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.DeletedTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.DeletedTime)
-        </dd>
-    </dl>
+    <!-- User Information Section -->
+    <div id="user-info" class="mb-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title">User Information</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="feature-card">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-person me-2"></i>Full Name
+                                    </dt>
+                                    <dd class="col-sm-8 text-dark">
+                                        @Html.DisplayFor(model => model.User.FullName)
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-envelope me-2"></i>Email
+                                    </dt>
+                                    <dd class="col-sm-8 text-dark">
+                                        @Html.DisplayFor(model => model.User.Email)
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-shield me-2"></i>Role
+                                    </dt>
+                                    <dd class="col-sm-8">
+                                        <span class="badge bg-primary text-white rounded-pill">@Html.DisplayFor(model => model.User.Role)</span>
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-check-circle me-2"></i>Status
+                                    </dt>
+                                    <dd class="col-sm-8">
+                                        @if (Model.User.IsActive)
+                                        {
+                                            <span class="badge bg-success text-white rounded-pill">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary text-white rounded-pill">Inactive</span>
+                                        }
+                                    </dd>
+                                </dl>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <dl class="row">
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-person-plus me-2"></i>Created By
+                                    </dt>
+                                    <dd class="col-sm-8 text-dark">
+                                        @Html.DisplayFor(model => model.User.CreatedBy)
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-clock me-2"></i>Created Time
+                                    </dt>
+                                    <dd class="col-sm-8 text-dark">
+                                        @Html.DisplayFor(model => model.User.CreatedTime)
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-person-gear me-2"></i>Last Updated By
+                                    </dt>
+                                    <dd class="col-sm-8 text-dark">
+                                        @Html.DisplayFor(model => model.User.LastUpdatedBy)
+                                    </dd>
+                                    
+                                    <dt class="col-sm-4 text-dark fw-semibold">
+                                        <i class="bi bi-clock-history me-2"></i>Last Updated
+                                    </dt>
+                                    <dd class="col-sm-8 text-dark">
+                                        @Html.DisplayFor(model => model.User.LastUpdatedTime)
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center pt-4 border-top mt-4">
+                            <a asp-page="./Index" class="btn btn-outline-primary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>Back to List
+                            </a>
+                            <div>
+                                <a asp-page="./Edit" asp-route-id="@Model.User.Id" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-pencil me-2"></i>Edit User
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
+
+@section Styles {
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 60px 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+        }
+        
+        .feature-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid #1e3c72;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: #1e3c72;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        }
+        
+        .section-title {
+            color: #1e3c72;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+        }
+        
+        dl.row dt {
+            padding-bottom: 0.5rem;
+        }
+        
+        dl.row dd {
+            padding-bottom: 0.5rem;
+        }
+    </style>
+}

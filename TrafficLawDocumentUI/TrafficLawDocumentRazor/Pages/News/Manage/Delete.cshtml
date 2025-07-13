@@ -4,46 +4,199 @@
     ViewData["Title"] = "Delete News Article";
 }
 
+<style>
+    .delete-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .delete-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .delete-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .delete-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .delete-card .card-header {
+        background: linear-gradient(135deg, #dc3545 0%, #ef5350 100%);
+        color: white;
+        border: none;
+        border-radius: 20px 20px 0 0;
+        padding: 20px 30px;
+        font-weight: 600;
+    }
+    
+    .delete-card .card-body {
+        padding: 30px;
+    }
+    
+    .article-info {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid #ffd700;
+    }
+    
+    .article-title {
+        color: #1e3c72;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+    }
+    
+    .article-meta {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .article-content {
+        color: #2c3e50;
+        line-height: 1.6;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #ef5350 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        color: white;
+    }
+    
+    .error-message {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .error-message::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .error-message i {
+        font-size: 3rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+    }
+    
+    .warning-icon {
+        color: #dc3545;
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+</style>
+
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-exclamation-triangle"></i> Delete Article
-                    </h3>
+    @if (Model.News == null)
+    {
+        <div class="error-message">
+            <i class="bi bi-exclamation-triangle"></i>
+            <h4>Article not found</h4>
+            <p>The requested news article could not be found.</p>
+            <a asp-page="Index" class="btn btn-light mt-2">Back to List</a>
+        </div>
+    }
+    else
+    {
+        <div class="delete-header">
+            <div class="row align-items-center">
+                <div class="col-12 text-center">
+                    <i class="bi bi-trash text-warning" style="font-size: 3rem;"></i>
+                    <h1 class="display-4 mb-2">Delete Article</h1>
+                    <p class="lead mb-0">Are you sure you want to delete this article?</p>
                 </div>
-                <div class="card-body">
-                    @if (Model.News == null)
-                    {
-                        <div class="alert alert-danger">
-                            <h4>Article not found</h4>
-                            <p>The requested news article could not be found.</p>
-                            <a asp-page="Index" class="btn btn-primary">Back to List</a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-warning">
-                            <h4 class="alert-heading">Are you sure you want to delete this article?</h4>
-                            <p>This action cannot be undone. The article will be permanently removed from the system.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="delete-card">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Confirm Deletion</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-exclamation-triangle warning-icon"></i>
+                            <h4 class="text-danger">Warning</h4>
+                            <p class="text-muted">This action cannot be undone. The article will be permanently deleted.</p>
                         </div>
 
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">@Model.News.Title</h5>
-                                <p class="card-text text-muted">
-                                    <small>
-                                        <i class="bi bi-calendar"></i> Published: @Model.News.PublishedDate.ToString("MMM dd, yyyy")
-                                        @if (!string.IsNullOrEmpty(Model.News.Author))
-                                        {
-                                            <span> | <i class="bi bi-person"></i> @Model.News.Author</span>
-                                        }
-                                    </small>
-                                </p>
-                                <p class="card-text">
-                                    @(Model.News.Content?.Length > 200 ? Model.News.Content.Substring(0, 200) + "..." : Model.News.Content)
-                                </p>
+                        <div class="article-info">
+                            <div class="article-title">@Model.News.Title</div>
+                            <div class="article-meta">
+                                <i class="bi bi-person me-1"></i> @Model.News.Author
+                                <span class="mx-2">|</span>
+                                <i class="bi bi-calendar me-1"></i> @Model.News.PublishedDate.ToString("MMMM dd, yyyy")
+                            </div>
+                            <div class="article-content">
+                                @(Model.News.Content?.Length > 300 ? Model.News.Content.Substring(0, 300) + "..." : Model.News.Content)
                             </div>
                         </div>
 
@@ -52,16 +205,16 @@
                             
                             <div class="d-flex justify-content-between">
                                 <a asp-page="Index" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-left"></i> Cancel
+                                    <i class="bi bi-arrow-left me-1"></i> Cancel
                                 </a>
                                 <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-trash"></i> Delete Article
+                                    <i class="bi bi-trash me-1"></i> Delete Article
                                 </button>
                             </div>
                         </form>
-                    }
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 </div> 
