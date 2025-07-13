@@ -8,52 +8,11 @@
 
 <h1>@(isExpert ? "Verify Document" : "Edit Document")</h1>
 <p>@(isExpert ? "Verify law document." : "Edit law document details.")</p>
+
 @if (isExpert)
 {
-    <!-- Expert Verification Form -->
     <form method="post" asp-page-handler="Verify" asp-route-id="@RouteData.Values["id"]">
         <input type="hidden" name="id" value="@RouteData.Values["id"]" />
-        <div class="row" style="gap: 2rem;">
-            <!-- Read-only Document Info -->
-            <div class="col-md-6" style="border:2px dashed #c3b6fc; border-radius:12px; padding:2rem;">
-                <div class="mb-3">
-                    <label class="form-label">Title</label>
-                    <input value="@Model.LawDocument.Title" class="form-control" readonly />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Code</label>
-                    <input value="@Model.LawDocument.DocumentCode" class="form-control" readonly />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Category</label>
-                    <input value="@Model.Categories.FirstOrDefault(c => c.Value == Model.LawDocument.CategoryId.ToString())?.Text" class="form-control" readonly />
-                </div>
-                @if (!string.IsNullOrEmpty(Model.LawDocument.FilePath))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Document File</label>
-                        <div>
-                            <a href="@Model.LawDocument.FilePath" target="_blank" class="btn btn-outline-dark">View Document</a>
-                        </div>
-                    </div>
-                }
-                <div class="mb-3 form-check">
-                    <input asp-for="LawDocument.ExpertVerification" class="form-check-input" />
-                    <label asp-for="LawDocument.ExpertVerification" class="form-check-label">Verify Document</label>
-                </div>
-            </div>
-
-            <!-- Read-only Tags -->
-            <div class="col-md-5" style="border:2px dashed #c3b6fc; border-radius:12px; padding:2rem;">
-                <label class="form-label">Tags</label>
-                <div class="d-flex flex-wrap gap-2">
-                    @foreach (var tag in Model.Tags.Where(t => Model.LawDocument.TagList?.Any(lt => lt.DocumentTagId.ToString() == t.Value) ?? false))
-                    {
-                        <span class="badge bg-dark">@tag.Text</span>
-                    }
-                </div>
-            </div>
-        </div>
         <div class="d-flex justify-content-end mt-4">
             <button type="submit" class="btn btn-dark btn-lg">Save</button>
         </div>
@@ -61,10 +20,10 @@
 }
 else
 {
-	<!-- Regular Edit Form -->
-    <form method="post" enctype="multipart/form-data">
+    <form method="post">
+        <input type="hidden" asp-for="LawDocument.LinkPath" />
+
         <div class="row" style="gap: 2rem;">
-            <!-- Left: Document Fields -->
             <div class="col-md-6" style="border:2px dashed #c3b6fc; border-radius:12px; padding:2rem;">
                 <div class="mb-3">
                     <label asp-for="LawDocument.Title" class="form-label">Title *</label>
@@ -83,40 +42,29 @@ else
                     </select>
                     <span asp-validation-for="LawDocument.CategoryId" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="LawDocument.LinkPath" class="form-label">Link Path</label>
-                    <input asp-for="LawDocument.LinkPath" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">File</label>
-                    <input type="file" asp-for="UploadFile" class="form-control" />
-                    <span asp-validation-for="UploadFile" class="text-danger"></span>
-                    @if (!string.IsNullOrEmpty(Model.LawDocument.FilePath))
-                    {
-                        <div class="mt-2">
-                            <span>Current file: </span>
-                            <a href="@Model.LawDocument.FilePath" target="_blank">@Model.LawDocument.FilePath</a>
-                        </div>
-                    }
-                </div>
             </div>
 
-            <!-- Right: Tags -->
             <div class="col-md-5" style="border:2px dashed #c3b6fc; border-radius:12px; padding:2rem;">
                 <label class="form-label">Tags *</label>
                 <div class="d-flex flex-wrap gap-2">
                     @foreach (var tag in Model.Tags)
                     {
-                        var isChecked = Model.LawDocument.TagList != null &&
-                        Model.LawDocument.TagList.Any(t => t.DocumentTagId.ToString() == tag.Value);
+                        var isChecked = Model.LawDocument.TagList != null
+                        && Model.LawDocument.TagList.Any(t => t.DocumentTagId.ToString() == tag.Value);
                         <div class="form-check form-check-inline">
-                            <input class="btn-check" type="checkbox" name="SelectedTagIds" value="@tag.Value" id="tag-@tag.Value" @(isChecked ? "checked" : "") />
+                            <input class="btn-check"
+                                   type="checkbox"
+                                   name="SelectedTagIds"
+                                   value="@tag.Value"
+                                   id="tag-@tag.Value"
+                                   @(isChecked ? "checked" : "") />
                             <label class="btn btn-outline-dark" for="tag-@tag.Value">@tag.Text</label>
                         </div>
                     }
                 </div>
             </div>
         </div>
+
         <div class="d-flex justify-content-end mt-4">
             <button type="submit" class="btn btn-dark btn-lg">Save Document</button>
         </div>
