@@ -23,8 +23,6 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             _lawDocumentsApiService = lawDocumentsApiService;
         }
 
-        [BindProperty(SupportsGet = true)]
-        public string? SearchKeyword { get; set; }
         public PaginatedList<GetLawDocumentDTO> LawDocumentList { get; set; } = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
 
         [BindProperty(SupportsGet = true)]
@@ -33,6 +31,11 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 10;
 
+        // Search property
+        [BindProperty(SupportsGet = true)] public string? TitleSearch { get; set; }
+        [BindProperty(SupportsGet = true)] public string? DocumentCodeSearch { get; set; }
+        [BindProperty(SupportsGet = true)] public string? CategoryNameSearch { get; set; }
+
 
 
         public async Task OnGetAsync()
@@ -40,8 +43,11 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             try
             {
                 //LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize);
-                var result = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize, SearchKeyword);
-                LawDocumentList = result;
+                LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(
+                    PageIndex, PageSize,
+                    TitleSearch, DocumentCodeSearch, CategoryNameSearch
+                );
+
             }
             catch (Exception ex)
             {
