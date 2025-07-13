@@ -1,257 +1,492 @@
 ﻿@page
 @model TrafficLawDocumentRazor.Pages.LawDocumentPage.Management.IndexModel
 @{
+    ViewData["Title"] = "Law Document Management";
 }
 
-@{
-	ViewData["Title"] = "Index";
-}
+<!-- Include Bootstrap Icons directly -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
 <style>
-	.pagination {
-		justify-content: center;
-	}
-
-	.page-item.active .page-link {
-		background-color: #111 !important;
-		border-color: #111 !important;
-		color: #fff !important;
-	}
-
-	.search-area {
-		background-color: #f0f0f0;
-		padding: 0.5rem;
-		border-radius: 8px;
-	}
-
-	.table thead {
-		background-color: #111;
-		color: white;
-	}
-
-		.table thead th {
-			border-bottom: none;
-		}
-
-	.btn-check:checked + .btn-outline-dark {
-		background-color: #111;
-		border-color: #111;
-		color: white;
-	}
-
-	.btn-outline-dark {
-		--bs-btn-color: #111;
-		--bs-btn-border-color: #111;
-		--bs-btn-hover-color: #fff;
-		--bs-btn-hover-bg: #111;
-		--bs-btn-hover-border-color: #111;
-		--bs-btn-active-color: #fff;
-		--bs-btn-active-bg: #111;
-		--bs-btn-active-border-color: #111;
-	}
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .page-container {
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .content-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out;
+        margin-bottom: 20px;
+    }
+    
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 30px 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .page-header h1 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 2.2rem;
+    }
+    
+    .page-header p {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+    
+    .law-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #ffd700;
+    }
+    
+    .search-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid #e9ecef;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 0.2rem rgba(30, 60, 114, 0.25);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-outline-dark {
+        border: 2px solid #1e3c72;
+        border-radius: 8px;
+        color: #1e3c72;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .btn-outline-dark:hover, .btn-check:checked + .btn-outline-dark {
+        background: #1e3c72;
+        border-color: #1e3c72;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .table thead {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+    }
+    
+    .table thead th {
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    
+    .table tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #f1f3f4;
+        vertical-align: middle;
+    }
+    
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .badge {
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .badge.bg-dark {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+    }
+    
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+    
+    .pagination {
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .page-link {
+        border: none;
+        color: #1e3c72;
+        padding: 10px 15px;
+        margin: 0 3px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .page-link:hover {
+        background: #1e3c72;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: #1e3c72;
+        color: white;
+    }
+    
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        background: #f8f9fa;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .stats-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .stats-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .stats-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
 </style>
 
+<div class="page-container">
+    <div class="content-card">
+        <div class="page-header">
+            <div class="law-icon">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+            <h1>@ViewData["Title"]</h1>
+            <p>Manage all traffic law documents efficiently</p>
+        </div>
+        
+        <div class="card-body" style="padding: 30px;">
+            <!-- Search Form -->
+            <div class="search-section">
+                <h5 class="mb-3">
+                    <i class="bi bi-search me-2"></i>Search & Filter Documents
+                </h5>
+                <form method="get">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="Title" value="@Model.Title" class="form-control" placeholder="Search by title..." />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Document Code</label>
+                            <input type="text" name="DocumentCode" value="@Model.DocumentCode" class="form-control" placeholder="Search by code..." />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Category</label>
+                            <select name="CategoryName" class="form-select">
+                                <option value="">All Categories</option>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.Name" selected="@(Model.CategoryName == cat.Name)">@cat.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Verification</label>
+                            <select name="ExpertVerification" class="form-select">
+                                <option value="">All</option>
+                                <option value="true" selected="@(Model.ExpertVerification == true)">Verified</option>
+                                <option value="false" selected="@(Model.ExpertVerification == false)">Not Verified</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search me-1"></i>Search
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <label class="form-label">Tags</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var tag in Model.Tags)
+                                {
+                                    var isChecked = Model.TagIds?.Contains(tag.Value) ?? false;
+                                    <div class="form-check form-check-inline">
+                                        <input class="btn-check" type="checkbox" name="TagIds" value="@tag.Value"
+                                               id="tag-@tag.Value" @(isChecked ? "checked" : "") />
+                                        <label class="btn btn-outline-dark" for="tag-@tag.Value">@tag.Text</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
-<h1>Law Document Management</h1>
-<p>Manage all traffic law documents</p>
+            <!-- Add Document Button -->
+            @if (User.IsInRole("Staff"))
+            {
+                <div class="d-flex justify-content-end mb-3">
+                    <a asp-page="Create" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Document
+                    </a>
+                </div>
+            }
 
-<!-- Search Form & Add Document Area -->
-<div class="row g-2 align-items-center mb-3 search-area">
-	<div class="col">
-		<!-- Search Form -->
-		<form method="get">
-			<div class="row g-2 align-items-center">
-				<div class="col-auto">
-					<input type="text" name="Title" value="@Model.Title" class="form-control" placeholder="Title Search" />
-				</div>
-				<div class="col-auto">
-					<input type="text" name="DocumentCode" value="@Model.DocumentCode" class="form-control" placeholder="Document Code Search" />
-				</div>
-				<div class="col-auto">
-					<select name="CategoryName" class="form-select">
-						<option value="">All Categories</option>
-						@foreach (var cat in Model.Categories)
-						{
-							<option value="@cat.Name" selected="@(Model.CategoryName == cat.Name)">@cat.Name</option>
-						}
-					</select>
-				</div>
-				<div class="col-auto">
-					<select name="ExpertVerification" class="form-select">
-						<option value="">All Verifications</option>
-						<option value="true" selected="@(Model.ExpertVerification == true)">Verified</option>
-						<option value="false" selected="@(Model.ExpertVerification == false)">Not Verified</option>
-					</select>
-				</div>
-				<div class="col-auto">
-					<label class="form-label">Tags</label>
-					<div class="d-flex flex-wrap gap-2" style="min-width: 200px;">
-						@foreach (var tag in Model.Tags)
-						{
-							var isChecked = Model.TagIds?.Contains(tag.Value) ?? false;
-							<div class="form-check form-check-inline">
-								<input class="btn-check" type="checkbox" name="TagIds" value="@tag.Value"
-									   id="tag-@tag.Value" @(isChecked ? "checked" : "") />
-								<label class="btn btn-outline-dark" for="tag-@tag.Value">@tag.Text</label>
-							</div>
-						}
-					</div>
-				</div>
-				<div class="col-auto">
-					<button type="submit" class="btn btn-dark px-4">Search</button>
-				</div>
-			</div>
-		</form>
-	</div>
+            <!-- Documents Table -->
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Code</th>
+                            <th>Category</th>
+                            <th>Verification</th>
+                            <th>Tags</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LawDocument.Items)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@Html.DisplayFor(modelItem => item.Title)</strong>
+                                </td>
+                                <td>
+                                    <code class="bg-light px-2 py-1 rounded">@Html.DisplayFor(modelItem => item.DocumentCode)</code>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@Html.DisplayFor(modelItem => item.CategoryName)</span>
+                                </td>
+                                <td>
+                                    @if (item.ExpertVerification)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>Verified
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="bi bi-clock me-1"></i>Pending
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.TagList != null && item.TagList.Any())
+                                    {
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (var tag in item.TagList)
+                                            {
+                                                <span class="badge bg-dark">@tag.TagName</span>
+                                            }
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil me-1"></i>Edit
+                                        </a>
+                                        @if (User.IsInRole("Staff"))
+                                        {
+                                            <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash me-1"></i>Delete
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.LawDocument.TotalPages > 1)
+            {
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if (Model.LawDocument.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-page="./Index"
+                                   asp-route-pageNumber="@(Model.LawDocument.PageNumber - 1)"
+                                   asp-route-pageSize="@Model.LawDocument.PageSize"
+                                   asp-route-Title="@Model.Title"
+                                   asp-route-DocumentCode="@Model.DocumentCode"
+                                   asp-route-CategoryName="@Model.CategoryName"
+                                   asp-route-ExpertVerification="@Model.ExpertVerification"
+                                   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">
+                                    <i class="bi bi-chevron-left"></i> Previous
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    <i class="bi bi-chevron-left"></i> Previous
+                                </span>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= Model.LawDocument.TotalPages; i++)
+                        {
+                            if (i == Model.LawDocument.PageNumber)
+                            {
+                                <li class="page-item active">
+                                    <span class="page-link">@i</span>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-page="./Index"
+                                       asp-route-pageNumber="@i"
+                                       asp-route-pageSize="@Model.LawDocument.PageSize"
+                                       asp-route-Title="@Model.Title"
+                                       asp-route-DocumentCode="@Model.DocumentCode"
+                                       asp-route-CategoryName="@Model.CategoryName"
+                                       asp-route-ExpertVerification="@Model.ExpertVerification"
+                                       asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">@i</a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.LawDocument.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-page="./Index"
+                                   asp-route-pageNumber="@(Model.LawDocument.PageNumber + 1)"
+                                   asp-route-pageSize="@Model.LawDocument.PageSize"
+                                   asp-route-Title="@Model.Title"
+                                   asp-route-DocumentCode="@Model.DocumentCode"
+                                   asp-route-CategoryName="@Model.CategoryName"
+                                   asp-route-ExpertVerification="@Model.ExpertVerification"
+                                   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">
+                                    Next <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    Next <i class="bi bi-chevron-right"></i>
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
 </div>
-
-<!-- Add Document Area - Only show to Staff -->
-@if (User.IsInRole("Staff"))
-{
-	<div class="col-auto">
-		<a asp-page="Create" class="btn btn-dark px-4">Add Document</a>
-	</div>
-}
-
-<!-- Table View -->
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th>
-				Title
-			</th>
-			<th>
-				Code
-			</th>
-			<th>
-				Category
-			</th>
-			<th>
-				Expert Verification
-			</th>
-			<th>
-				Link Path
-			</th>
-			<th>
-				File
-			</th>
-			<th>
-				Tags
-			</th>
-			<th>
-				Action
-			</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model.LawDocument.Items)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Title)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.DocumentCode)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.CategoryName)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.ExpertVerification)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.LinkPath)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.FilePath)
-				</td>
-				<td>
-					@if (item.TagList != null && item.TagList.Any())
-					{
-						<div class="d-flex flex-wrap gap-1">
-							@foreach (var tag in item.TagList)
-							{
-								<span class="badge bg-dark">@tag.TagName</span>
-							}
-						</div>
-					}
-				</td>
-				<td>
-					<a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-					@if (User.IsInRole("Staff"))
-					{
-						<a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-					}
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
-
-<!-- Pagination -->
-<nav aria-label="Page navigation">
-	<ul class="pagination">
-		@if (Model.LawDocument.HasPreviousPage)
-		{
-			<li class="page-item">
-				<a class="page-link" asp-page="./Index"
-				   asp-route-pageNumber="@(Model.LawDocument.PageNumber - 1)"
-				   asp-route-pageSize="@Model.LawDocument.PageSize"
-				   asp-route-Title="@Model.Title"
-				   asp-route-DocumentCode="@Model.DocumentCode"
-				   asp-route-CategoryName="@Model.CategoryName"
-				   asp-route-ExpertVerification="@Model.ExpertVerification"
-				   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">Previous</a>
-			</li>
-		}
-		else
-		{
-			<li class="page-item disabled">
-				<span class="page-link">Previous</span>
-			</li>
-		}
-
-		@for (int i = 1; i <= Model.LawDocument.TotalPages; i++)
-		{
-			if (i == Model.LawDocument.PageNumber)
-			{
-				<li class="page-item active">
-					<span class="page-link">@i</span>
-				</li>
-			}
-			else
-			{
-				<li class="page-item">
-					<a class="page-link" asp-page="./Index"
-					   asp-route-pageNumber="@i"
-					   asp-route-pageSize="@Model.LawDocument.PageSize"
-					   asp-route-Title="@Model.Title"
-					   asp-route-DocumentCode="@Model.DocumentCode"
-					   asp-route-CategoryName="@Model.CategoryName"
-					   asp-route-ExpertVerification="@Model.ExpertVerification"
-					   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">@i</a>
-				</li>
-			}
-		}
-
-		@if (Model.LawDocument.HasNextPage)
-		{
-			<li class="page-item">
-				<a class="page-link" asp-page="./Index"
-				   asp-route-pageNumber="@(Model.LawDocument.PageNumber + 1)"
-				   asp-route-pageSize="@Model.LawDocument.PageSize"
-				   asp-route-Title="@Model.Title"
-				   asp-route-DocumentCode="@Model.DocumentCode"
-				   asp-route-CategoryName="@Model.CategoryName"
-				   asp-route-ExpertVerification="@Model.ExpertVerification"
-				   asp-route-TagIds="@(Model.TagIds != null ? string.Join(",", Model.TagIds) : null)">Next</a>
-			</li>
-		}
-		else
-		{
-			<li class="page-item disabled">
-				<span class="page-link">Next</span>
-			</li>
-		}
-	</ul>
-</nav>

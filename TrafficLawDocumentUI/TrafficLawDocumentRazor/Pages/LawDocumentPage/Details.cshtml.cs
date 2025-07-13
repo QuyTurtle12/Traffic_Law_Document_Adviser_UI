@@ -11,36 +11,33 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
     public class DetailsModel : PageModel
     {
-        private readonly BussinessObject.TrafficLawDocumentDbContext _context;
+        private readonly TrafficLawDocumentDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public DetailsModel(BussinessObject.TrafficLawDocumentDbContext context)
+        public DetailsModel(
+            TrafficLawDocumentDbContext context,
+            IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
+
         public LawDocument LawDocument { get; set; } = default!;
+        public string ApiBaseUrl { get; private set; } = "";
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var lawdocument = await _context.LawDocuments.Include(ld => ld.Category).FirstOrDefaultAsync(m => m.Id == id);
-            if (lawdocument == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                LawDocument = lawdocument;
-                // Now it's safe to access LawDocument.Category
-                if (LawDocument.Category != null)
-                {
-                    LawDocument.Category.Name = lawdocument.Category.Name;
-                }
-            }
+            LawDocument = await _context.LawDocuments
+                .Include(ld => ld.Category)
+                .FirstOrDefaultAsync(m => m.Id == id)
+              ?? throw new InvalidOperationException("Document not found");
+
+            ApiBaseUrl = (_configuration["ApiSettings:BaseUrl"] ?? "")
+                         .TrimEnd('/');
+
             return Page();
         }
     }

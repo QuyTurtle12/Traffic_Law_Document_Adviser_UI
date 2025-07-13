@@ -63,26 +63,22 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
                     })
                     .ToList();
 
-            // Fetch the document to edit
-            var docResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"law-documents?pageIndex=1&pageSize=1&idSearch={id}");
-            if (docResponse?.Data == null)
-            {
-                return NotFound();
-            }
+            // fetch the doc
+            var docResponse = await _httpClient
+                .GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>(
+                    $"law-documents?pageIndex=1&pageSize=1&idSearch={id}");
+            var doc = docResponse!.Data!.Items.First();
 
-            // Get the first document from the response
-            var doc = docResponse.Data.Items.First();
-
-            // Map GetLawDocumentDTO to UpdateLawDocumentDTO for editing
             LawDocument = new UpdateLawDocumentDTO
             {
                 Title = doc.Title,
                 DocumentCode = doc.DocumentCode,
                 CategoryId = doc.CategoryId,
-                FilePath = doc.FilePath,
-                LinkPath = doc.LinkPath,
+                LinkPath = doc.LinkPath,  // keep the existing link
                 ExpertVerification = doc.ExpertVerification,
-                TagList = doc.TagList?.Select(t => new AddDocumentTagMapDTO { DocumentTagId = t.Id }).ToList()
+                TagList = doc.TagList?
+                                         .Select(t => new AddDocumentTagMapDTO { DocumentTagId = t.Id })
+                                         .ToList()
             };
 
             return Page();
@@ -90,12 +86,9 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
-            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? "";
             if (currentUserRole != "Staff")
-            {
                 return RedirectToPage("/Index");
-            }
 
             if (!ModelState.IsValid)
             {
@@ -103,10 +96,15 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
                 return Page();
             }
 
-            LawDocument.TagList = SelectedTagIds.Select(id => new AddDocumentTagMapDTO { DocumentTagId = id }).ToList();
+            // re-map selected tags
+            LawDocument.TagList = SelectedTagIds
+                .Select(tagId => new AddDocumentTagMapDTO { DocumentTagId = tagId })
+                .ToList();
 
-            // Update the document
-            var response = await _httpClient.PutAsJsonAsync($"law-documents/{id}", LawDocument);
+            // now PUT **only** the metadata (LinkPath stays as posted by the hidden field)
+            var response = await _httpClient
+                .PutAsJsonAsync($"law-documents/{id}", LawDocument);
+
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Failed to update document.");
@@ -116,6 +114,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage.Management
 
             return RedirectToPage("./Index");
         }
+
 
         public async Task<IActionResult> OnPostVerifyAsync(Guid id)
         {
