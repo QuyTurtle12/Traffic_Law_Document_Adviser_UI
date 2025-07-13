@@ -1,130 +1,411 @@
 ﻿@page
 @model TrafficLawDocumentRazor.Pages.LawDocumentPage.DetailsModel
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Document Details";
 }
-@section Styles {
-    <link rel="stylesheet" href="~/css/site2.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-}
-<div class="page-wrapper" style="margin-bottom: 60px">
-    <div class="main custom-main" >
-            <div class="main-content">
-                <div class="breadcrumb">
-                    Home / Law Documents / Details
-                </div>
-                <div>
-                    <h1>@Model.LawDocument.Title</h1>
-                </div>
-                <div class="container">
-                    <div class="main" >
-                        <div class="tabs">
-                            <button class="active" data-tab="summary">Summary</button>
-                            <button data-tab="content">Content</button>
-                            @* <button data-tab="status">Status</button> *@
-                            <button data-tab="download">Download</button>
+
+<!-- Include Bootstrap Icons directly -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .page-container {
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    .content-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out;
+        margin-bottom: 20px;
+    }
+    
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        padding: 30px 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .page-header h1 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 2.2rem;
+    }
+    
+    .page-header p {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+    
+    .law-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #ffd700;
+    }
+    
+    .breadcrumb {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .breadcrumb a {
+        color: #1e3c72;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .breadcrumb a:hover {
+        color: #2a5298;
+        text-decoration: underline;
+    }
+    
+    .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 5px;
+        margin-bottom: 25px;
+        gap: 5px;
+    }
+    
+    .tabs button {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .tabs button:hover {
+        background: rgba(30, 60, 114, 0.1);
+        color: #1e3c72;
+    }
+    
+    .tabs button.active {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .tab-content {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+    }
+    
+    .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    .summary-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f1f3f4;
+        vertical-align: top;
+    }
+    
+    .summary-table td:first-child {
+        font-weight: 600;
+        color: #1e3c72;
+        width: 30%;
+    }
+    
+    .summary-table tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .status-verified {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+    
+    .status-pending {
+        background: linear-gradient(135deg, #ffc107 0%, #ffca2c 100%);
+        color: #212529;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .sidebar {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        height: fit-content;
+    }
+    
+    .sidebar h4 {
+        color: #1e3c72;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+    
+    .most-viewed-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .most-viewed-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #e9ecef;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .most-viewed-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .pdf-viewer {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .section-title {
+        color: #1e3c72;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="page-container">
+    <div class="content-card">
+        <div class="page-header">
+            <div class="law-icon">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+            <h1>@Model.LawDocument.Title</h1>
+            <p>Document Details & Information</p>
+        </div>
+        
+        <div class="card-body" style="padding: 30px;">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <i class="bi bi-house me-1"></i>
+                <a href="/">Home</a> / 
+                <a href="/LawDocumentPage">Law Documents</a> / 
+                Details
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="active" data-tab="summary">
+                            <i class="bi bi-info-circle me-1"></i>Summary
+                        </button>
+                        <button data-tab="content">
+                            <i class="bi bi-file-text me-1"></i>Content
+                        </button>
+                        <button data-tab="download">
+                            <i class="bi bi-download me-1"></i>Download
+                        </button>
+                    </div>
+
+                    <!-- Summary Tab -->
+                    <div class="tab-content" id="summary" style="display: block">
+                        <div class="section-title">
+                            <i class="bi bi-info-circle"></i>
+                            Document Attributes
                         </div>
+                        <table class="summary-table">
+                            <tr>
+                                <td><strong>Document Code:</strong></td>
+                                <td><code class="bg-light px-2 py-1 rounded">@Model.LawDocument.DocumentCode</code></td>
+                                <td><strong>Expert Verified:</strong></td>
+                                <td>
+                                    @if (Model.LawDocument.ExpertVerification)
+                                    {
+                                        <span class="status-badge status-verified">
+                                            <i class="bi bi-check-circle me-1"></i>Yes
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-pending">
+                                            <i class="bi bi-clock me-1"></i>No
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Category:</strong></td>
+                                <td><span class="badge bg-info">@Model.LawDocument.Category?.Name</span></td>
+                                <td><strong>Created:</strong></td>
+                                <td>@Model.LawDocument.CreatedTime?.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Created By:</strong></td>
+                                <td>@Model.LawDocument.CreatedBy</td>
+                                <td><strong>Last Updated:</strong></td>
+                                <td>@Model.LawDocument.LastUpdatedTime?.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        </table>
+                    </div>
 
-                        <div class="tab-content" id="summary" style="display: block">
-                            <div class="legal-wrapper">
-                                <div class="summary-section">
-                                    <h2>ATTRIBUTE</h2>
-                                    <p><strong>@Model.LawDocument.Title</strong></p>
-                                    <table class="summary-table">
-                                        <tr>
-                                            <td><strong>Document Code:</strong></td>
-                                            <td>@Model.LawDocument.DocumentCode</td>
-                                            <td><strong>Expert Verified:</strong></td>
-                                            <td class="status-known">@(Model.LawDocument.ExpertVerification ? "Yes" : "No")</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Category:</strong></td>
-                                            <td>@Model.LawDocument.Category?.Name</td>
-                                            <td><strong>Created:</strong></td>
-                                            <td>@Model.LawDocument.CreatedTime?.ToString("dd/MM/yyyy")</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Created By:</strong></td>
-                                            <td>@Model.LawDocument.CreatedBy</td>
-                                            <td><strong>Last Updated:</strong></td>
-                                            <td>@Model.LawDocument.LastUpdatedTime?.ToString("dd/MM/yyyy")</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
+                    <!-- Content Tab -->
+                    <div class="tab-content" id="content" style="display: none">
+                        <div class="section-title">
+                            <i class="bi bi-file-text"></i>
+                            Document Content
                         </div>
-
-                        <div class="tab-content" id="content" style="display: none">
-                            <div class="legal-wrapper">
-                                @* <p>Document Link: <a href="@Model.LawDocument.LinkPath" target="_blank">@Model.LawDocument.LinkPath</a></p> *@
-                                @* <embed src="~/files/135-2025-ND-CP.pdf" type="application/pdf" width="100%" height="800px" /> *@
-                                <embed src="@Model.LawDocument.FilePath" type="application/pdf" width="100%" height="800px" />
-                            </div>
+                        <div class="pdf-viewer">
+                            <embed src="@Model.LawDocument.FilePath" type="application/pdf" width="100%" height="600px" />
                         </div>
+                    </div>
 
-                        @* <div class="tab-content" id="status" style="display: none">
-                            <p>Status: @(Model.LawDocument.DeletedTime.HasValue ? "Deleted" : "Active")</p>
-                        </div> *@
-
+                    <!-- Download Tab -->
                     <div class="tab-content" id="download" style="display: none">
-                        <div class="legal-wrapper">
-                            <div class="download-buttons">
-                                @{
-                                    // Create a safe filename from the Title
-                                    var safeFileName = System.Text.RegularExpressions.Regex
-                                    .Replace(Model.LawDocument.Title ?? "document", @"[^a-zA-Z0-9\-_.]+", "_")
-                                    .Trim('_') + ".pdf";
-                                }
-                                <button class="btn btn-primary"
-                                        onclick="downloadFromApi(
-                      '@Model.LawDocument.LinkPath',
-                      '@safeFileName'
-                    )">
-                                    <i class="fas fa-file-pdf"></i> Download PDF
-                                </button>
-                            </div>
+                        <div class="section-title">
+                            <i class="bi bi-download"></i>
+                            Download Document
+                        </div>
+                        <div class="text-center">
+                            @{
+                                var safeFileName = System.Text.RegularExpressions.Regex
+                                .Replace(Model.LawDocument.Title ?? "document", @"[^a-zA-Z0-9\-_.]+", "_")
+                                .Trim('_') + ".pdf";
+                            }
+                            <button class="btn btn-primary"
+                                    onclick="downloadFromApi('@Model.LawDocument.LinkPath', '@safeFileName')">
+                                <i class="bi bi-file-pdf"></i> Download PDF
+                            </button>
+                            <p class="text-muted mt-3">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Click the button above to download the document in PDF format
+                            </p>
                         </div>
                     </div>
-
-
-                        
-
-
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="sidebar">
+                        <h4>
+                            <i class="bi bi-star"></i>
+                            Most Viewed
+                        </h4>
+                        <ul class="most-viewed-list">
+                            <li>
+                                <i class="bi bi-file-earmark-text me-2"></i>
+                                Placeholder document 1
+                            </li>
+                            <li>
+                                <i class="bi bi-file-earmark-text me-2"></i>
+                                Placeholder document 2
+                            </li>
+                            <li>
+                                <i class="bi bi-file-earmark-text me-2"></i>
+                                Placeholder document 3
+                            </li>
+                        </ul>
                     </div>
-
-                    <aside class="sidebar">
-                        <h4>MOST VIEWED</h4>
-                        <div class="box most-viewed">
-                            <ul class="most-viewed-list">
-                                <li>Placeholder document 1</li>
-                                <li>Placeholder document 2</li>
-                            </ul>
-                        </div>
-                    </aside>
                 </div>
             </div>
-       
+        </div>
     </div>
+</div>
+
 @section Scripts {
-        <script>
-            // Point to your API host:port
-            const apiBaseUrl = '@Model.ApiBaseUrl';
+    <script>
+        // Point to your API host:port
+        const apiBaseUrl = '@Model.ApiBaseUrl';
 
-            function downloadFromApi(cloudUrl, fileName) {
-              const url = `${apiBaseUrl}/photo/download?url=${encodeURIComponent(cloudUrl)}`;
+        function downloadFromApi(cloudUrl, fileName) {
+            const url = `${apiBaseUrl}/photo/download?url=${encodeURIComponent(cloudUrl)}`;
 
-              fetch(url, {
+            fetch(url, {
                 // include credentials if needed:
                 // credentials: 'include'
-              })
-              .then(resp => {
+            })
+            .then(resp => {
                 if (!resp.ok) {
-                  throw new Error(`Server returned ${resp.status}`);
+                    throw new Error(`Server returned ${resp.status}`);
                 }
                 return resp.blob();
-              })
-              .then(blob => {
+            })
+            .then(blob => {
                 const objectUrl = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.style.display = 'none';
@@ -133,23 +414,24 @@
                 document.body.appendChild(a);
                 a.click();
                 URL.revokeObjectURL(objectUrl);
-              })
-              .catch(err => {
+            })
+            .catch(err => {
                 console.error('Download failed:', err);
                 alert('Unable to download file.');
-              });
-            }
+            });
+        }
 
-            // Tab‐switcher logic (unchanged)
-            document.addEventListener("DOMContentLoaded", function () {
-              const tabs = document.querySelectorAll(".tabs button");
-              const contents = document.querySelectorAll(".tab-content");
-              tabs.forEach(t => t.addEventListener("click", function () {
+        // Tab switcher logic
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabs = document.querySelectorAll(".tabs button");
+            const contents = document.querySelectorAll(".tab-content");
+            
+            tabs.forEach(t => t.addEventListener("click", function () {
                 tabs.forEach(x => x.classList.remove("active"));
                 this.classList.add("active");
                 contents.forEach(c => c.style.display = "none");
                 document.getElementById(this.dataset.tab).style.display = "block";
-              }));
-            });
-        </script>
+            }));
+        });
+    </script>
 }

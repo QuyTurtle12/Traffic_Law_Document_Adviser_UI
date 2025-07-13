@@ -1,77 +1,213 @@
 ﻿@page
 @model TrafficLawDocumentRazor.Pages.LawDocumentPage.Management.DeleteModel
-
 @{
     ViewData["Title"] = "Delete Confirmation";
 }
 
+<!-- Include Bootstrap Icons directly -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
 <style>
-    .delete-container {
-        min-height: 80vh;
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .page-container {
+        min-height: 100vh;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        padding: 20px;
     }
-
-    .delete-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 3rem;
-        align-self: flex-start;
-    }
-
-    .delete-question {
-        font-size: 1.25rem;
-        font-weight: 500;
-        margin-bottom: 2rem;
-        text-align: center;
-    }
-
-    .delete-btn-yes {
-        width: 140px;
-        background: #111;
-        color: #fff;
+    
+    .delete-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
         border: none;
-        border-radius: 16px;
-        margin-bottom: 0.5rem;
-        padding: 0.5rem 0;
-        font-weight: 500;
-        transition: background 0.2s;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideInUp 0.6s ease-out;
+        max-width: 500px;
+        width: 100%;
     }
-
-        .delete-btn-yes:hover {
-            background: #333;
+    
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
-
-    .delete-btn-no {
-        width: 140px;
-        background: #999;
-        color: #fff;
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .delete-header {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
         border: none;
-        border-radius: 16px;
-        padding: 0.5rem 0;
-        font-weight: 500;
+        padding: 30px 20px;
         text-align: center;
+        position: relative;
+    }
+    
+    .delete-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .delete-header h1 {
+        margin: 0;
+        font-weight: 600;
+        font-size: 2rem;
+    }
+    
+    .delete-header p {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+    
+    .warning-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #ffd700;
+    }
+    
+    .delete-body {
+        padding: 40px 30px;
+        text-align: center;
+    }
+    
+    .document-title {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px;
+        margin: 20px 0;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+    
+    .warning-message {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border: 1px solid #ffeaa7;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        color: #856404;
+    }
+    
+    .warning-message h5 {
+        color: #856404;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        color: white;
         text-decoration: none;
         display: inline-block;
+        margin: 10px;
     }
-
-        .delete-btn-no:hover {
-            background: #666;
-            color: #fff;
-            text-decoration: none;
-        }
+    
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        margin: 10px;
+    }
+    
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
 </style>
 
-<div class="delete-container">
-    <div class="delete-title">Delete Confirmation</div>
-    <div class="delete-question">
-        Do you want to delete this: <b>@Model.Title</b>?
+<div class="page-container">
+    <div class="delete-card">
+        <div class="delete-header">
+            <div class="warning-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <h1>@ViewData["Title"]</h1>
+            <p>Please confirm your action</p>
+        </div>
+        
+        <div class="delete-body">
+            <div class="warning-message">
+                <h5>
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Warning: This action cannot be undone
+                </h5>
+                <p class="mb-0">You are about to permanently delete this document from the system.</p>
+            </div>
+            
+            <div class="document-title">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                @Model.Title
+            </div>
+            
+            <p class="text-muted">
+                Are you sure you want to delete this document? This action will permanently remove it from the system and cannot be reversed.
+            </p>
+            
+            <div class="action-buttons">
+                <form method="post" style="display: inline;">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Yes, Delete
+                    </button>
+                </form>
+                <a asp-page="./Index" class="btn btn-secondary">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </a>
+            </div>
+        </div>
     </div>
-    <form method="post">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="delete-btn-yes">Yes</button>
-    </form>
-    <a asp-page="./Index" class="delete-btn-no">No</a>
 </div>
