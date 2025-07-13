@@ -1,10 +1,30 @@
 ﻿@page
 @model TrafficLawDocumentRazor.Pages.UserPage.IndexModel
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Users Management";
 }
 
 <div class="container mt-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        TempData.Remove("SuccessMessage");
+    }
+    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        TempData.Remove("ErrorMessage");
+    }
+    
+    
     <div class="row mb-4">
         <div class="col-md-6">
             <h1 class="display-4">Users Management</h1>
@@ -52,15 +72,18 @@
                                              <a asp-page="Details" asp-route-id="@users.Id" class="btn btn-sm btn-outline-primary">
                                                 <i class="bi bi-eye"></i> View
                                             </a> 
-                                            <a asp-page="Edit" asp-route-id="@users.Id" class="btn btn-sm btn-outline-warning">
-                                                <i class="bi bi-pencil"></i> Edit
-                                            </a>
-                                            @* <a asp-page="Delete" asp-route-id="@users.Id" class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </a> *@
-                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="openDeleteModal('@users.Id')">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
+                                            @if (User.IsInRole("Admin") || User.FindFirstValue(ClaimTypes.NameIdentifier) == users.Id.ToString())
+                                            {
+                                                <a asp-page="Edit" asp-route-id="@users.Id" class="btn btn-sm btn-outline-warning">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                            }
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="openDeleteModal('@users.Id')">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            }
                                         </div>
                                     </td>
                                 </tr>

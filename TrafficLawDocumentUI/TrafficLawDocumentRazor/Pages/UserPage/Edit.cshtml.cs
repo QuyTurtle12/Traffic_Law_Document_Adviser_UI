@@ -1,83 +1,130 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Edit User Page - API Integration
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BussinessObject;
-using Azure;
-using Humanizer;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using Newtonsoft.Json.Linq;
+using Util.DTOs.UserDTOs;
+using TrafficLawDocumentRazor.Services;
 
 namespace TrafficLawDocumentRazor.Pages.UserPage
 {
     public class EditModel : PageModel
     {
-        private readonly BussinessObject.TrafficLawDocumentDbContext _context;
+        private readonly IUserApiService _userApiService;
 
-        public EditModel(BussinessObject.TrafficLawDocumentDbContext context)
+        public EditModel(IUserApiService userApiService)
         {
-            _context = context;
+            _userApiService = userApiService;
         }
+
+        public string CurrentUserRole { get; set; } = default!;
+        public string CurrentUserId { get; set; } = default!;
 
         [BindProperty]
-        public User User { get; set; } = default!;
+        public UpdateUserDTO User { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user =  await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            User = user;
-            return Page();
-        }
-
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            _context.Attach(User).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(User.Id))
+                CurrentUserRole = base.User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+                CurrentUserId = base.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+                // Check authorization
+                if (string.IsNullOrEmpty(CurrentUserRole))
+                {
+                    return RedirectToPage("/Login");
+                }
+
+                // Admin can edit any user, others can only edit their own profile
+                if (CurrentUserRole != "Admin" && CurrentUserId != id.ToString())
+                {
+                    return RedirectToPage("/Index");
+                }
+
+                var user = await _userApiService.GetUserByIdAsync(id);
+                if (user == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return RedirectToPage("./Index");
+                // Map UserDTO to UpdateUserDTO
+                User = new UpdateUserDTO
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Role = user.Role,
+                    IsActive = user.IsActive
+                };
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error loading user: {ex.Message}");
+                return Page();
+            }
         }
 
-        private bool UserExists(Guid id)
+        public async Task<IActionResult> OnPostAsync(Guid id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            try
+            {
+                CurrentUserRole = base.User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+                CurrentUserId = base.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+                // Check authorization
+                if (string.IsNullOrEmpty(CurrentUserRole))
+                {
+                    return RedirectToPage("/Login");
+                }
+
+                // Admin can edit any user, others can only edit their own profile
+                if (CurrentUserRole != "Admin" && CurrentUserId != id.ToString())
+                {
+                    return RedirectToPage("/Index");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    // Reload user data for the page
+                    var user = await _userApiService.GetUserByIdAsync(id);
+                    if (user != null)
+                    {
+                        User = new UpdateUserDTO
+                        {
+                            Id = user.Id,
+                            FullName = user.FullName,
+                            Email = user.Email,
+                            Role = user.Role,
+                            IsActive = user.IsActive
+                        };
+                    }
+                    return Page();
+                }
+
+                var result = await _userApiService.UpdateUserAsync(id, User);
+                
+                if (result != null && result.StatusCode == 200)
+                {
+                    TempData["SuccessMessage"] = result.Message ?? "User updated successfully.";
+                    return RedirectToPage("./Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", result?.Message ?? "Failed to update user.");
+                    return Page();
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error updating user: {ex.Message}");
+                return Page();
+            }
         }
     }
 }
+
 
 
 

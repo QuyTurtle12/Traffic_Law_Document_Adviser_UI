@@ -37,6 +37,7 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
                 var result = await _userApiService.CreateUserAsync(NewUser);
                 if (result != null && result.StatusCode == 201)
                 {
+                    TempData["SuccessMessage"] = result.Message ?? "User created successfully.";
                     return RedirectToPage("./Index");
                 }
                 ErrorMessage = result?.Message ?? "Failed to create user.";

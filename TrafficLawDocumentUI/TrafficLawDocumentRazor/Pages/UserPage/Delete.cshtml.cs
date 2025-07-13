@@ -69,6 +69,7 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
                 }
                 return Page();
             }
+            TempData["SuccessMessage"] = "User deleted successfully.";
 
             return RedirectToPage("./Index");
         }

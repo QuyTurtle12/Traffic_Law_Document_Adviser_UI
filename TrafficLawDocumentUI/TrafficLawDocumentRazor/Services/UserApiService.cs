@@ -13,6 +13,7 @@ namespace TrafficLawDocumentRazor.Services
         Task<ApiResponse<UserDTO>> CreateUserAsync(CreateUserDTO dto);
         Task<UserDTO?> GetUserByIdAsync(Guid id);
         Task<bool> DeleteUserAsync(Guid id);
+        Task<ApiResponse<UserDTO>> UpdateUserAsync(Guid id, UpdateUserDTO dto);
     }
     public class UserApiService: IUserApiService
     {
@@ -132,6 +133,49 @@ namespace TrafficLawDocumentRazor.Services
             {
                 Console.WriteLine($"Exception deleting user {id}: {ex.Message}");
                 return false;
+            }
+        }
+
+        public async Task<ApiResponse<UserDTO>> UpdateUserAsync(Guid id, UpdateUserDTO dto)
+        {
+            try
+            {
+                var baseUrl = _configuration["ApiSettings:BaseUrl"];
+                var token = _httpContextAccessor.HttpContext?.User?.FindFirstValue("access_token");
+                
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // Ensure the ID in the DTO matches the URL parameter
+                dto.Id = id;
+                
+                var url = $"{baseUrl}users/{id}";
+                Console.WriteLine($"Calling PUT API: {url}");
+                Console.WriteLine($"Authorization: Bearer {token?.Substring(0, Math.Min(20, token.Length))}...");
+                
+                var response = await _httpClient.PutAsJsonAsync(url, dto);
+                
+                Console.WriteLine($"API Response Status: {response.StatusCode}");
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UserDTO>>();
+                    Console.WriteLine("User updated successfully");
+                    return apiResponse!;
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to update user {id}. Status: {response.StatusCode}, Error: {errorContent}");
+                    throw new HttpRequestException($"Failed to update user. Status: {response.StatusCode}, Error: {errorContent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception updating user {id}: {ex.Message}");
+                throw;
             }
         }
     }
