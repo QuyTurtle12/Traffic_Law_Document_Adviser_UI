@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:guid}"
 @model TrafficLawDocumentRazor.Pages.UserPage.EditModel
 
 @{
@@ -75,10 +75,10 @@
                                     <label asp-for="User.Role" class="form-label fw-semibold text-dark"></label>
                                     <select asp-for="User.Role" class="form-select form-select-lg">
                                         <option value="">Select a role</option>
-                                        <option value="1">User</option>
-                                        <option value="2">Expert</option>
-                                        <option value="3">Admin</option>
-                                        <option value="4">Staff</option>
+                                        <option value="User">User</option>
+                                        <option value="Expert">Expert</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Staff">Staff</option>
                                     </select>
                                     <span asp-validation-for="User.Role" class="text-danger small"></span>
                                 </div>
