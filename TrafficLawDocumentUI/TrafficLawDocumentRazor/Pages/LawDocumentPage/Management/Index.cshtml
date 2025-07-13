@@ -348,6 +348,7 @@
                             <th>Code</th>
                             <th>Category</th>
                             <th>Verification</th>
+                            <th>VerifyBy</th>
                             <th>Tags</th>
                             <th>Actions</th>
                         </tr>
@@ -378,6 +379,9 @@
                                             <i class="bi bi-clock me-1"></i>Pending
                                         </span>
                                     }
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@Html.DisplayFor(modelItem => item.VerifyBy)</span>
                                 </td>
                                 <td>
                                     @if (item.TagList != null && item.TagList.Any())
