@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TrafficLawDocumentRazor.Services;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentTagDTOs;
@@ -40,6 +41,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
 
             // Fetch parent tags for dropdown
             var response = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>("document-tags?pageIndex=1&pageSize=100");
+
             if (response?.Data?.Items != null)
             {
                 ParentTags = response.Data.Items
@@ -74,10 +76,14 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             var response = await _httpClient.PostAsJsonAsync("document-tags", newTag);
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", "Failed to create tag.");
+                await ApiErrorHandler.HandleErrorResponse(this, response, "Failed to create tag.");
+
                 await OnGetAsync();
                 return Page();
             }
+
+            TempData["ToastMessage"] = "Tag created successfully!";
+            TempData["ToastType"] = "success";
 
             return RedirectToPage("./Index");
         }

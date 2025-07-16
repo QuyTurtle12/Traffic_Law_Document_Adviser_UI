@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TrafficLawDocumentRazor.Services;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentCategoryDTOs;
@@ -66,9 +67,13 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
             var response = await _httpClient.DeleteAsync($"document-categories/soft-delete/{id}");
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", "Failed to delete category.");
-                return Page();
+                await ApiErrorHandler.HandleErrorResponse(this, response, "Failed to delete category.");
+
+                return RedirectToPage("./Index");
             }
+
+            TempData["ToastMessage"] = "Category deleted successfully!";
+            TempData["ToastType"] = "success";
 
             return RedirectToPage("./Index");
         }

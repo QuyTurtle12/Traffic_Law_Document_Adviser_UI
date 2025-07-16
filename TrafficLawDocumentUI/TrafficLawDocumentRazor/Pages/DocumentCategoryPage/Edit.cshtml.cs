@@ -2,6 +2,7 @@
 using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TrafficLawDocumentRazor.Services;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentCategoryDTOs;
@@ -70,14 +71,19 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
                 return Page();
             }
 
-            var payload = new { id = Id, name = Name };
-            var response = await _httpClient.PutAsJsonAsync($"document-categories/{Id}", payload);
+            var updatedCategoryData = new { id = Id, name = Name };
+            var response = await _httpClient.PutAsJsonAsync($"document-categories/{Id}", updatedCategoryData);
 
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", "Failed to update category.");
+                await ApiErrorHandler.HandleErrorResponse(this, response, "Failed to edit category.");
+
+                await OnGetAsync(Id);
                 return Page();
             }
+
+            TempData["ToastMessage"] = "category updated successfully!";
+            TempData["ToastType"] = "success";
 
             return RedirectToPage("./Index");
         }

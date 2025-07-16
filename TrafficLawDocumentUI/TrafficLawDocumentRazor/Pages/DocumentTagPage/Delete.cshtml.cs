@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TrafficLawDocumentRazor.Services;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentTagDTOs;
@@ -66,9 +67,13 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
             var response = await _httpClient.DeleteAsync($"document-tags/{id}");
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", "Failed to delete tag.");
-                return Page();
+                await ApiErrorHandler.HandleErrorResponse(this, response, "Failed to delete tag.");
+
+                return RedirectToPage("./Index");
             }
+
+            TempData["ToastMessage"] = "Tag deleted successfully!";
+            TempData["ToastType"] = "success";
 
             return RedirectToPage("./Index");
         }
