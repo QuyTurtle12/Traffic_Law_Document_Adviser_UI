@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.UserDTOs;
 using Util.Paginated;
+using System.Text.Json;
 
 namespace TrafficLawDocumentRazor.Services
 {
@@ -61,9 +62,23 @@ namespace TrafficLawDocumentRazor.Services
             }
             var url = $"{baseUrl}users";
             var response = await _httpClient.PostAsJsonAsync(url, dto);
-            response.EnsureSuccessStatusCode();
-            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UserDTO>>();
-            return apiResponse!;
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<UserDTO>>(responseContent);
+                return apiResponse!;
+            }
+            else
+            {
+                var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent);
+                return new ApiResponse<UserDTO>
+                {
+                    StatusCode = (int)response.StatusCode,
+                    Code = errorObj?.Code,
+                    Message = errorObj?.Message ?? $"Failed to create user. Status: {response.StatusCode}",
+                    Data = default
+                };
+            }
         }
 
         public async Task<UserDTO?> GetUserByIdAsync(Guid id)

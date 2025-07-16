@@ -42,6 +42,7 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
             {
                 _logger.LogError(ex, "Error loading users data");
                 UserList = new PaginatedList<UserDTO> { Items = new List<UserDTO>() };
+                TempData["ErrorMessage"] = ex.Message;
             }
         }
     }

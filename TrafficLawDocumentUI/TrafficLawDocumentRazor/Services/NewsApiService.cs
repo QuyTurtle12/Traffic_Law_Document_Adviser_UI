@@ -93,30 +93,25 @@ namespace TrafficLawDocumentRazor.Services
             {
                 var url = $"/api/News/{id}";
                 _logger.LogInformation("Calling API: {Url}", url);
-                
                 var response = await _httpClient.GetAsync(url);
-                
                 _logger.LogInformation("API Response Status: {StatusCode}", response.StatusCode);
-                
+                var responseContent = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation("API Response Content: {Content}", responseContent);
-                    
-                    var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<GetNewsDTO>>(_jsonOptions);
+                    var apiResponse = JsonSerializer.Deserialize<ApiResponse<GetNewsDTO>>(responseContent, _jsonOptions);
                     return apiResponse?.Data;
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogWarning("Failed to get news by ID {Id}. Status: {StatusCode}, Error: {Error}", id, response.StatusCode, errorContent);
-                    return null;
+                    var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
+                    throw new Exception(errorObj?.Message ?? $"Failed to get news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting news by ID {Id}", id);
-                return null;
+                throw;
             }
         }
 
@@ -126,32 +121,26 @@ namespace TrafficLawDocumentRazor.Services
             {
                 var json = JsonSerializer.Serialize(news, _jsonOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                
                 _logger.LogInformation("Creating news with data: {Data}", json);
-                
                 var response = await _httpClient.PostAsync("/api/News", content);
-                
                 _logger.LogInformation("API Response Status: {StatusCode}", response.StatusCode);
-                
+                var responseContent = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation("API Response Content: {Content}", responseContent);
-                    
-                    var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<GetNewsDTO>>(_jsonOptions);
+                    var apiResponse = JsonSerializer.Deserialize<ApiResponse<GetNewsDTO>>(responseContent, _jsonOptions);
                     return apiResponse?.Data;
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogWarning("Failed to create news. Status: {StatusCode}, Error: {Error}", response.StatusCode, errorContent);
-                    return null;
+                    var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
+                    throw new Exception(errorObj?.Message ?? $"Failed to create news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating news");
-                return null;
+                throw;
             }
         }
 
@@ -161,32 +150,26 @@ namespace TrafficLawDocumentRazor.Services
             {
                 var json = JsonSerializer.Serialize(news, _jsonOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                
                 _logger.LogInformation("Updating news {Id} with data: {Data}", id, json);
-                
                 var response = await _httpClient.PutAsync($"/api/News/{id}", content);
-                
                 _logger.LogInformation("API Response Status: {StatusCode}", response.StatusCode);
-                
+                var responseContent = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation("API Response Content: {Content}", responseContent);
-                    
-                    var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<GetNewsDTO>>(_jsonOptions);
+                    var apiResponse = JsonSerializer.Deserialize<ApiResponse<GetNewsDTO>>(responseContent, _jsonOptions);
                     return apiResponse?.Data;
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogWarning("Failed to update news {Id}. Status: {StatusCode}, Error: {Error}", id, response.StatusCode, errorContent);
-                    return null;
+                    var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
+                    throw new Exception(errorObj?.Message ?? $"Failed to update news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating news {Id}", id);
-                return null;
+                throw;
             }
         }
 
@@ -196,26 +179,23 @@ namespace TrafficLawDocumentRazor.Services
             {
                 var url = $"/api/News/{id}";
                 _logger.LogInformation("Calling API: {Url}", url);
-                
                 var response = await _httpClient.DeleteAsync(url);
-                
                 _logger.LogInformation("API Response Status: {StatusCode}", response.StatusCode);
-                
+                var responseContent = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogWarning("Failed to delete news {Id}. Status: {StatusCode}, Error: {Error}", id, response.StatusCode, errorContent);
-                    return false;
+                    var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
+                    throw new Exception(errorObj?.Message ?? $"Failed to delete news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting news {Id}", id);
-                return false;
+                throw;
             }
         }
 

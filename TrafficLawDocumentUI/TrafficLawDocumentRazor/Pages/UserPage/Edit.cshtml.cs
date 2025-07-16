@@ -18,6 +18,7 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
 
         public string CurrentUserRole { get; set; } = default!;
         public string CurrentUserId { get; set; } = default!;
+        public string? ErrorMessage { get; set; }
 
         [BindProperty]
         public UpdateUserDTO User { get; set; } = default!;
@@ -61,7 +62,7 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error loading user: {ex.Message}");
+                ErrorMessage = $"Error loading user: {ex.Message}";
                 return Page();
             }
         }
@@ -112,13 +113,13 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
                 }
                 else
                 {
-                    ModelState.AddModelError("", result?.Message ?? "Failed to update user.");
+                    ErrorMessage = result?.Message ?? "Failed to update user.";
                     return Page();
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Error updating user: {ex.Message}");
+                ErrorMessage = $"Error updating user: {ex.Message}";
                 return Page();
             }
         }

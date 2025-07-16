@@ -23,6 +23,8 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
 
         public string CurrentUserRole { get; set; } = default!;
 
+        public string? ErrorMessage { get; set; }
+
         [BindProperty]
         public UserDTO User { get; set; } = default!;
 
@@ -51,27 +53,32 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
             CurrentUserRole = base.User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-
             if (CurrentUserRole != "Admin")
             {
                 return RedirectToPage("/Index");
             }
-
-            var success = await _userApiService.DeleteUserAsync(id);
-            if (!success)
+            try
             {
-                ModelState.AddModelError("", "Failed to delete user.");
-                // Reload the user data for the page
-                var user = await _userApiService.GetUserByIdAsync(id);
-                if (user != null)
+                var success = await _userApiService.DeleteUserAsync(id);
+                if (!success)
                 {
-                    User = user;
+                    ErrorMessage = "Failed to delete user.";
+                    // Reload the user data for the page
+                    var user = await _userApiService.GetUserByIdAsync(id);
+                    if (user != null)
+                    {
+                        User = user;
+                    }
+                    return Page();
                 }
+                TempData["SuccessMessage"] = "User deleted successfully.";
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
                 return Page();
             }
-            TempData["SuccessMessage"] = "User deleted successfully.";
-
-            return RedirectToPage("./Index");
         }
     }
 }

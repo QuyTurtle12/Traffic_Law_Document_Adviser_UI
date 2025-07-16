@@ -40,6 +40,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
 
             if (News == null)
             {
+                TempData["ErrorMessage"] = "News not found.";
                 return NotFound();
             }
 

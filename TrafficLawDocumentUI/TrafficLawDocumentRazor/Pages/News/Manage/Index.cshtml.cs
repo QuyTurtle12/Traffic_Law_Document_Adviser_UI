@@ -71,6 +71,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
             {
                 _logger.LogError(ex, "Error loading news management data");
                 NewsList = new PaginatedList<GetNewsDTO> { Items = new List<GetNewsDTO>() };
+                TempData["ErrorMessage"] = ex.Message;
             }
             if (TempData.ContainsKey("SyncMessage"))
             {

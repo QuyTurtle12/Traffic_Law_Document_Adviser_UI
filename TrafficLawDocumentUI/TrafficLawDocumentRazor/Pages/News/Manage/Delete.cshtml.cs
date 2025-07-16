@@ -39,14 +39,24 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
             {
                 return RedirectToPage("/Index");
             }
-            var response = await _httpClient.DeleteAsync($"news/{id}");
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                TempData["ErrorMessage"] = "Failed to delete the news article. Please try again.";
+                var response = await _httpClient.DeleteAsync($"news/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    var errorObj = System.Text.Json.JsonSerializer.Deserialize<Util.DTOs.ApiResponse.ApiErrorResponse>(errorContent);
+                    TempData["ErrorMessage"] = errorObj?.Message ?? "Failed to delete the news article. Please try again.";
+                    return RedirectToPage("Index");
+                }
+                TempData["SuccessMessage"] = "News article deleted successfully!";
                 return RedirectToPage("Index");
             }
-            TempData["SuccessMessage"] = "News article deleted successfully!";
-            return RedirectToPage("Index");
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToPage("Index");
+            }
         }
     }
 } 
