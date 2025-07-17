@@ -65,7 +65,11 @@ namespace TrafficLawDocumentRazor.Services
             var responseContent = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                var apiResponse = JsonSerializer.Deserialize<ApiResponse<UserDTO>>(responseContent);
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<UserDTO>>(responseContent, jsonOptions);
                 return apiResponse!;
             }
             else
@@ -75,7 +79,7 @@ namespace TrafficLawDocumentRazor.Services
                 {
                     StatusCode = (int)response.StatusCode,
                     Code = errorObj?.Code,
-                    Message = errorObj?.Message ?? $"Failed to create user. Status: {response.StatusCode}",
+                    Message = errorObj?.ErrorMessage ?? errorObj?.Message ?? $"Failed to create user. Status: {response.StatusCode}",
                     Data = default
                 };
             }
@@ -140,8 +144,8 @@ namespace TrafficLawDocumentRazor.Services
                 else
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Failed to delete user {id}. Status: {response.StatusCode}, Error: {errorContent}");
-                    return false;
+                    var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(errorContent);
+                    throw new Exception(errorObj?.ErrorMessage ?? errorObj?.Message ?? $"Failed to delete user. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
@@ -183,8 +187,9 @@ namespace TrafficLawDocumentRazor.Services
                 else
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
+                    var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(errorContent);
                     Console.WriteLine($"Failed to update user {id}. Status: {response.StatusCode}, Error: {errorContent}");
-                    throw new HttpRequestException($"Failed to update user. Status: {response.StatusCode}, Error: {errorContent}");
+                    throw new Exception(errorObj?.ErrorMessage ?? errorObj?.Message ?? $"Failed to update user. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)

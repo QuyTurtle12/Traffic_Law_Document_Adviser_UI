@@ -46,7 +46,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
                     var errorObj = System.Text.Json.JsonSerializer.Deserialize<Util.DTOs.ApiResponse.ApiErrorResponse>(errorContent);
-                    TempData["ErrorMessage"] = errorObj?.Message ?? "Failed to delete the news article. Please try again.";
+                    TempData["ErrorMessage"] = errorObj?.ErrorMessage ?? errorObj?.Message ?? "Failed to delete the news article. Please try again.";
                     return RedirectToPage("Index");
                 }
                 TempData["SuccessMessage"] = "News article deleted successfully!";

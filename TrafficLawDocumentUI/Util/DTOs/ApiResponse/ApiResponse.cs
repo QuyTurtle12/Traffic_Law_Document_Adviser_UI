@@ -18,10 +18,14 @@ namespace Util.DTOs.ApiResponse
         public int StatusCode { get; set; }
         [JsonPropertyName("code")]
         public string? Code { get; set; }
+        [JsonPropertyName("errorCode")]
+        public string? ErrorCode { get; set; }
         [JsonPropertyName("title")]
         public string? Title { get; set; }
         [JsonPropertyName("message")]
         public string? Message { get; set; }
+        [JsonPropertyName("errorMessage")]
+        public string? ErrorMessage { get; set; }
         [JsonPropertyName("data")]
         public object? Data { get; set; }
     }

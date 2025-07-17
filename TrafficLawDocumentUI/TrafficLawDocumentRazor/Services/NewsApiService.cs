@@ -105,7 +105,7 @@ namespace TrafficLawDocumentRazor.Services
                 else
                 {
                     var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
-                    throw new Exception(errorObj?.Message ?? $"Failed to get news. Status: {response.StatusCode}");
+                    throw new Exception(errorObj?.ErrorMessage ?? errorObj?.Message ?? $"Failed to get news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ namespace TrafficLawDocumentRazor.Services
                 else
                 {
                     var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
-                    throw new Exception(errorObj?.Message ?? $"Failed to create news. Status: {response.StatusCode}");
+                    throw new Exception(errorObj?.ErrorMessage ?? errorObj?.Message ?? $"Failed to create news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
@@ -163,7 +163,7 @@ namespace TrafficLawDocumentRazor.Services
                 else
                 {
                     var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
-                    throw new Exception(errorObj?.Message ?? $"Failed to update news. Status: {response.StatusCode}");
+                    throw new Exception(errorObj?.ErrorMessage ?? errorObj?.Message ?? $"Failed to update news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)
@@ -189,7 +189,7 @@ namespace TrafficLawDocumentRazor.Services
                 else
                 {
                     var errorObj = JsonSerializer.Deserialize<ApiErrorResponse>(responseContent, _jsonOptions);
-                    throw new Exception(errorObj?.Message ?? $"Failed to delete news. Status: {response.StatusCode}");
+                    throw new Exception(errorObj?.ErrorMessage ?? errorObj?.Message ?? $"Failed to delete news. Status: {response.StatusCode}");
                 }
             }
             catch (Exception ex)

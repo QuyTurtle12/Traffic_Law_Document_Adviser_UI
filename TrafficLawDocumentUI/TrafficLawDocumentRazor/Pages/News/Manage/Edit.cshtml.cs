@@ -71,7 +71,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
                     var errorObj = System.Text.Json.JsonSerializer.Deserialize<Util.DTOs.ApiResponse.ApiErrorResponse>(errorContent);
-                    ErrorMessage = errorObj?.Message ?? "Failed to update the news article. Please try again.";
+                    ErrorMessage = errorObj?.ErrorMessage ?? errorObj?.Message ?? "Failed to update the news article. Please try again.";
                     return Page();
                 }
                 TempData["SuccessMessage"] = "News article updated successfully!";
