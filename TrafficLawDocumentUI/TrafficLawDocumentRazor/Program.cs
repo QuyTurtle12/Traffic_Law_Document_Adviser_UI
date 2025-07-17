@@ -70,6 +70,7 @@ namespace TrafficLawDocumentRazor
             });
             builder.Services.AddHttpClient<IUserApiService, UserApiService>();
             builder.Services.AddHttpClient<ILawDocumentsApiService, LawDocumentsApiService>();
+            builder.Services.AddHttpClient<IDocumentCategoriesApiService, DocumentCategoriesApiService>();
 
             var app = builder.Build();
             

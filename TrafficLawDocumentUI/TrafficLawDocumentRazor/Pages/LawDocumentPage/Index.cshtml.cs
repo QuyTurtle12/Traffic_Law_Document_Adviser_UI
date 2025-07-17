@@ -16,11 +16,14 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly ILawDocumentsApiService _lawDocumentsApiService;
+        private readonly IDocumentCategoriesApiService _categoriesService;
 
-        public IndexModel(ILogger<IndexModel> logger, ILawDocumentsApiService lawDocumentsApiService)
+
+        public IndexModel(ILogger<IndexModel> logger, ILawDocumentsApiService lawDocumentsApiService, IDocumentCategoriesApiService categoriesService)
         {
             _logger = logger;
             _lawDocumentsApiService = lawDocumentsApiService;
+            _categoriesService = categoriesService;
         }
 
         public PaginatedList<GetLawDocumentDTO> LawDocumentList { get; set; } = new PaginatedList<GetLawDocumentDTO> { Items = new List<GetLawDocumentDTO>() };
@@ -35,13 +38,21 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
         [BindProperty(SupportsGet = true)] public string? TitleSearch { get; set; }
         [BindProperty(SupportsGet = true)] public string? DocumentCodeSearch { get; set; }
         [BindProperty(SupportsGet = true)] public string? CategoryNameSearch { get; set; }
-
+        public List<SelectListItem> CategoryOptions { get; set; } = new();
 
 
         public async Task OnGetAsync()
         {
             try
             {
+                // Load categories
+                var categories = await _categoriesService.GetAllCategoriesAsync();
+                CategoryOptions = categories.Items.Select(c => new SelectListItem
+                {
+                    Value = c.Name,
+                    Text = c.Name
+                }).ToList();
+
                 //LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(PageIndex, PageSize);
                 LawDocumentList = await _lawDocumentsApiService.GetLawDocumentsAsync(
                     PageIndex, PageSize,
