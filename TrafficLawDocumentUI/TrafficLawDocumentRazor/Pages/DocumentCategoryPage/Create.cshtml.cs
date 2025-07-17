@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TrafficLawDocumentRazor.Services;
 using Util;
+using Util.DTOs.ApiResponse;
 
 namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
 {
@@ -34,14 +36,18 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
                 return Page();
             }
 
-            var payload = new { name = Name };
-            var response = await _httpClient.PostAsJsonAsync("document-categories", payload);
+            var newCategoryData = new { name = Name };
+            var response = await _httpClient.PostAsJsonAsync("document-categories", newCategoryData);
 
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", "Failed to create category.");
+                await ApiErrorHandler.HandleErrorResponse(this, response, "Failed to create category.");
+
                 return Page();
             }
+
+            TempData["ToastMessage"] = "Category created successfully!";
+            TempData["ToastType"] = "success";
 
             return RedirectToPage("./Index");
         }

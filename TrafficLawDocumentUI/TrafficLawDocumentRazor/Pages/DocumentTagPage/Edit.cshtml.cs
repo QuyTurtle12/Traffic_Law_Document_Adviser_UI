@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TrafficLawDocumentRazor.Services;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.DocumentTagDTOs;
@@ -99,19 +100,15 @@ namespace TrafficLawDocumentRazor.Pages.DocumentTagPage
 
             if (!response.IsSuccessStatusCode)
             {
-                try
-                {
-                    var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-                    ErrorMessage = errorResponse?.ErrorMessage ?? "An unexpected error occurred.";
-                }
-                catch (Exception)
-                {
-                    ErrorMessage = "An unexpected error occurred while processing the response.";
-                }
+                await ApiErrorHandler.HandleErrorResponse(this, response, "Failed to edit tag.");
 
                 await OnGetAsync(id);
                 return Page();
             }
+
+            TempData["ToastMessage"] = "Tag updated successfully!";
+            TempData["ToastType"] = "success";
+
             return RedirectToPage("./Index");
         }
     }
