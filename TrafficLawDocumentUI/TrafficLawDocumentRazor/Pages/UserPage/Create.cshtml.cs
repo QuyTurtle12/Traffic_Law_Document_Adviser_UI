@@ -35,16 +35,21 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
             try
             {
                 var result = await _userApiService.CreateUserAsync(NewUser);
+                Console.WriteLine($"Razor Page - Result: StatusCode={result?.StatusCode}, Message={result?.Message}");
+                
                 if (result != null && result.StatusCode == 201)
                 {
+                    Console.WriteLine("Razor Page - Success: Redirecting to Index");
                     TempData["SuccessMessage"] = result.Message ?? "User created successfully.";
                     return RedirectToPage("./Index");
                 }
+                Console.WriteLine($"Razor Page - Error: StatusCode={result?.StatusCode}, Message={result?.Message}");
                 ErrorMessage = result?.Message ?? "Failed to create user.";
                 return Page();
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Razor Page - Exception: {ex.Message}");
                 ErrorMessage = ex.Message;
                 return Page();
             }

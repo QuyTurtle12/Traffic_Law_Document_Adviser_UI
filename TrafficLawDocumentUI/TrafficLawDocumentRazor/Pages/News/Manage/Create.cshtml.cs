@@ -18,6 +18,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
         }
         public string CurrentUserRole { get; set; } = default!;
         public string CurrentUserId { get; private set; }
+        public string? ErrorMessage { get; set; }
         [BindProperty]
         public CreateNewsInput News { get; set; } = new CreateNewsInput();
         public async Task<IActionResult> OnGetAsync()
@@ -58,7 +59,9 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
                 var response = await _httpClient.PostAsJsonAsync("news", addNewsDto);
                 if (!response.IsSuccessStatusCode)
                 {
-                    ModelState.AddModelError("", "Failed to create the news article. Please try again.");
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    var errorObj = System.Text.Json.JsonSerializer.Deserialize<Util.DTOs.ApiResponse.ApiErrorResponse>(errorContent);
+                    ErrorMessage = errorObj?.ErrorMessage ?? errorObj?.Message ?? "Failed to create the news article. Please try again.";
                     return Page();
                 }
                 TempData["SuccessMessage"] = "News article created successfully!";
@@ -66,10 +69,9 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+                ErrorMessage = ex.Message;
+                return Page();
             }
-            ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
-            return RedirectToPage("Index");
         }
     }
 

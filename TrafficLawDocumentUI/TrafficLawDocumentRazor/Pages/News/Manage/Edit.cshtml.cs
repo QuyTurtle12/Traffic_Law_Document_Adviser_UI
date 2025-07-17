@@ -16,6 +16,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
             _httpClient = httpClientFactory.CreateClient("API");
         }
         public string CurrentUserRole { get; set; } = default!;
+        public string? ErrorMessage { get; set; }
         [BindProperty]
         public EditNewsInput News { get; set; } = new EditNewsInput();
         public async Task<IActionResult> OnGetAsync(Guid id)
@@ -54,23 +55,33 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
             {
                 return Page();
             }
-            var addNewsDto = new Util.DTOs.NewsDTOs.AddNewsDTO
+            try
             {
-                Title = News.Title,
-                Content = News.Content,
-                Author = News.Author,
-                PublishedDate = News.PublishedDate,
-                ImageUrl = News.ImageUrl,
-                EmbeddedUrl = News.EmbeddedUrl
-            };
-            var response = await _httpClient.PutAsJsonAsync($"news/{News.Id}", addNewsDto);
-            if (!response.IsSuccessStatusCode)
+                var addNewsDto = new Util.DTOs.NewsDTOs.AddNewsDTO
+                {
+                    Title = News.Title,
+                    Content = News.Content,
+                    Author = News.Author,
+                    PublishedDate = News.PublishedDate,
+                    ImageUrl = News.ImageUrl,
+                    EmbeddedUrl = News.EmbeddedUrl
+                };
+                var response = await _httpClient.PutAsJsonAsync($"news/{News.Id}", addNewsDto);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    var errorObj = System.Text.Json.JsonSerializer.Deserialize<Util.DTOs.ApiResponse.ApiErrorResponse>(errorContent);
+                    ErrorMessage = errorObj?.ErrorMessage ?? errorObj?.Message ?? "Failed to update the news article. Please try again.";
+                    return Page();
+                }
+                TempData["SuccessMessage"] = "News article updated successfully!";
+                return RedirectToPage("Index");
+            }
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Failed to update the news article. Please try again.");
+                ErrorMessage = ex.Message;
                 return Page();
             }
-            TempData["SuccessMessage"] = "News article updated successfully!";
-            return RedirectToPage("Index");
         }
     }
 

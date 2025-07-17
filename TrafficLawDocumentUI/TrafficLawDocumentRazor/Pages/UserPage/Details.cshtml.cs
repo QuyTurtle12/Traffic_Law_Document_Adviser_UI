@@ -24,12 +24,14 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
         {
             if (id == null)
             {
+                TempData["ErrorMessage"] = "User not found.";
                 return NotFound();
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
+                TempData["ErrorMessage"] = "User not found.";
                 return NotFound();
             }
             else
