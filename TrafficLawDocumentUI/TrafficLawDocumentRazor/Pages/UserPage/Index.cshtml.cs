@@ -10,6 +10,7 @@ using Util.Paginated;
 using Util.DTOs.NewsDTOs;
 using Util.DTOs.UserDTOs;
 using TrafficLawDocumentRazor.Services;
+using System.Text.Json;
 
 namespace TrafficLawDocumentRazor.Pages.UserPage
 {
@@ -32,6 +33,9 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 10;
 
+        [BindProperty]
+        public ToggleActiveRequest ToggleRequest { get; set; } = new ToggleActiveRequest();
+
         public async Task OnGetAsync()
         {
             try
@@ -44,6 +48,50 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
                 UserList = new PaginatedList<UserDTO> { Items = new List<UserDTO>() };
                 TempData["ErrorMessage"] = ex.Message;
             }
+        }
+
+        public async Task<IActionResult> OnPostToggleActiveAsync()
+        {
+            if (ToggleRequest == null || ToggleRequest.Id == Guid.Empty)
+            {
+                TempData["ErrorMessage"] = "Invalid request.";
+                return RedirectToPage(new { PageIndex, PageSize });
+            }
+            var user = await _userApiService.GetUserByIdAsync(ToggleRequest.Id);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToPage(new { PageIndex, PageSize });
+            }
+            var updateDto = new UpdateUserDTO
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Role = user.Role,
+                IsActive = ToggleRequest.IsActive
+            };
+            var result = await _userApiService.UpdateUserAsync(user.Id, updateDto);
+            if (result != null && result.StatusCode == 200)
+            {
+                if (ToggleRequest.IsActive == true)
+                {
+                    TempData["SuccessMessage"] = "User status has been enable.";
+                } else
+                {
+                    TempData["SuccessMessage"] = "User status has been disable.";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result?.Message ?? "Failed to disable user.";
+            }
+            return RedirectToPage(new { PageIndex, PageSize });
+        }
+        public class ToggleActiveRequest
+        {
+            public Guid Id { get; set; }
+            public bool IsActive { get; set; }
         }
     }
 }
