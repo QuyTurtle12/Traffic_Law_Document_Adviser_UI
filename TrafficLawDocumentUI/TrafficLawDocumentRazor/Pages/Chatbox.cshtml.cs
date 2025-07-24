@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
-using NuGet.Protocol.Plugins;
 using TrafficLawDocumentRazor.Hubs;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.ChatHistoryDTOs;
