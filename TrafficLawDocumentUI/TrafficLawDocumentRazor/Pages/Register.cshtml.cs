@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.Json.Serialization;
 using Util;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.AuthDTOs;
@@ -27,7 +28,9 @@ namespace TrafficLawDocumentRazor.Pages
 
             if (!resp.IsSuccessStatusCode)
             {
-                TempData["ToastMessage"] = $"Registration failed: {raw}. Please check your information and try again.";
+                // parse { errorCode, errorMessage }
+                var err = await resp.Content.ReadFromJsonAsync<ErrorResponseDTO>();
+                TempData["ToastMessage"] = err?.ErrorMessage ?? "Registration failed. Please check your credentials and try again.";
                 TempData["ToastType"] = "error";
                 return Page();
             }
@@ -44,5 +47,14 @@ namespace TrafficLawDocumentRazor.Pages
             TempData["ToastType"] = "success";
             return RedirectToPage("/Login");
         }
+        private class ErrorResponseDTO
+        {
+            [JsonPropertyName("errorCode")]
+            public string ErrorCode { get; set; } = "";
+            [JsonPropertyName("errorMessage")]
+            public string ErrorMessage { get; set; } = "";
+        }
     }
+
 }
+
