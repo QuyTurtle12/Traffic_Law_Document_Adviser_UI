@@ -20,7 +20,7 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
             UserId = Guid.Parse("82BAC5B2-E3D3-40CF-82B6-6EFDA10B2EDB");
             HttpClient httpClient = _httpClientFactory.CreateClient("API");
 
-            var response = await httpClient.GetAsync($"/api/feedback/user/{UserId}");
+            var response = await httpClient.GetAsync($"feedback/user/{UserId}");
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<GetFeedbackDto>>>();
             if(result.Data != null)
             {

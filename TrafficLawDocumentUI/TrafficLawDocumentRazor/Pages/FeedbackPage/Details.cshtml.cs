@@ -18,7 +18,7 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
         {
             HttpClient httpClient = _httpClientFactory.CreateClient("API");
 
-            var response = await httpClient.GetAsync($"/api/feedback/{id}");
+            var response = await httpClient.GetAsync($"feedback/{id}");
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<GetFeedbackDto>>();
             if (result.Data != null)
             {

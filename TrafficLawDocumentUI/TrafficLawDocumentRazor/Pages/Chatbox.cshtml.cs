@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 using TrafficLawDocumentRazor.Hubs;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.ChatHistoryDTOs;
@@ -24,14 +25,13 @@ namespace TrafficLawDocumentRazor.Pages
         public Guid UserId { get; set; }
         public bool IsLoading { get; set; }
         public List<ChatMessage> ChatHistory { get; set; } = new List<ChatMessage>();
-
         public async Task OnGetAsync()
         {
             // Initialize page
             ApiResponse = string.Empty;
             IsLoading = false;
-            //Temporarily hardcoding the UserId
-            UserId = Guid.Parse("82BAC5B2-E3D3-40CF-82B6-6EFDA10B2EDB");
+
+            UserId = Guid.Parse(User.FindFirstValue("sub"));
 
             await LoadChatHistoryAsync();
         }
@@ -42,7 +42,7 @@ namespace TrafficLawDocumentRazor.Pages
             {
                 HttpClient httpClient = _httpClientFactory.CreateClient("API");
 
-                var response = await httpClient.GetAsync($"/api/chathistory/search/{UserId}");
+                var response = await httpClient.GetAsync($"chathistory/search/{UserId}");
                 var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<GetChatHistoryDto>>>();
 
                 if (result?.Data != null)

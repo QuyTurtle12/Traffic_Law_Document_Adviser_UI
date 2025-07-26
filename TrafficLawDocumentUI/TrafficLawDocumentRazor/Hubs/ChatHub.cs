@@ -38,13 +38,13 @@ namespace TrafficLawDocumentRazor.Hubs
                     Question = message
                 };
 
-                var response = await httpClient.PostAsJsonAsync("/api/chathistory", chatRequest);
+                var response = await httpClient.PostAsJsonAsync("chathistory", chatRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = response.Content.ReadFromJsonAsync<ApiResponse<Guid>>();
                     var chatId = responseContent.Result.Data;
-                    var response2 = await httpClient.GetAsync($"/api/chathistory/{chatId}");
+                    var response2 = await httpClient.GetAsync($"chathistory/{chatId}");
                     var result = await response2.Content.ReadFromJsonAsync<ApiResponse<GetChatHistoryDto>>();
 
                     // Send the API response

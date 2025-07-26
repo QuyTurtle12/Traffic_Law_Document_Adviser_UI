@@ -22,7 +22,7 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
             
             HttpClient httpClient = _httpClientFactory.CreateClient("API");
 
-            var response = await httpClient.GetAsync($"/api/chathistory/{chatHistoryId}");
+            var response = await httpClient.GetAsync($"chathistory/{chatHistoryId}");
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<GetChatHistoryDto>>();
             if(result?.Data != null)
             {
@@ -39,7 +39,7 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
                 return Page();
             }
             HttpClient httpClient = _httpClientFactory.CreateClient("API");
-            var response = await httpClient.PostAsJsonAsync($"/api/feedback/", Feedback);
+            var response = await httpClient.PostAsJsonAsync($"feedback/", Feedback);
             if (!response.IsSuccessStatusCode)
             {
                 return Page();
