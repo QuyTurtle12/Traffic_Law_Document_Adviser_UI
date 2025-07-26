@@ -13,6 +13,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TrafficLawDocumentRazor/TrafficLawDocumentRazor.csproj", "TrafficLawDocumentRazor/"]
+COPY ["BussinessObject/BussinessObject.csproj", "BussinessObject/"]
+COPY ["Util/Util.csproj", "Util/"]
 RUN dotnet restore "./TrafficLawDocumentRazor/TrafficLawDocumentRazor.csproj"
 COPY . .
 WORKDIR "/src/TrafficLawDocumentRazor"
