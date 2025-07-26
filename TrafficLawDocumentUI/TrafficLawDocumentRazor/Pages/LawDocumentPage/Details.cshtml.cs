@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BussinessObject;
+using Util.DTOs.ApiResponse;
+using Util.DTOs.LawDocumentDTOs;
+using Util.Paginated;
 
 namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 {
     public class DetailsModel : PageModel
     {
-        private readonly TrafficLawDocumentDbContext _context;
+        private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
 
         public DetailsModel(
-            TrafficLawDocumentDbContext context,
+            IHttpClientFactory httpClientFactory,
             IConfiguration configuration)
         {
-            _context = context;
+            _httpClient = httpClientFactory.CreateClient("API");
             _configuration = configuration;
         }
 
@@ -28,12 +26,23 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
-            if (id == null) return NotFound();
+            var currentDocument = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"law-documents?pageIndex=1&pageSize=1&idSearch={id}");
 
-            LawDocument = await _context.LawDocuments
-                .Include(ld => ld.Category)
-                .FirstOrDefaultAsync(m => m.Id == id)
-              ?? throw new InvalidOperationException("Document not found");
+            if (currentDocument?.Data?.Items == null || !currentDocument.Data.Items.Any())
+                return NotFound();
+
+            var document = currentDocument.Data.Items.First();
+
+            LawDocument = new LawDocument
+            {
+                Id = document.Id,
+                Title = document.Title,
+                DocumentCode = document.DocumentCode,
+                CategoryId = document.CategoryId,
+                FilePath = document.FilePath,
+                LinkPath = document.LinkPath,
+                ExpertVerification = document.ExpertVerification
+            };
 
             ApiBaseUrl = (_configuration["ApiSettings:BaseUrl"] ?? "")
                          .TrimEnd('/');
