@@ -1,0 +1,282 @@
+@page
+@model TrafficLawDocumentRazor.Pages.News.IndexModel
+@{
+    ViewData["Title"] = "News";
+}
+
+<style>
+    .news-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .news-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .news-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        background: white;
+        position: relative;
+    }
+    
+    .news-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .news-card:hover {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 16px 40px rgba(30, 60, 114, 0.15);
+        border: 1.5px solid #ffd700;
+    }
+    
+    .news-card img {
+        transition: all 0.5s ease;
+    }
+    
+    .news-card:hover img {
+        transform: scale(1.05);
+    }
+    
+    .news-card .card-title {
+        color: #1e3c72;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+    }
+    
+    .news-card .card-text {
+        color: #6c757d;
+        line-height: 1.6;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #ffd700;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        color: #ffd700;
+    }
+    
+    .pagination {
+        margin-top: 30px;
+        --bs-pagination-active-bg: #ffd700;
+        --bs-pagination-active-border-color: #ffd700;
+        --bs-pagination-color: #1e3c72;
+        --bs-pagination-hover-color: #2a5298;
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: #1e3c72;
+        color: #ffd700;
+    }
+    
+    .page-link {
+        color: #1e3c72;
+        border-radius: 8px;
+        margin: 0 3px;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+    
+    .page-link:hover {
+        background: #ffd70022;
+        color: #2a5298;
+        border-color: #ffd700;
+    }
+    
+    .pagination .active .page-link {
+        background: #ffd700;
+        color: #1e3c72;
+        border-color: #ffd700;
+    }
+    
+    .btn-group-sm .btn {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        color: #1e3c72;
+        background: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-group-sm .btn.active, .btn-group-sm .btn:hover {
+        background: #ffd700;
+        color: #1e3c72;
+        border-color: #ffd700;
+    }
+    
+    .empty-state {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .empty-state::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+    }
+    
+    .news-meta {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-bottom: 12px;
+    }
+    
+    .news-meta i {
+        color: #ffd700;
+        margin-right: 4px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="news-header">
+        <div class="row">
+            <div class="col-12 text-center">
+                <i class="bi bi-newspaper text-warning" style="font-size: 3rem;"></i>
+                <h1 class="display-4 mb-3">Latest News</h1>
+                <p class="lead mb-0">Stay updated with the latest traffic law news and updates.</p>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.NewsList.Items != null && Model.NewsList.Items.Any())
+    {
+        <div class="row">
+            @foreach (var news in Model.NewsList.Items)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="news-card">
+                        @if (!string.IsNullOrEmpty(news.ImageUrl))
+                        {
+                            <div style="overflow: hidden; height: 200px;">
+                                <img src="@news.ImageUrl" class="card-img-top" alt="@news.Title" style="height: 100%; object-fit: cover;">
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@news.Title</h5>
+                            <div class="news-meta">
+                                <i class="bi bi-calendar"></i> @news.PublishedDate.ToString("MMM dd, yyyy")
+                                @if (!string.IsNullOrEmpty(news.Author))
+                                {
+                                    <span> | <i class="bi bi-person"></i> @news.Author</span>
+                                }
+                            </div>
+                            <p class="card-text">
+                                @(news.Content?.Length > 150 ? news.Content.Substring(0, 150) + "..." : news.Content)
+                            </p>
+                            <a href="/News/Details/@news.Id" class="btn btn-primary">
+                                <i class="bi bi-book me-1"></i> Read More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.NewsList.TotalPages > 1)
+        {
+            <nav aria-label="News pagination">
+                <ul class="pagination justify-content-center">
+                    @if (Model.NewsList.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber - 1)" asp-route-pageSize="@Model.NewsList.PageSize">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = Math.Max(1, Model.NewsList.PageNumber - 2); i <= Math.Min(Model.NewsList.TotalPages, Model.NewsList.PageNumber + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.NewsList.PageNumber ? "active" : "")">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-pageSize="@Model.NewsList.PageSize">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.NewsList.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber + 1)" asp-route-pageSize="@Model.NewsList.PageSize">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+
+        <!-- Page Size Selector -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Showing @((Model.NewsList.PageNumber - 1) * Model.NewsList.PageSize + 1) to 
+                @Math.Min(Model.NewsList.PageNumber * Model.NewsList.PageSize, Model.NewsList.TotalCount) 
+                of @Model.NewsList.TotalCount results
+            </small>
+            <div class="mt-2">
+                <span class="text-muted">Items per page:</span>
+                <div class="btn-group btn-group-sm" role="group">
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="5" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 5 ? "active" : "")">5</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="10" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 10 ? "active" : "")">10</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="20" class="btn btn-outline-secondary @(Model.NewsList.PageSize == 20 ? "active" : "")">20</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-info-circle"></i>
+            <h4>No news available</h4>
+            <p>Check back later for the latest updates.</p>
+        </div>
+    }
+</div> 

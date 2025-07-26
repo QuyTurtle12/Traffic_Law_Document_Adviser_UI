@@ -1,10 +1,280 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 60px 30px;
+        margin-bottom: 50px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .feature-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        color: #1e3c72;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+        color: #ffd700;
+    }
+    
+    .feature-title {
+        color: #1e3c72;
+        font-weight: 600;
+        font-size: 1.4rem;
+    }
+    
+    .news-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+    
+    .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .news-card img {
+        transition: all 0.5s ease;
+    }
+    
+    .news-card:hover img {
+        transform: scale(1.05);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #1e3c72;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-weight: 600;
+        color: #1e3c72;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+    }
+    
+    .section-title {
+        color: #1e3c72;
+        font-weight: 600;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 30px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="mb-4">
+                    <i class="bi bi-shield-check text-warning" style="font-size: 4rem;"></i>
+                </div>
+                <h1 class="display-4 fw-bold mb-3">Traffic Law Document Adviser</h1>
+                <p class="lead mb-4">Your comprehensive resource for traffic law information, regulations, and legal guidance. Stay informed and compliant with the latest traffic laws and regulations.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-page="/News/Index" class="btn btn-light btn-lg">
+                        <i class="bi bi-newspaper"></i> Latest News
+                    </a>
+                    <a href="#features" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-info-circle"></i> Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="mb-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title">What We Offer</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h4 class="feature-title">Legal Documents</h4>
+                        <p class="card-text">Access comprehensive traffic law documents, regulations, and legal resources to understand your rights and obligations.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-newspaper"></i>
+                        </div>
+                        <h4 class="feature-title">Latest Updates</h4>
+                        <p class="card-text">Stay informed with the latest traffic law changes, news, and regulatory updates that affect drivers and road users.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <h4 class="feature-title">Expert Guidance</h4>
+                        <p class="card-text">Get expert advice and guidance on traffic law matters through our comprehensive knowledge base and support system.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest News Section -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">Latest News</h2>
+            <a asp-page="/News/Index" class="btn btn-outline-primary">View All News</a>
+        </div>
+        
+        @if (Model.LatestNews != null && Model.LatestNews.Any())
+        {
+            <div class="row">
+                @foreach (var news in Model.LatestNews.Take(3))
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="news-card h-100">
+                            @if (!string.IsNullOrEmpty(news.ImageUrl))
+                            {
+                                <div style="overflow: hidden; height: 200px;">
+                                    <img src="@news.ImageUrl" class="card-img-top" alt="@news.Title" style="height: 100%; object-fit: cover;">
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold" style="color: #1e3c72;">@news.Title</h5>
+                                <p class="card-text text-muted">
+                                    <small>
+                                        <i class="bi bi-calendar"></i> @news.PublishedDate.ToString("MMM dd, yyyy")
+                                        @if (!string.IsNullOrEmpty(news.Author))
+                                        {
+                                            <span> | <i class="bi bi-person"></i> @news.Author</span>
+                                        }
+                                    </small>
+                                </p>
+                                <p class="card-text">
+                                    @(news.Content?.Length > 100 ? news.Content.Substring(0, 100) + "..." : news.Content)
+                                </p>
+                                <a asp-page="/News/Details" asp-route-id="@news.Id" class="btn btn-primary btn-sm">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center p-5 bg-light rounded-3">
+                <i class="bi bi-info-circle text-primary mb-3" style="font-size: 2rem;"></i>
+                <p class="text-muted">No recent news available. Check back soon for updates!</p>
+            </div>
+        }
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row mb-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="cta-section text-white text-center p-5">
+                <div class="mb-3">
+                    <i class="bi bi-shield-check text-warning" style="font-size: 3rem;"></i>
+                </div>
+                <h3 class="mb-3">Need Legal Assistance?</h3>
+                <p class="mb-4">Our comprehensive traffic law resources are here to help you navigate complex legal matters and stay compliant with current regulations.</p>
+                <a asp-page="/Chatbox" class="btn btn-light btn-lg">
+                    <i class="bi bi-chat-dots me-2"></i>Chat With Us
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,0 +1,75 @@
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Util;
+using Util.DTOs.ApiResponse;
+using Util.DTOs.DocumentCategoryDTOs;
+using Util.Paginated;
+
+namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
+{
+    public class IndexModel : PageModel
+    {
+        private readonly HttpClient _httpClient;
+
+        public IndexModel(IHttpClientFactory httpClientFactory)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+        }
+
+        public string currentUserRole { get; set; } = default!;
+
+        public PaginatedList<GetDocumentCategoryDTO> DocumentCategory { get;set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 10, string? name = null)
+        {
+            currentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+
+            if (currentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+
+            // Get query parameters for pagination
+            if (Request.Query.ContainsKey("pageIndex"))
+            {
+                pageNumber = int.Parse(Request.Query["pageNumber"]!);
+            }
+            if (Request.Query.ContainsKey("pageSize"))
+            {
+                pageSize = int.Parse(Request.Query["pageSize"]!);
+            }
+
+            // Construct the API URL with query parameters for pagination
+            string apiUrl = $"document-categories?pageIndex={pageNumber}&pageSize={pageSize}";
+
+            // Append additional query parameters if they are provided
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                apiUrl += $"&nameSearch={Uri.EscapeDataString(name)}";
+            }
+
+            // Fetch tags
+            var catResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentCategoryDTO>>>(apiUrl);
+
+            if (catResponse?.Data != null)
+            {
+                DocumentCategory = catResponse.Data;
+            }
+            else
+            {
+                // If the response is null or does not contain data, initialize an empty PaginatedList
+                DocumentCategory = new PaginatedList<GetDocumentCategoryDTO>
+                {
+                    Items = new List<GetDocumentCategoryDTO>(),
+                    PageNumber = pageNumber,
+                    TotalPages = 0,
+                    TotalCount = 0,
+                    PageSize = pageSize
+                };
+            }
+
+            return Page();
+        }
+    }
+}

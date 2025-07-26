@@ -1,0 +1,690 @@
+@page
+@model TrafficLawDocumentRazor.Pages.News.Manage.IndexModel
+@{
+    ViewData["Title"] = "News Management";
+}
+
+<style>
+    .management-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .management-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #ffd700;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(30, 60, 114, 0.4);
+        color: #ffd700;
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        color: #6c757d;
+        border-radius: 12px;
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+    
+    .filter-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .filter-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .filter-card .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #ffd700;
+        border: none;
+        border-radius: 20px 20px 0 0;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
+    
+    .filter-card .card-header button {
+        color: #ffd700;
+        border: 1px solid #ffd700;
+        border-radius: 8px;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-card .card-header button:hover {
+        background: #ffd700;
+        color: #1e3c72;
+    }
+    
+    .data-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .data-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .data-card .card-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: #ffd700;
+        border: none;
+        border-radius: 20px 20px 0 0;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table thead th {
+        background: #f8f9fa;
+        color: #1e3c72;
+        font-weight: 600;
+        border-bottom: 2px solid #ffd700;
+        padding: 15px;
+    }
+    
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .table tbody tr:hover {
+        background: #ffd70022;
+    }
+    
+    .btn-outline-primary {
+        border: 2px solid #1e3c72;
+        color: #1e3c72;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .btn-outline-primary:hover {
+        background: #1e3c72;
+        color: #ffd700;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+    
+    .btn-outline-warning {
+        border: 2px solid #ffd700;
+        color: #1e3c72;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .btn-outline-warning:hover {
+        background: #ffd700;
+        color: #1e3c72;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+    
+    .btn-outline-danger {
+        border: 2px solid #dc3545;
+        color: #dc3545;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .btn-outline-danger:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .pagination {
+        --bs-pagination-active-bg: #ffd700;
+        --bs-pagination-active-border-color: #ffd700;
+        --bs-pagination-color: #1e3c72;
+        --bs-pagination-hover-color: #2a5298;
+    }
+    
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border-color: #1e3c72;
+        color: #ffd700;
+    }
+    
+    .page-link {
+        color: #1e3c72;
+        border-radius: 8px;
+        margin: 0 3px;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+    
+    .page-link:hover {
+        background: #ffd70022;
+        color: #2a5298;
+        border-color: #ffd700;
+    }
+    
+    .pagination .active .page-link {
+        background: #ffd700;
+        color: #1e3c72;
+        border-color: #ffd700;
+    }
+    
+    .btn-group-sm .btn {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        color: #1e3c72;
+        background: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-group-sm .btn.active, .btn-group-sm .btn:hover {
+        background: #ffd700;
+        color: #1e3c72;
+        border-color: #ffd700;
+    }
+    
+    .empty-state {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 60px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .empty-state::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+    }
+    
+    .alert-info {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .alert-info::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .badge {
+        background: #ffd700 !important;
+        color: #1e3c72 !important;
+        font-weight: 600;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #ffd700;
+        box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+    
+    .filter-active {
+        background-color: #ffd70022 !important;
+        border-color: #ffd700 !important;
+    }
+</style>
+
+@if (!string.IsNullOrEmpty(Model.SyncMessage))
+{
+    <div class="alert alert-@(Model.SyncStatus == "success" ? "success" : "danger") mt-3">
+        <strong>@Model.SyncMessage</strong>
+    </div>
+    if (Model.SyncedArticles != null && Model.SyncedArticles.Count > 0)
+    {
+        <div class="card mt-3 mb-4">
+            <div class="card-header">
+                <strong>New Articles Synced</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Published Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var article in Model.SyncedArticles)
+                        {
+                            <tr>
+                                <td>@article.Title</td>
+                                <td>@article.Author</td>
+                                <td>@article.PublishedDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="container mt-4">
+    <div class="management-header">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 mb-2">News Management</h1>
+                <p class="lead mb-0">Manage all news articles and content.</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <div class="btn-group" role="group">
+                    <a asp-page="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i> Create New Article
+                    </a>
+                    @if (Model.CurrentUserRole == "Staff")
+                    {
+                        <form method="post" asp-page-handler="SyncNews" style="display:inline;">
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Sync News
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-funnel me-2"></i> Filters
+                <button class="btn btn-sm float-end" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                    <i class="bi bi-chevron-down"></i> Toggle
+                </button>
+            </h5>
+        </div>
+        <div class="collapse" id="filterCollapse">
+            <div class="card-body">
+                <form method="get" id="filterForm">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="TitleFilter" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="TitleFilter" name="TitleFilter" value="@Model.TitleFilter" placeholder="Search by title...">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="AuthorFilter" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="AuthorFilter" name="AuthorFilter" value="@Model.AuthorFilter" placeholder="Search by author...">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="ContentFilter" class="form-label">Content</label>
+                            <input type="text" class="form-control" id="ContentFilter" name="ContentFilter" value="@Model.ContentFilter" placeholder="Search in content...">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="PageSize" class="form-label">Items per page</label>
+                            <select class="form-select" id="PageSize" name="PageSize">
+                                <option value="10" selected="@(Model.PageSize == 10)">10</option>
+                                <option value="20" selected="@(Model.PageSize == 20)">20</option>
+                                <option value="50" selected="@(Model.PageSize == 50)">50</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="StartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="StartDate" name="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="EndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="EndDate" name="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))">
+                        </div>
+                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                            <div class="btn-group w-100" role="group">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search me-1"></i> Apply Filters
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="clearFilters()">
+                                    <i class="bi bi-x-circle me-1"></i> Clear Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Filters Display -->
+    @if (!string.IsNullOrEmpty(Model.TitleFilter) || !string.IsNullOrEmpty(Model.AuthorFilter) || 
+         !string.IsNullOrEmpty(Model.ContentFilter) || Model.StartDate.HasValue || Model.EndDate.HasValue)
+    {
+        <div class="alert alert-info mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong><i class="bi bi-funnel-fill me-1"></i> Active Filters:</strong>
+                    <span class="ms-2">
+                        @if (!string.IsNullOrEmpty(Model.TitleFilter))
+                        {
+                            <span class="badge bg-primary me-1">Title: @Model.TitleFilter</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.AuthorFilter))
+                        {
+                            <span class="badge bg-primary me-1">Author: @Model.AuthorFilter</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ContentFilter))
+                        {
+                            <span class="badge bg-primary me-1">Content: @Model.ContentFilter</span>
+                        }
+                        @if (Model.StartDate.HasValue)
+                        {
+                            <span class="badge bg-primary me-1">From: @Model.StartDate.Value.ToString("MMM dd, yyyy")</span>
+                        }
+                        @if (Model.EndDate.HasValue)
+                        {
+                            <span class="badge bg-primary me-1">To: @Model.EndDate.Value.ToString("MMM dd, yyyy")</span>
+                        }
+                    </span>
+                </div>
+                <a href="@Url.Page("./Index")" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i> Clear All
+                </a>
+            </div>
+        </div>
+    }
+
+    @if (Model.NewsList.Items != null && Model.NewsList.Items.Any())
+    {
+        <div class="data-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-list me-2"></i>All News Articles</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Published Date</th>
+                                <th>Last Updated</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var news in Model.NewsList.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@news.Title</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            @(news.Content?.Length > 100 ? news.Content.Substring(0, 100) + "..." : news.Content)
+                                        </small>
+                                    </td>
+                                    <td>@news.Author</td>
+                                    <td>@news.PublishedDate.ToString("MMM dd, yyyy")</td>
+                                    <td>@(news.LastUpdatedTime?.ToString("MMM dd, yyyy") ?? "N/A")</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-page="View" asp-route-id="@news.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a asp-page="Edit" asp-route-id="@news.Id" class="btn btn-sm btn-outline-warning">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <a asp-page="Delete" asp-route-id="@news.Id" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.NewsList.TotalPages > 1)
+        {
+            <nav aria-label="News management pagination" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    @if (Model.NewsList.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber - 1)" asp-route-pageSize="@Model.NewsList.PageSize" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = Math.Max(1, Model.NewsList.PageNumber - 2); i <= Math.Min(Model.NewsList.TotalPages, Model.NewsList.PageNumber + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.NewsList.PageNumber ? "active" : "")">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@i" asp-route-pageSize="@Model.NewsList.PageSize" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.NewsList.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-page="./Index" asp-route-pageIndex="@(Model.NewsList.PageNumber + 1)" asp-route-pageSize="@Model.NewsList.PageSize" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+
+        <!-- Page Size Selector -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Showing @((Model.NewsList.PageNumber - 1) * Model.NewsList.PageSize + 1) to 
+                @Math.Min(Model.NewsList.PageNumber * Model.NewsList.PageSize, Model.NewsList.TotalCount) 
+                of @Model.NewsList.TotalCount results
+            </small>
+            <div class="mt-2">
+                <span class="text-muted">Items per page:</span>
+                <div class="btn-group btn-group-sm" role="group">
+                    @{
+                        var active10 = Model.NewsList.PageSize == 10 ? "active" : "";
+                        var active20 = Model.NewsList.PageSize == 20 ? "active" : "";
+                        var active50 = Model.NewsList.PageSize == 50 ? "active" : "";
+                    }
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="10" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="btn btn-outline-secondary @active10">10</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="20" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="btn btn-outline-secondary @active20">20</a>
+                    <a asp-page="./Index" asp-route-pageIndex="1" asp-route-pageSize="50" asp-route-titleFilter="@Model.TitleFilter" asp-route-authorFilter="@Model.AuthorFilter" asp-route-contentFilter="@Model.ContentFilter" asp-route-startDate="@(Model.StartDate?.ToString("yyyy-MM-dd"))" asp-route-endDate="@(Model.EndDate?.ToString("yyyy-MM-dd"))" class="btn btn-outline-secondary @active50">50</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-newspaper"></i>
+            <h4>No news articles found</h4>
+            <p>Create your first news article to get started.</p>
+            <a asp-page="Create" class="btn btn-primary">Create First Article</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function clearFilters() {
+            // Clear all filter inputs
+            document.getElementById('TitleFilter').value = '';
+            document.getElementById('AuthorFilter').value = '';
+            document.getElementById('ContentFilter').value = '';
+            document.getElementById('StartDate').value = '';
+            document.getElementById('EndDate').value = '';
+            document.getElementById('PageSize').value = '20';
+            
+            // Submit the form to reload with cleared filters
+            document.getElementById('filterForm').submit();
+        }
+
+        // Auto-submit form when page size changes
+        document.getElementById('PageSize').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+
+        // Add visual feedback for active filters
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleFilter = document.getElementById('TitleFilter');
+            const authorFilter = document.getElementById('AuthorFilter');
+            const contentFilter = document.getElementById('ContentFilter');
+            const startDate = document.getElementById('StartDate');
+            const endDate = document.getElementById('EndDate');
+
+            // Add active class to inputs with values
+            [titleFilter, authorFilter, contentFilter, startDate, endDate].forEach(input => {
+                if (input && input.value.trim() !== '') {
+                    input.classList.add('filter-active');
+                }
+            });
+
+            // Add active class when user types
+            [titleFilter, authorFilter, contentFilter].forEach(input => {
+                if (input) {
+                    input.addEventListener('input', function() {
+                        if (this.value.trim() !== '') {
+                            this.classList.add('filter-active');
+                        } else {
+                            this.classList.remove('filter-active');
+                        }
+                    });
+                }
+            });
+
+            // Add active class when date is selected
+            [startDate, endDate].forEach(input => {
+                if (input) {
+                    input.addEventListener('change', function() {
+                        if (this.value !== '') {
+                            this.classList.add('filter-active');
+                        } else {
+                            this.classList.remove('filter-active');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        @@keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Filter section styling */
+        #filterCollapse {
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn-group .btn {
+                border-radius: 0.375rem !important;
+                margin-bottom: 0.25rem;
+            }
+        }
+    </style>
+}

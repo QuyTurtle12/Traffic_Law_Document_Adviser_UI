@@ -1,0 +1,171 @@
+﻿@page
+@model TrafficLawDocumentRazor.Pages.FeedbackPage.DetailsModel
+
+@{
+    ViewData["Title"] = "Feedback Details";
+}
+
+<style>
+    .details-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .details-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffd700, #ffed4e);
+    }
+    
+    .details-card {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        padding: 0;
+        border: 1px solid rgba(30, 60, 114, 0.1);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+    
+    .details-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #1e3c72, #2a5298);
+    }
+    
+    .details-card-header {
+        background-color: rgba(30, 60, 114, 0.05);
+        padding: 20px 30px;
+        border-bottom: 1px solid rgba(30, 60, 114, 0.1);
+    }
+    
+    .details-card-body {
+        padding: 30px;
+    }
+    
+    .details-label {
+        color: #1e3c72;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .details-value {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid rgba(30, 60, 114, 0.5);
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-weight: 500;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-back {
+        background-color: rgba(30, 60, 114, 0.1);
+        color: #1e3c72;
+        border: none;
+        text-decoration: none;
+    }
+    
+    .btn-back:hover {
+        background-color: rgba(30, 60, 114, 0.2);
+        color: #1e3c72;
+        transform: translateY(-2px);
+    }
+    
+    .btn-delete {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        border: none;
+        text-decoration: none;
+    }
+    
+    .btn-delete:hover {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+        transform: translateY(-2px);
+    }
+    
+    .created-at {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 15px;
+        background-color: rgba(30, 60, 114, 0.05);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: #1e3c72;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="details-header text-center">
+        <i class="bi bi-chat-quote text-warning" style="font-size: 3rem;"></i>
+        <h1 class="display-5 mb-2">Feedback Details</h1>
+        <p class="lead mb-0">Viewing detailed feedback information</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="details-card">
+                <div class="details-card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Feedback Information
+                    </h4>
+                    <div class="created-at">
+                        <i class="bi bi-calendar-event me-2"></i> Created: @Model.Feedback.CreatedAtFormatted
+                    </div>
+                </div>
+                
+                <div class="details-card-body">
+                    <div class="mb-4">
+                        <div class="details-label mb-2">AI Response</div>
+                        <div class="details-value">
+                            @Html.DisplayFor(model => model.Feedback.AIAnswer)
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="details-label mb-2">Feedback Content</div>
+                        <div class="details-value">
+                            @Html.DisplayFor(model => model.Feedback.Content)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mb-5">
+                <a asp-page="./Index" class="btn-action btn-back">
+                    <i class="bi bi-arrow-left me-2"></i> Back to List
+                </a>
+                <a asp-page="./Delete" asp-route-id="@Model.Feedback.Id" class="btn-action btn-delete">
+                    <i class="bi bi-trash me-2"></i> Delete
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
