@@ -33,6 +33,12 @@
 
         <form id="chatForm">
             <div class="chat-input">
+                <select id="modelSelect" style="margin-bottom: 10px;">
+                    @foreach (var model in Model.ModelNames)
+                    {
+                        <option value="@(@model)">@(@model)</option>
+                    }
+                </select>
                 <input type="text" placeholder="Type a message..." id="messageInput" />
                 <button type="submit" class="send-btn" id="sendButton">➤</button>
             </div>
@@ -112,12 +118,12 @@
             
             const message = messageInput.value.trim();
             if (!message) return;
-
+            const modelName = document.getElementById("modelSelect").value;
             // Clear input immediately
             messageInput.value = "";
             
             // Send message via SignalR - This will handle everything securely
-            connection.invoke("SendMessage", userId, message).catch(function (err) {
+            connection.invoke("SendMessage", userId, message, modelName).catch(function (err) {
                 console.error("Error sending message: " + err.toString());
                 // Show error in chat
                 const errorDiv = document.createElement("div");
