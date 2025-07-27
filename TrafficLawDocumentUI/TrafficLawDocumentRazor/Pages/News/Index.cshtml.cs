@@ -25,11 +25,34 @@ namespace TrafficLawDocumentRazor.Pages.News
         [BindProperty(SupportsGet = true)]
         public int PageSize { get; set; } = 9;
 
+        // Filter properties
+        [BindProperty(SupportsGet = true)]
+        public string? TitleFilter { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? AuthorFilter { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? ContentFilter { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public DateTime? StartDate { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public DateTime? EndDate { get; set; }
+
         public async Task OnGetAsync()
         {
             try
             {
-                NewsList = await _newsApiService.GetNewsAsync(PageIndex, PageSize);
+                // Reset to page 1 when filters are applied
+                if (!string.IsNullOrEmpty(TitleFilter) || !string.IsNullOrEmpty(AuthorFilter) || 
+                    !string.IsNullOrEmpty(ContentFilter) || StartDate.HasValue || EndDate.HasValue)
+                {
+                    PageIndex = 1;
+                }
+
+                NewsList = await _newsApiService.GetNewsAsync(PageIndex, PageSize, TitleFilter, AuthorFilter, ContentFilter, StartDate, EndDate);
             }
             catch (Exception ex)
             {
