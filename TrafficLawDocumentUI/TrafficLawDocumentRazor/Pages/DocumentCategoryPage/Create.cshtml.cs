@@ -1,9 +1,12 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TrafficLawDocumentRazor.Services;
 using Util;
 using Util.DTOs.ApiResponse;
+using Util.DTOs.DocumentTagDTOs;
+using Util.Paginated;
 
 namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
 {
@@ -20,6 +23,7 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
 
         [BindProperty]
         public string Name { get; set; } = string.Empty;
+
 
         public async Task<IActionResult> OnPostAsync()
         {
