@@ -33,7 +33,7 @@ public partial class News
 
     public DateTime? DeletedTime { get; set; }
 
-    public Guid EmbeddedNewsId { get; set; }
+    public Guid? EmbeddedNewsId { get; set; }
 
     public virtual User? User { get; set; }
 }
