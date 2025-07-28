@@ -1,24 +1,25 @@
+using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BussinessObject;
 using Microsoft.EntityFrameworkCore;
-using Util.DTOs.NewsDTOs;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using TrafficLawDocumentRazor.Services;
+using Util.DTOs.NewsDTOs;
 
 namespace TrafficLawDocumentRazor.Pages.News.Manage
 {
     public class ViewModel : PageModel
     {
-        private readonly TrafficLawDocumentDbContext _context;
-        private readonly ILogger<ViewModel> _logger;
+        private readonly ILogger<IndexModel> _logger;
+        private readonly INewsApiService _newsApiService;
 
-        public ViewModel(TrafficLawDocumentDbContext context, ILogger<ViewModel> logger)
+        public ViewModel(ILogger<IndexModel> logger, INewsApiService newsApiService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _logger = logger;
+            _newsApiService = newsApiService;
         }
 
         public GetNewsDTO? News { get; set; }
@@ -35,31 +36,9 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
             try
             {
                 _logger.LogInformation("Attempting to load news with ID: {NewsId}", id);
-                
-                // Check if the database is accessible
-                if (!_context.Database.CanConnect())
-                {
-                    _logger.LogError("Cannot connect to database");
-                    TempData["ErrorMessage"] = "Database connection error.";
-                    return StatusCode(500);
-                }
 
-                News = await _context.News
-                    .Where(n => n.Id == id && n.DeletedTime == null)
-                    .Select(n => new GetNewsDTO
-                    {
-                        Id = n.Id,
-                        Title = n.Title,
-                        Content = n.Content,
-                        PublishedDate = n.PublishedDate,
-                        Author = n.Author,
-                        ImageUrl = n.ImageUrl,
-                        EmbeddedUrl = n.EmbeddedUrl,
-                        CreatedTime = n.CreatedTime,
-                        LastUpdatedTime = n.LastUpdatedTime,
-                        UserId = n.UserId
-                    })
-                    .FirstOrDefaultAsync();
+
+                News = await _newsApiService.GetNewsByIdAsync(id);
 
                 if (News == null)
                 {
