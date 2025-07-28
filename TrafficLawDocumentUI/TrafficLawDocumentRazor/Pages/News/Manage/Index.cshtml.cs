@@ -64,6 +64,25 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
                     return RedirectToPage("/Index");
                 }
                 NewsList = await _newsApiService.GetNewsAsync(PageIndex, PageSize, TitleFilter, AuthorFilter, ContentFilter, StartDate, EndDate);
+
+                if (TempData.ContainsKey("SyncMessage"))
+                {
+                    SyncMessage = TempData["SyncMessage"] as string;
+                    SyncStatus = TempData["SyncStatus"] as string;
+                    if (TempData.ContainsKey("SyncedArticles"))
+                    {
+                        var json = TempData["SyncedArticles"] as string;
+                        if (!string.IsNullOrEmpty(json))
+                        {
+                            try
+                            {
+                                SyncedArticles = System.Text.Json.JsonSerializer.Deserialize<List<SyncNewsItem>>(json);
+                            }
+                            catch { SyncedArticles = null; }
+                        }
+                    }
+                }
+
                 return Page();
             }
             catch (Exception ex)
@@ -71,23 +90,6 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
                 _logger.LogError(ex, "Error loading news management data");
                 NewsList = new PaginatedList<GetNewsDTO> { Items = new List<GetNewsDTO>() };
                 TempData["ErrorMessage"] = ex.Message;
-            }
-            if (TempData.ContainsKey("SyncMessage"))
-            {
-                SyncMessage = TempData["SyncMessage"] as string;
-                SyncStatus = TempData["SyncStatus"] as string;
-                if (TempData.ContainsKey("SyncedArticles"))
-                {
-                    var json = TempData["SyncedArticles"] as string;
-                    if (!string.IsNullOrEmpty(json))
-                    {
-                        try
-                        {
-                            SyncedArticles = System.Text.Json.JsonSerializer.Deserialize<List<SyncNewsItem>>(json);
-                        }
-                        catch { SyncedArticles = null; }
-                    }
-                }
             }
             return Page();
         }
