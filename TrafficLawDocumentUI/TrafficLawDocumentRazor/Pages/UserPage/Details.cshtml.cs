@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BussinessObject;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace TrafficLawDocumentRazor.Pages.UserPage
 {
@@ -19,9 +20,16 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
         }
 
         public User User { get; set; } = default!;
+        public string CurrentUserRole { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
+
+            CurrentUserRole = base.User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            if (CurrentUserRole != "Admin")
+            {
+                return RedirectToPage("/Index");
+            }
             if (id == null)
             {
                 TempData["ErrorMessage"] = "User not found.";
