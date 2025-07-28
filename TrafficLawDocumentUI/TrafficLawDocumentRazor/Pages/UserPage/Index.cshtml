@@ -279,7 +279,7 @@
                 </div>
             </div>
 
-            <!-- Pagination -->
+            @* <!-- Pagination -->
             @if (Model.UserList.TotalPages > 1)
             {
                 <nav aria-label="User management pagination" class="mt-4">
@@ -329,7 +329,7 @@
                         }
                     </ul>
                 </nav>
-            }
+            } *@
 
             <!-- Delete Modal Container -->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
@@ -342,7 +342,7 @@
                 </div>
             </div>
 
-            <!-- Page Size Selector -->
+            @* <!-- Page Size Selector -->
             <div class="text-center mt-4">
                 <small class="text-muted">
                     Showing @((Model.UserList.PageNumber - 1) * Model.UserList.PageSize + 1) to
@@ -378,7 +378,7 @@
                            class="btn btn-outline-primary @(Model.UserList.PageSize == 50 ? "active" : "")">50</a>
                     </div>
                 </div>
-            </div>
+            </div> *@
         }
         else
         {
