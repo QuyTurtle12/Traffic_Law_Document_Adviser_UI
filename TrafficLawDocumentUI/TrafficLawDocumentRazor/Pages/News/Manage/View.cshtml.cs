@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TrafficLawDocumentRazor.Services;
 using Util.DTOs.NewsDTOs;
@@ -24,8 +25,16 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
 
         public GetNewsDTO? News { get; set; }
 
+        public string CurrentUserRole { get; set; } = default!;
+
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            if (CurrentUserRole != "Staff")
+            {
+                return RedirectToPage("/Index");
+            }
+            
             if (id == Guid.Empty)
             {
                 _logger.LogWarning("Invalid news ID provided: {NewsId}", id);

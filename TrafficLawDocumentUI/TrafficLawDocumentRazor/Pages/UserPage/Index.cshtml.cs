@@ -115,40 +115,59 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
 
         public async Task<IActionResult> OnPostToggleActiveAsync()
         {
-            if (ToggleRequest == null || ToggleRequest.Id == Guid.Empty)
+            try
             {
-                TempData["ErrorMessage"] = "Invalid request.";
-                return RedirectToPage(new { PageIndex, PageSize, NameSearch, EmailSearch, RoleFilter, StatusFilter });
-            }
-            var user = await _userApiService.GetUserByIdAsync(ToggleRequest.Id);
-            if (user == null)
-            {
-                TempData["ErrorMessage"] = "User not found.";
-                return RedirectToPage(new { PageIndex, PageSize, NameSearch, EmailSearch, RoleFilter, StatusFilter });
-            }
-            var updateDto = new UpdateUserDTO
-            {
-                Id = user.Id,
-                FullName = user.FullName,
-                Email = user.Email,
-                Role = user.Role,
-                IsActive = ToggleRequest.IsActive
-            };
-            var result = await _userApiService.UpdateUserAsync(user.Id, updateDto);
-            if (result != null && result.StatusCode == 200)
-            {
-                if (ToggleRequest.IsActive == true)
+                if (ToggleRequest == null || ToggleRequest.Id == Guid.Empty)
                 {
-                    TempData["SuccessMessage"] = "User status has been enable.";
-                } else
+                    TempData["ErrorMessage"] = "Invalid request.";
+                    return RedirectToPage(new { PageIndex, PageSize, NameSearch, EmailSearch, RoleFilter, StatusFilter });
+                }
+
+                var user = await _userApiService.GetUserByIdAsync(ToggleRequest.Id);
+                if (user == null)
                 {
-                    TempData["SuccessMessage"] = "User status has been disable.";
+                    TempData["ErrorMessage"] = "User not found.";
+                    return RedirectToPage(new { PageIndex, PageSize, NameSearch, EmailSearch, RoleFilter, StatusFilter });
+                }
+
+                // Create update DTO with all required fields
+                var updateDto = new UpdateUserDTO
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Role = user.Role,
+                    IsActive = ToggleRequest.IsActive
+                };
+
+                _logger.LogInformation($"Attempting to update user {user.Id} with IsActive={ToggleRequest.IsActive}");
+
+                var result = await _userApiService.UpdateUserAsync(user.Id, updateDto);
+                
+                if (result != null && result.StatusCode == 200)
+                {
+                    if (ToggleRequest.IsActive == true)
+                    {
+                        TempData["SuccessMessage"] = "User status has been enabled.";
+                    } 
+                    else
+                    {
+                        TempData["SuccessMessage"] = "User status has been disabled.";
+                    }
+                }
+                else
+                {
+                    var errorMessage = result?.Message ?? "Failed to update user status.";
+                    _logger.LogError($"Failed to update user {user.Id}: {errorMessage}");
+                    TempData["ErrorMessage"] = errorMessage;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = result?.Message ?? "Failed to disable user.";
+                _logger.LogError(ex, "Exception occurred while toggling user active status");
+                TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
             }
+
             return RedirectToPage(new { PageIndex, PageSize, NameSearch, EmailSearch, RoleFilter, StatusFilter });
         }
         public class ToggleActiveRequest
