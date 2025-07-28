@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Util.Constants;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.FeedbackDTOs;
@@ -18,10 +19,16 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
         public IList<GetFeedbackDto> Feedbacks { get;set; } = default!;
         public Guid UserId { get; set; }
         public string UserRole { get; set; }
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             UserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-            if(UserRole == RoleConstants.User)
+
+            if (string.IsNullOrEmpty(UserRole) || (UserRole != RoleConstants.User && UserRole != RoleConstants.Staff))
+            {
+                return RedirectToPage("/Index");
+            }
+
+            if (UserRole == RoleConstants.User)
             {
                 UserId = Guid.Parse(User.FindFirstValue("sub"));
 
@@ -33,7 +40,8 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
                 {
                     Feedbacks = result.Data;
                 }
-            } else if (UserRole == RoleConstants.Staff)
+            }
+            else if (UserRole == RoleConstants.Staff)
             {
                 HttpClient httpClient = _httpClientFactory.CreateClient("API");
 
@@ -44,6 +52,8 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
                     Feedbacks = result.Data;
                 }
             }
+
+            return Page();
         }
     }
 }

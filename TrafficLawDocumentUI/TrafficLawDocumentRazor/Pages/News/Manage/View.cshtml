@@ -365,10 +365,10 @@
                         <a asp-page="Index" class="btn btn-secondary">
                             <i class="bi bi-arrow-left me-1"></i> Back to Management
                         </a>
-                        <a asp-page="Edit" asp-route-id="@Model.News.Id" class="btn btn-warning">
+                        <a asp-page="Edit" asp-route-id="@Model.News?.Id" class="btn btn-warning">
                             <i class="bi bi-pencil me-1"></i> Edit
                         </a>
-                        <a asp-page="Delete" asp-route-id="@Model.News.Id" class="btn btn-danger">
+                        <a asp-page="Delete" asp-route-id="@Model.News?.Id" class="btn btn-danger">
                             <i class="bi bi-trash me-1"></i> Delete
                         </a>
                     </div>
@@ -376,17 +376,17 @@
 
                 <!-- Article Content -->
                 <div class="article-card">
-                    @if (!string.IsNullOrEmpty(Model.News.ImageUrl))
+                    @if (!string.IsNullOrEmpty(Model.News?.ImageUrl))
                     {
-                        <img src="@Model.News.ImageUrl" class="card-img-top" alt="@Model.News.Title" style="max-height: 300px; object-fit: cover;">
+                        <img src="@Model.News.ImageUrl" class="card-img-top" alt="@(Model.News?.Title ?? "News Image")" style="max-height: 300px; object-fit: cover;">
                     }
                     
                     <div class="card-body">
                         <header class="article-header">
-                            <h2 class="card-title">@Model.News.Title</h2>
+                            <h2 class="card-title">@(Model.News?.Title ?? "Untitled")</h2>
                             <div class="news-meta">
-                                <i class="bi bi-calendar me-1"></i> Published: @Model.News.PublishedDate.ToString("MMMM dd, yyyy 'at' HH:mm")
-                                @if (!string.IsNullOrEmpty(Model.News.Author))
+                                <i class="bi bi-calendar me-1"></i> Published: @(Model.News?.PublishedDate.ToString("MMMM dd, yyyy 'at' HH:mm") ?? "N/A")
+                                @if (!string.IsNullOrEmpty(Model.News?.Author))
                                 {
                                     <span> | <i class="bi bi-person me-1"></i> Author: @Model.News.Author</span>
                                 }
@@ -395,11 +395,11 @@
 
                         <!-- Article Content -->
                         <div class="article-content mb-4">
-                            @Html.Raw(Model.News.Content?.Replace("\n", "<br>"))
+                            @Html.Raw(Model.News?.Content?.Replace("\n", "<br>") ?? "No content available")
                         </div>
 
                         <!-- Embedded Content Preview -->
-                        @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
+                        @if (!string.IsNullOrEmpty(Model.News?.EmbeddedUrl))
                         {
                             <div class="embedded-content">
                                 <h5><i class="bi bi-link-45deg me-1"></i>Embedded Content</h5>
@@ -426,22 +426,22 @@
                             <div class="col-md-6">
                                 <dl class="row">
                                     <dt class="col-sm-4">Article ID:</dt>
-                                    <dd class="col-sm-8"><code>@Model.News.Id</code></dd>
+                                    <dd class="col-sm-8"><code>@(Model.News?.Id.ToString() ?? "N/A")</code></dd>
                                     
                                     <dt class="col-sm-4">Created By:</dt>
-                                    <dd class="col-sm-8">@(Model.News.Author ?? "N/A")</dd>
+                                    <dd class="col-sm-8">@(Model.News?.Author ?? "N/A")</dd>
                                     
                                     <dt class="col-sm-4">Created Time:</dt>
-                                    <dd class="col-sm-8">@(Model.News.CreatedTime?.ToString("MMMM dd, yyyy 'at' HH:mm") ?? "N/A")</dd>
+                                    <dd class="col-sm-8">@(Model.News?.CreatedTime?.ToString("MMMM dd, yyyy 'at' HH:mm") ?? "N/A")</dd>
                                 </dl>
                             </div>
                             <div class="col-md-6">
                                 <dl class="row">
                                     <dt class="col-sm-4">Last Updated:</dt>
-                                    <dd class="col-sm-8">@(Model.News.LastUpdatedTime?.ToString("MMMM dd, yyyy 'at' HH:mm") ?? "N/A")</dd>
+                                    <dd class="col-sm-8">@(Model.News?.LastUpdatedTime?.ToString("MMMM dd, yyyy 'at' HH:mm") ?? "N/A")</dd>
                                     
                                     <dt class="col-sm-4">User ID:</dt>
-                                    <dd class="col-sm-8">@(Model.News.UserId?.ToString() ?? "N/A")</dd>
+                                    <dd class="col-sm-8">@(Model.News?.UserId?.ToString() ?? "N/A")</dd>
                                 </dl>
                             </div>
                         </div>
@@ -455,13 +455,13 @@
                     </a>
                     
                     <div class="btn-group" role="group">
-                        <a asp-page="Edit" asp-route-id="@Model.News.Id" class="btn btn-warning">
+                        <a asp-page="Edit" asp-route-id="@Model.News?.Id" class="btn btn-warning">
                             <i class="bi bi-pencil me-1"></i> Edit Article
                         </a>
-                        <a asp-page="Delete" asp-route-id="@Model.News.Id" class="btn btn-danger">
+                        <a asp-page="Delete" asp-route-id="@Model.News?.Id" class="btn btn-danger">
                             <i class="bi bi-trash me-1"></i> Delete Article
                         </a>
-                        @if (!string.IsNullOrEmpty(Model.News.EmbeddedUrl))
+                        @if (!string.IsNullOrEmpty(Model.News?.EmbeddedUrl))
                         {
                             <a href="@Model.News.EmbeddedUrl" class="btn btn-primary" target="_blank">
                                 <i class="bi bi-box-arrow-up-right me-1"></i> View Embedded
@@ -472,4 +472,5 @@
             </div>
         </div>
     }
+}
 </div> 

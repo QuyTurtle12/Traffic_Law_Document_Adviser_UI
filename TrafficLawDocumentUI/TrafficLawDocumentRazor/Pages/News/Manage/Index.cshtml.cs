@@ -53,19 +53,18 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
         public string? SyncMessage { get; set; }
         public string? SyncStatus { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            
             try
             {
-                // Reset to page 1 when filters are applied
-                if (!string.IsNullOrEmpty(TitleFilter) || !string.IsNullOrEmpty(AuthorFilter) || 
-                    !string.IsNullOrEmpty(ContentFilter) || StartDate.HasValue || EndDate.HasValue)
+                CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+                if (CurrentUserRole != "Staff")
                 {
-                    PageIndex = 1;
+                    return RedirectToPage("/Index");
                 }
-
                 NewsList = await _newsApiService.GetNewsAsync(PageIndex, PageSize, TitleFilter, AuthorFilter, ContentFilter, StartDate, EndDate);
+                return Page();
             }
             catch (Exception ex)
             {
@@ -90,6 +89,7 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
                     }
                 }
             }
+            return Page();
         }
 
         public class SyncNewsApiResponse

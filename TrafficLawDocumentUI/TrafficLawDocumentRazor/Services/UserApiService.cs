@@ -32,7 +32,7 @@ namespace TrafficLawDocumentRazor.Services
         public async Task<PaginatedList<UserDTO>> GetUsersAsync(int pageIndex, int pageSize)
         {
             var baseUrl = _configuration["ApiSettings:BaseUrl"];
-            var token = _httpContextAccessor.HttpContext?.Request?.Cookies["AccessToken"]; // Or session, or user claims
+            var token = _httpContextAccessor.HttpContext?.Request?.Cookies["access_token"]; // Or session, or user claims
 
             if (!string.IsNullOrEmpty(token))
             {
