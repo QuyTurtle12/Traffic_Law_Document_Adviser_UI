@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.Json;
 using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -77,6 +78,15 @@ namespace TrafficLawDocumentRazor.Pages.DocumentCategoryPage
             if (!response.IsSuccessStatusCode)
             {
                 await ApiErrorHandler.HandleErrorResponse(this, response, "Failed to edit category.");
+
+                var content = await response.Content.ReadAsStringAsync();
+                //TempData["ToastMessage"] = $"Error: {content}";
+                TempData["ToastType"] = "error";
+                using var doc = JsonDocument.Parse(content);
+                string message = doc.RootElement.GetProperty("message").GetString();
+
+                TempData["ToastMessage"] = $"Error: {message}";
+                TempData["ToastType"] = "error";
 
                 await OnGetAsync(Id);
                 return Page();
