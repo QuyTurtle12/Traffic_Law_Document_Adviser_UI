@@ -20,8 +20,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             _configuration = configuration;
         }
 
-
-        public LawDocument LawDocument { get; set; } = default!;
+        public GetLawDocumentDTO LawDocument { get; set; } = default!;
         public string ApiBaseUrl { get; private set; } = "";
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
@@ -31,18 +30,7 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
             if (currentDocument?.Data?.Items == null || !currentDocument.Data.Items.Any())
                 return NotFound();
 
-            var document = currentDocument.Data.Items.First();
-
-            LawDocument = new LawDocument
-            {
-                Id = document.Id,
-                Title = document.Title,
-                DocumentCode = document.DocumentCode,
-                CategoryId = document.CategoryId,
-                FilePath = document.FilePath,
-                LinkPath = document.LinkPath,
-                ExpertVerification = document.ExpertVerification
-            };
+            LawDocument = currentDocument.Data.Items.First();
 
             ApiBaseUrl = (_configuration["ApiSettings:BaseUrl"] ?? "")
                          .TrimEnd('/');
