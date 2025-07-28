@@ -41,6 +41,12 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
             try
             {
                 UserList = await _userApiService.GetUsersAsync(PageIndex, PageSize);
+                
+                // Filter out admin users from the display
+                if (UserList?.Items != null)
+                {
+                    UserList.Items = UserList.Items.Where(x => x.Role != "Admin").ToList();
+                }
             }
             catch (Exception ex)
             {
