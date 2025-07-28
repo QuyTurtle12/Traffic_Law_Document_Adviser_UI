@@ -138,9 +138,10 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>AI Answer</th>
-                            <th>Feedback Content</th>
-                            <th>Created At</th>
+                            <th>Email user</th>
+                            <th>AI answer</th>
+                            <th>Feedback content</th>
+                            <th>Created time</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -148,6 +149,9 @@
                         @foreach (var item in Model.Feedbacks)
                         {
                             <tr>
+                                <td>
+                                    <span class="truncate">@Html.DisplayFor(modelItem => item.Email)</span>
+                                </td>
                                 <td>
                                     <span class="truncate">@Html.DisplayFor(modelItem => item.AIAnswer)</span>
                                 </td>
