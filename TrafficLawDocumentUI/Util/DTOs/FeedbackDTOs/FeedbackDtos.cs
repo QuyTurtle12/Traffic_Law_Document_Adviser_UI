@@ -9,6 +9,7 @@
         public string? Content { get; set; }
         public DateTime? CreatedTime { get; set; }
         public string? CreatedAtFormatted => CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss");
+        public string? Email { get; set; }
     }
     public class PostFeedbackDto
     {

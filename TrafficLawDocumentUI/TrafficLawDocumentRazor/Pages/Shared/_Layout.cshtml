@@ -151,8 +151,8 @@
                             </a>
                         </li>
 
-                        <!-- Staff or Expert can see Management -->
-                        @if (User?.Identity?.IsAuthenticated == true && (User.IsInRole("Staff") || User.IsInRole("Expert") || User.IsInRole("Admin")))
+                        <!-- Authenticated -->
+                        @if (User?.Identity?.IsAuthenticated == true && (User.IsInRole("Staff") || User.IsInRole("Expert") || User.IsInRole("Admin") || User.IsInRole("User")))
                         {
                             <!-- Staff can see all management options -->
                             @if (User.IsInRole("Staff"))
@@ -208,8 +208,16 @@
                                     </a>
                                 </li>
                             }
+                            <!-- User -->
+                            @if (User.IsInRole("User"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/FeedbackPage/Index">
+                                        <i class="bi bi-chat-dots"></i> Feedback
+                                    </a>
+                                </li>
+                            }
                         }
-
                         <!-- Everyone can see News -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/News/Index">

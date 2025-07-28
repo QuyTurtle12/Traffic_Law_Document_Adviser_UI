@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR;
-using NuGet.Protocol.Plugins;
+using System.Security.Claims;
 using TrafficLawDocumentRazor.Hubs;
+using Util.Constants;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.ChatHistoryDTOs;
 
@@ -19,22 +20,30 @@ namespace TrafficLawDocumentRazor.Pages
             _hubContext = hubContext;
         }
 
-        [BindProperty]
+        /*[BindProperty]
         public string UserMessage { get; set; }
-        public string ApiResponse { get; set; }
+        public string ApiResponse { get; set; }*/
         public Guid UserId { get; set; }
         public bool IsLoading { get; set; }
         public List<ChatMessage> ChatHistory { get; set; } = new List<ChatMessage>();
-
-        public async Task OnGetAsync()
+        public List<string> ModelNames { get; set; }
+        public async Task<IActionResult> OnGetAsync()
         {
-            // Initialize page
-            ApiResponse = string.Empty;
+            if (!User.Identity.IsAuthenticated)
+                return Redirect("/Login");
+
             IsLoading = false;
-            //Temporarily hardcoding the UserId
-            UserId = Guid.Parse("82BAC5B2-E3D3-40CF-82B6-6EFDA10B2EDB");
+            ModelNames = new List<string>
+            {
+                ChatModelNameConstants.Gemini,
+                ChatModelNameConstants.LawDocument
+            };
+
+            UserId = Guid.Parse(User.FindFirstValue("sub"));
 
             await LoadChatHistoryAsync();
+
+            return Page();
         }
 
         private async Task LoadChatHistoryAsync()
@@ -43,7 +52,7 @@ namespace TrafficLawDocumentRazor.Pages
             {
                 HttpClient httpClient = _httpClientFactory.CreateClient("API");
 
-                var response = await httpClient.GetAsync($"/api/chathistory/search/{UserId}");
+                var response = await httpClient.GetAsync($"chathistory/search/{UserId}");
                 var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<GetChatHistoryDto>>>();
 
                 if (result?.Data != null)

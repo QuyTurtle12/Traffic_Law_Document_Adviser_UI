@@ -138,9 +138,10 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>AI Answer</th>
-                            <th>Feedback Content</th>
-                            <th>Created At</th>
+                            <th>Email user</th>
+                            <th>AI answer</th>
+                            <th>Feedback content</th>
+                            <th>Created time</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -148,6 +149,9 @@
                         @foreach (var item in Model.Feedbacks)
                         {
                             <tr>
+                                <td>
+                                    <span class="truncate">@Html.DisplayFor(modelItem => item.Email)</span>
+                                </td>
                                 <td>
                                     <span class="truncate">@Html.DisplayFor(modelItem => item.AIAnswer)</span>
                                 </td>
@@ -160,9 +164,6 @@
                                 <td class="text-center">
                                     <a asp-page="./Details" asp-route-id="@item.Id" class="btn-action btn-details">
                                         <i class="bi bi-info-circle me-1"></i> Details
-                                    </a>
-                                    <a asp-page="./Delete" asp-route-id="@item.Id" class="btn-action btn-delete">
-                                        <i class="bi bi-trash me-1"></i> Delete
                                     </a>
                                 </td>
                             </tr>

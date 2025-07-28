@@ -245,9 +245,7 @@
                                 <label asp-for="LawDocument.CategoryId" class="form-label required-field">
                                     <i class="bi bi-folder me-1"></i>Category
                                 </label>
-                                <select asp-for="LawDocument.CategoryId" class="form-select" asp-items="Model.Categories">
-                                    <option value="">Select a category...</option>
-                                </select>
+                                <select asp-for="LawDocument.CategoryId" class="form-select" asp-items="Model.Categories"></select>
                                 <span asp-validation-for="LawDocument.CategoryId" class="text-danger"></span>
                             </div>
                         </div>

@@ -1,11 +1,4 @@
-﻿using BussinessObject;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.FeedbackDTOs;
 
@@ -25,7 +18,7 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
         {
             HttpClient httpClient = _httpClientFactory.CreateClient("API");
 
-            var response = await httpClient.GetAsync($"/api/feedback/{id}");
+            var response = await httpClient.GetAsync($"feedback/{id}");
             var result = await response.Content.ReadFromJsonAsync<ApiResponse<GetFeedbackDto>>();
             if (result.Data != null)
             {
