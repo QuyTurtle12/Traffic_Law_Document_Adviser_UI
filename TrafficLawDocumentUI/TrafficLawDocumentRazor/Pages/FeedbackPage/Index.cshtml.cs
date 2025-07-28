@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
+using Util.Constants;
 using Util.DTOs.ApiResponse;
 using Util.DTOs.FeedbackDTOs;
 
@@ -15,16 +17,32 @@ namespace TrafficLawDocumentRazor.Pages.FeedbackPage
 
         public IList<GetFeedbackDto> Feedbacks { get;set; } = default!;
         public Guid UserId { get; set; }
+        public string UserRole { get; set; }
         public async Task OnGetAsync()
         {
-            UserId = Guid.Parse("82BAC5B2-E3D3-40CF-82B6-6EFDA10B2EDB");
-            HttpClient httpClient = _httpClientFactory.CreateClient("API");
-
-            var response = await httpClient.GetAsync($"/api/feedback/user/{UserId}");
-            var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<GetFeedbackDto>>>();
-            if(result.Data != null)
+            UserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            if(UserRole == RoleConstants.User)
             {
-                Feedbacks = result.Data;
+                UserId = Guid.Parse(User.FindFirstValue("sub"));
+
+                HttpClient httpClient = _httpClientFactory.CreateClient("API");
+
+                var response = await httpClient.GetAsync($"feedback/user/{UserId}");
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<GetFeedbackDto>>>();
+                if (result.Data != null)
+                {
+                    Feedbacks = result.Data;
+                }
+            } else if (UserRole == RoleConstants.Staff)
+            {
+                HttpClient httpClient = _httpClientFactory.CreateClient("API");
+
+                var response = await httpClient.GetAsync($"feedback/all");
+                var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<GetFeedbackDto>>>();
+                if (result.Data != null)
+                {
+                    Feedbacks = result.Data;
+                }
             }
         }
     }
