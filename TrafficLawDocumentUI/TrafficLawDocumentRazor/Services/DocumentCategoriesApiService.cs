@@ -27,7 +27,7 @@ namespace TrafficLawDocumentRazor.Services
         public async Task<PaginatedList<GetDocumentCategoryDTO>> GetAllCategoriesAsync(int pageIndex = 1, int pageSize = 100)
         {
             var baseUrl = _configuration["ApiSettings:BaseUrl"];
-            var token = _httpContextAccessor.HttpContext?.Request?.Cookies["AccessToken"];
+            var token = _httpContextAccessor.HttpContext?.Request?.Cookies["access_token"];
 
             if (!string.IsNullOrEmpty(token))
             {
