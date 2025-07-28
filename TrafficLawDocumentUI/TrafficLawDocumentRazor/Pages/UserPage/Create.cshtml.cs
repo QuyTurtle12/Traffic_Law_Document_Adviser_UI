@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BCrypt.Net;
+using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BussinessObject;
-using BCrypt.Net;
-using Util.DTOs.UserDTOs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using TrafficLawDocumentRazor.Services;
+using Util.DTOs.UserDTOs;
 
 namespace TrafficLawDocumentRazor.Pages.UserPage
 {
@@ -22,8 +23,14 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
         [BindProperty]
         public CreateUserDTO NewUser { get; set; } = new();
         public string? ErrorMessage { get; set; }
+        public string CurrentUserRole { get; set; } = default!;
         public IActionResult OnGet()
         {
+            CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+            if (CurrentUserRole != "Admin")
+            {
+                return RedirectToPage("/Index");
+            }
             return Page();
         }
         public async Task<IActionResult> OnPostAsync()

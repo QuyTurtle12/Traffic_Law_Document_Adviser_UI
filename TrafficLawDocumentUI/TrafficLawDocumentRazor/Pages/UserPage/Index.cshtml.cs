@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BussinessObject;
-using Util.Paginated;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Text.Json;
+using System.Threading.Tasks;
+using TrafficLawDocumentRazor.Services;
 using Util.DTOs.NewsDTOs;
 using Util.DTOs.UserDTOs;
-using TrafficLawDocumentRazor.Services;
-using System.Text.Json;
+using Util.Paginated;
 
 namespace TrafficLawDocumentRazor.Pages.UserPage
 {
@@ -49,10 +50,17 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
         [BindProperty]
         public ToggleActiveRequest ToggleRequest { get; set; } = new ToggleActiveRequest();
 
-        public async Task OnGetAsync()
+        public string CurrentUserRole { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync()
         {
             try
             {
+                CurrentUserRole = base.User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+                if (CurrentUserRole != "Admin")
+                {
+                    return RedirectToPage("/Index");
+                }
                 UserList = await _userApiService.GetUsersAsync(PageIndex, PageSize);
                 
                 if (UserList?.Items != null)
@@ -111,6 +119,7 @@ namespace TrafficLawDocumentRazor.Pages.UserPage
                 UserList = new PaginatedList<UserDTO> { Items = new List<UserDTO>() };
                 TempData["ErrorMessage"] = ex.Message;
             }
+            return Page();
         }
 
         public async Task<IActionResult> OnPostToggleActiveAsync()
