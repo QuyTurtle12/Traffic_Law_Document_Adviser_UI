@@ -53,15 +53,13 @@ namespace TrafficLawDocumentRazor.Pages.News.Manage
         public string? SyncMessage { get; set; }
         public string? SyncStatus { get; set; }
 
-        public string currentUserRole { get; set; } = default!;
-
         public async Task<IActionResult> OnGetAsync()
         {
             
             try
             {
                 CurrentUserRole = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
-                if (currentUserRole != "Staff")
+                if (CurrentUserRole != "Staff")
                 {
                     return RedirectToPage("/Index");
                 }

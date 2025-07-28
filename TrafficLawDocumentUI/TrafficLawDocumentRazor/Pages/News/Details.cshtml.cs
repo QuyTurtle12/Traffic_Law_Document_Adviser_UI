@@ -26,7 +26,7 @@ namespace TrafficLawDocumentRazor.Pages.News
                 
                 if (News == null)
                 {
-                    return NotFound();
+                    return RedirectToPage("/Index");
                 }
 
                 return Page();
@@ -34,7 +34,7 @@ namespace TrafficLawDocumentRazor.Pages.News
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error loading news details");
-                return NotFound();
+                return RedirectToPage("/Index");
             }
         }
     }
