@@ -1,7 +1,9 @@
 ﻿using BussinessObject;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Util.DTOs.ApiResponse;
+using Util.DTOs.DocumentTagDTOs;
 using Util.DTOs.LawDocumentDTOs;
 using Util.Paginated;
 
@@ -22,9 +24,18 @@ namespace TrafficLawDocumentRazor.Pages.LawDocumentPage
 
         public GetLawDocumentDTO LawDocument { get; set; } = default!;
         public string ApiBaseUrl { get; private set; } = "";
+        public List<SelectListItem> Tags { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
+            // Fetch tags
+            var tagResponse = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetDocumentTagDTO>>>(
+                "document-tags?pageIndex=1&pageSize=100");
+            if (tagResponse?.Data?.Items != null)
+                Tags = tagResponse.Data.Items
+                    .Select(t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name })
+                    .ToList();
+
             var currentDocument = await _httpClient.GetFromJsonAsync<ApiResponse<PaginatedList<GetLawDocumentDTO>>>($"law-documents?pageIndex=1&pageSize=1&idSearch={id}");
 
             if (currentDocument?.Data?.Items == null || !currentDocument.Data.Items.Any())
