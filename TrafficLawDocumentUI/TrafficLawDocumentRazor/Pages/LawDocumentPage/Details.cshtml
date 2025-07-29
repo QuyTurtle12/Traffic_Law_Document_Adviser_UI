@@ -313,6 +313,20 @@
                                 <td><strong>Category:</strong></td>
                                 <td><span class="badge bg-info">@Model.LawDocument.CategoryName</span></td>
                             </tr>
+                            <tr>
+                                <td><strong>Tags:</strong></td>
+                                <td>
+                                    @if (Model.LawDocument.TagList != null && Model.LawDocument.TagList.Any())
+                                    {
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (var tag in Model.LawDocument.TagList)
+                                            {
+                                                <span class="badge bg-dark">@tag.TagName</span>
+                                            }
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
                         </table>
                     </div>
 
